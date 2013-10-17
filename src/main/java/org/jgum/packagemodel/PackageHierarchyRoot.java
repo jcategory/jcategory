@@ -1,18 +1,20 @@
 package org.jgum.packagemodel;
 
+import org.jgum.JGum;
 import org.jgum.path.Path;
 
 
-public class PackageHierarchyRoot extends PackagePropertiesNode {
+public class PackageHierarchyRoot extends PackageNode {
 
-	public PackageHierarchyRoot() {
+	public PackageHierarchyRoot(JGum context) {
+		super(context);
 	}
 	
-	public PackagePropertiesNode getDescendant(Package pakkage) {
+	public PackageNode getDescendant(Package pakkage) {
 		return getDescendant(pakkage.getName());
 	}
 	
-	public PackagePropertiesNode getOrCreateDescendant(Package pakkage) {
+	public PackageNode getOrCreateDescendant(Package pakkage) {
 		return getOrCreateDescendant(pakkage.getName());
 	}
 	
@@ -20,7 +22,7 @@ public class PackageHierarchyRoot extends PackagePropertiesNode {
 		return get(pakkage.getName(), key);
 	}
 	
-	public Path<PackagePropertiesNode> pathToDescendant(Package pakkage) {
+	public Path<PackageNode> pathToDescendant(Package pakkage) {
 		return pathToDescendant(pakkage.getName());
 	}
 	

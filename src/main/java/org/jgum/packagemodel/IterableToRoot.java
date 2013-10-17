@@ -4,21 +4,21 @@ import java.util.Iterator;
 
 import com.google.common.collect.AbstractIterator;
 
-public class IterableToRoot implements Iterable<PackagePropertiesNode> {
+public class IterableToRoot implements Iterable<PackageNode> {
 	
-	private final PackagePropertiesNode packagePropertiesNode;
+	private final PackageNode packageNode;
 	
-	public IterableToRoot(final PackagePropertiesNode packagePropertiesNode) {
-		this.packagePropertiesNode = packagePropertiesNode;
+	public IterableToRoot(final PackageNode packageNode) {
+		this.packageNode = packageNode;
 	}
 	
 	@Override
-	public Iterator<PackagePropertiesNode> iterator() {
-		return new AbstractIterator<PackagePropertiesNode>() {
-			private PackagePropertiesNode next = packagePropertiesNode;
+	public Iterator<PackageNode> iterator() {
+		return new AbstractIterator<PackageNode>() {
+			private PackageNode next = packageNode;
 			@Override
-			protected PackagePropertiesNode computeNext() {
-				PackagePropertiesNode computedNext;
+			protected PackageNode computeNext() {
+				PackageNode computedNext;
 				if(next != null) {
 					computedNext = next;
 					next = next.getParent();

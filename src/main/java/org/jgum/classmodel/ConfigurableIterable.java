@@ -12,7 +12,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-public class ConfigurableClassPropertiesIterable<T extends AbstractClassPropertiesNode<?>> implements Iterable<T> {
+public class ConfigurableIterable<T extends AbstractClassNode<?>> implements Iterable<T> {
 
 	private ClassTraversalPolicy classTraversalPolicy;
 	private T abstractClassPropertiesNode;
@@ -20,32 +20,32 @@ public class ConfigurableClassPropertiesIterable<T extends AbstractClassProperti
 	private List<T> children;
 	private Iterable<T> nextNodeIterable;
 	
-	public ConfigurableClassPropertiesIterable(T abstractClassPropertiesNode, Direction direction, ClassTraversalPolicy classTraversalPolicy) {
+	public ConfigurableIterable(T abstractClassPropertiesNode, Direction direction, ClassTraversalPolicy classTraversalPolicy) {
 		this.abstractClassPropertiesNode = abstractClassPropertiesNode;
 		this.classTraversalPolicy = classTraversalPolicy;
 		
-		List<ClassPropertiesNode<?>> classPropertiesIterator;
-		List<InterfacePropertiesNode<?>> interfacePropertiesIterator;
+		List<ClassNode<?>> classPropertiesIterator;
+		List<InterfaceNode<?>> interfacePropertiesIterator;
 		
 		if(direction.equals(Direction.BOTTOM_UP)) {
-			if(abstractClassPropertiesNode instanceof ClassPropertiesNode) {
-				ClassPropertiesNode<?> classPropertiesNode = (ClassPropertiesNode<?>) abstractClassPropertiesNode;
+			if(abstractClassPropertiesNode instanceof ClassNode) {
+				ClassNode<?> classPropertiesNode = (ClassNode<?>) abstractClassPropertiesNode;
 				classPropertiesIterator = (List)asList(classPropertiesNode.getSuperClassNode());				
-			} else { //it is an InterfacePropertiesNode or a ClassHierarchyRoot
+			} else { //it is an InterfaceNode or a ClassHierarchyRoot
 				classPropertiesIterator = Collections.emptyList();
 			}
-			if(classTraversalPolicy.interfaceOrder.equals(InterfaceOrder.DECLARATION_ORDER)) {
+			if(classTraversalPolicy.interfaceOrder.equals(InterfaceOrder.DIRECT)) {
 				interfacePropertiesIterator = (List)abstractClassPropertiesNode.getSuperInterfaceNodes();
-			} else { //INVERSE_DECLARATION_ORDER
+			} else { //INVERSE
 				interfacePropertiesIterator = (List)Lists.reverse(abstractClassPropertiesNode.getSuperInterfaceNodes());
 			}
 		} else { //TOP_DOWN
-			if(abstractClassPropertiesNode instanceof ClassPropertiesNode) {
-				ClassPropertiesNode<?> classPropertiesNode = (ClassPropertiesNode<?>) abstractClassPropertiesNode;
+			if(abstractClassPropertiesNode instanceof ClassNode) {
+				ClassNode<?> classPropertiesNode = (ClassNode<?>) abstractClassPropertiesNode;
 				classPropertiesIterator = (List)classPropertiesNode.getKnownSubClassNodes();
 				interfacePropertiesIterator = Collections.emptyList();
-			} else if(abstractClassPropertiesNode instanceof InterfacePropertiesNode) { //it is an InterfacePropertiesNode
-				InterfacePropertiesNode<?> interfacePropertiesNode = (InterfacePropertiesNode<?>) abstractClassPropertiesNode;
+			} else if(abstractClassPropertiesNode instanceof InterfaceNode) { //it is an InterfaceNode
+				InterfaceNode<?> interfacePropertiesNode = (InterfaceNode<?>) abstractClassPropertiesNode;
 				classPropertiesIterator = (List)interfacePropertiesNode.getKnownImplementorNodes();
 				interfacePropertiesIterator = (List)interfacePropertiesNode.getKnownSubInterfaceNodes();
 			} else { //it is a ClassHierarchyRoot
@@ -72,9 +72,9 @@ public class ConfigurableClassPropertiesIterable<T extends AbstractClassProperti
 			nextNodeIterable = traverser.breadthFirstTraversal(abstractClassPropertiesNode);
 		}
 		if(abstractClassPropertiesNode instanceof ClassHierarchyRoot) {
-			nextNodeIterable = Iterables.filter(nextNodeIterable, new Predicate<AbstractClassPropertiesNode<?>>() {
+			nextNodeIterable = Iterables.filter(nextNodeIterable, new Predicate<AbstractClassNode<?>>() {
 				@Override
-				public boolean apply(AbstractClassPropertiesNode<?> node) {
+				public boolean apply(AbstractClassNode<?> node) {
 					return !(node instanceof ClassHierarchyRoot);
 				}
 			});

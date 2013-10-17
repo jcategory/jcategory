@@ -4,27 +4,27 @@ import java.util.Iterator;
 
 import com.google.common.collect.AbstractIterator;
 
-public class IterableToDescendant implements Iterable<PackagePropertiesNode> {
+public class IterableToDescendant implements Iterable<PackageNode> {
 
-	private final PackagePropertiesNode packagePropertiesNode;
+	private final PackageNode packageNode;
 	private final Iterator<String> packageFragmentsIterator;
 	
-	public IterableToDescendant(PackagePropertiesNode packagePropertiesNode, String relativePackageName) {
-		this(packagePropertiesNode, PackagePropertiesNode.asPackageFragmentsList(relativePackageName).iterator());
+	public IterableToDescendant(PackageNode packageNode, String relativePackageName) {
+		this(packageNode, PackageNode.asPackageFragmentsList(relativePackageName).iterator());
 	}
 	
-	private IterableToDescendant(final PackagePropertiesNode packagePropertiesNode, final Iterator<String> packageFragmentsIterator) {
-		this.packagePropertiesNode = packagePropertiesNode;
+	private IterableToDescendant(final PackageNode packageNode, final Iterator<String> packageFragmentsIterator) {
+		this.packageNode = packageNode;
 		this.packageFragmentsIterator = packageFragmentsIterator;
 	}
 
 	@Override
-	public Iterator<PackagePropertiesNode> iterator() {
-		return new AbstractIterator<PackagePropertiesNode>() {
-			private PackagePropertiesNode next = packagePropertiesNode;
+	public Iterator<PackageNode> iterator() {
+		return new AbstractIterator<PackageNode>() {
+			private PackageNode next = packageNode;
 			@Override
-			protected PackagePropertiesNode computeNext() {
-				PackagePropertiesNode computedNext;
+			protected PackageNode computeNext() {
+				PackageNode computedNext;
 				if(next != null) {
 					computedNext = next;
 					if(packageFragmentsIterator.hasNext())

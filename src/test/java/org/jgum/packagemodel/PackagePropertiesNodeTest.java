@@ -7,6 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
+import org.jgum.JGum;
 import org.jgum.path.SearchStrategy;
 import org.junit.Test;
 
@@ -39,7 +40,7 @@ public class PackagePropertiesNodeTest {
 	String p8PropertyValue = "p8PropertyValue";
 	
 	private PackageHierarchyRoot newPackagePropertiesRoot() {
-		PackageHierarchyRoot root = new PackageHierarchyRoot();
+		PackageHierarchyRoot root = new PackageHierarchyRoot(new JGum());
 		root.put(rootProperty, rootPropertyValue);
 		root.getOrCreateDescendant(packageP1).put(p1Property, p1PropertyValue);
 		root.getOrCreateDescendant(packageP2).put(p2Property, p2PropertyValue);
@@ -53,11 +54,12 @@ public class PackagePropertiesNodeTest {
 	
 	@Test
 	public void testPackageName() {
-		PackagePropertiesNode root = new PackageHierarchyRoot();
+		JGum jGum = new JGum();
+		PackageNode root = new PackageHierarchyRoot(jGum);
 		assertEquals("", root.getPackageName());
-		PackagePropertiesNode fragment1 = new PackagePropertiesNode("p1", root);
+		PackageNode fragment1 = new PackageNode(jGum, "p1", root);
 		assertEquals("p1", fragment1.getPackageName());
-		PackagePropertiesNode fragment2 = new PackagePropertiesNode("p2", fragment1);
+		PackageNode fragment2 = new PackageNode(jGum, "p2", fragment1);
 		assertEquals("p1.p2", fragment2.getPackageName());
 	}
 	
@@ -99,8 +101,8 @@ public class PackagePropertiesNodeTest {
 
 	@Test
 	public void testAllDescendantsPreOrder() {
-		PackagePropertiesNode root = newPackagePropertiesRoot().getChild(packageP1);
-		List<PackagePropertiesNode> preOrderList = Lists.newArrayList(root.allDescendants(SearchStrategy.PRE_ORDER));
+		PackageNode root = newPackagePropertiesRoot().getChild(packageP1);
+		List<PackageNode> preOrderList = Lists.newArrayList(root.allDescendants(SearchStrategy.PRE_ORDER));
 		assertEquals(p1PropertyValue, preOrderList.get(0).get(p1Property));
 		assertEquals(p2PropertyValue, preOrderList.get(1).get(p2Property));
 		assertEquals(p3PropertyValue, preOrderList.get(2).get(p3Property));
@@ -111,8 +113,8 @@ public class PackagePropertiesNodeTest {
 	
 	@Test
 	public void testAllDescendantsPostOrder() {
-		PackagePropertiesNode root = newPackagePropertiesRoot().getChild(packageP1);
-		List<PackagePropertiesNode> postOrderList = Lists.newArrayList(root.allDescendants(SearchStrategy.POST_ORDER));
+		PackageNode root = newPackagePropertiesRoot().getChild(packageP1);
+		List<PackageNode> postOrderList = Lists.newArrayList(root.allDescendants(SearchStrategy.POST_ORDER));
 		assertEquals(p3PropertyValue, postOrderList.get(0).get(p3Property));
 		assertEquals(p5PropertyValue, postOrderList.get(1).get(p5Property));
 		assertEquals(p4PropertyValue, postOrderList.get(2).get(p4Property));
@@ -123,8 +125,8 @@ public class PackagePropertiesNodeTest {
 	
 	@Test
 	public void testAllDescendantsBreadthFirst() {
-		PackagePropertiesNode root = newPackagePropertiesRoot().getChild(packageP1);
-		List<PackagePropertiesNode> breadthFirstList = Lists.newArrayList(root.allDescendants(SearchStrategy.BREADTH_FIRST));
+		PackageNode root = newPackagePropertiesRoot().getChild(packageP1);
+		List<PackageNode> breadthFirstList = Lists.newArrayList(root.allDescendants(SearchStrategy.BREADTH_FIRST));
 		assertEquals(p1PropertyValue, breadthFirstList.get(0).get(p1Property));
 		assertEquals(p2PropertyValue, breadthFirstList.get(1).get(p2Property));
 		assertEquals(p3PropertyValue, breadthFirstList.get(2).get(p3Property));

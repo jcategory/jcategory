@@ -10,14 +10,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.jgum.JGum;
+import org.jgum.path.JGumNode;
 import org.jgum.path.Path;
-import org.jgum.path.PropertiesNode;
 import org.jgum.path.SearchStrategy;
 
-public class PackagePropertiesNode extends PropertiesNode {
+public class PackageNode extends JGumNode {
 	
-	private Map<String, PackagePropertiesNode> children; //the children nodes
-	private PackagePropertiesNode parent; //the parent node
+	private Map<String, PackageNode> children; //the children nodes
+	private PackageNode parent; //the parent node
 	private String packageFragment; //the package fragment name (i.e., the last sub-package in the full package name)
 	
 	
@@ -33,9 +34,10 @@ public class PackagePropertiesNode extends PropertiesNode {
 	}
 	
 	/**
-	 * Creates a root PackagePropertiesNode
+	 * Creates a root PackageNode
 	 */
-	protected PackagePropertiesNode() {
+	protected PackageNode(JGum context) {
+		super(context);
 		packageFragment = "";
 		parent = null;
 		children = new TreeMap<>(); //to preserve insertion order
@@ -46,8 +48,8 @@ public class PackagePropertiesNode extends PropertiesNode {
 	 * @param packageFragment the name of this node package fragment
 	 * @param parent the parent node 
 	 */
-	public PackagePropertiesNode(String packageFragment, PackagePropertiesNode parent) {
-		this();
+	public PackageNode(JGum context, String packageFragment, PackageNode parent) {
+		this(context);
 		requireNonNull(packageFragment);
 		checkArgument( (parent != null && !packageFragment.isEmpty()) || (parent == null && packageFragment.isEmpty()) );
 		this.packageFragment = packageFragment;
@@ -55,58 +57,58 @@ public class PackagePropertiesNode extends PropertiesNode {
 		
 	}
 	
-	public Collection<PackagePropertiesNode> getSubpackages() {
+	public Collection<PackageNode> getSubpackages() {
 		return children.values();
 	}
 	
-	public PackagePropertiesNode getParent() {
+	public PackageNode getParent() {
 		return parent;
 	}
 	
 	public Object get(String relativePackageName, Object key) {
-		PackagePropertiesNode packagePropertiesNode = getDescendant(relativePackageName);
-		if(packagePropertiesNode == null)
+		PackageNode packageNode = getDescendant(relativePackageName);
+		if(packageNode == null)
 			return null;
 		else
-			return packagePropertiesNode.get(key);
+			return packageNode.get(key);
 	}
 	
-	public PackagePropertiesNode getDescendant(String relativePackageName) {
+	public PackageNode getDescendant(String relativePackageName) {
 		return getDescendant(relativePackageName, false);
 	}
 	
-	public PackagePropertiesNode getOrCreateDescendant(String relativePackageName) {
+	public PackageNode getOrCreateDescendant(String relativePackageName) {
 		return getDescendant(relativePackageName, true);
 	}
 	
-	private PackagePropertiesNode getDescendant(String relativePackageName, boolean createIfAbsent) {
+	private PackageNode getDescendant(String relativePackageName, boolean createIfAbsent) {
 		List<String> packageFragmentsList = asPackageFragmentsList(relativePackageName);
-		PackagePropertiesNode packagePropertiesNode = this;
+		PackageNode packageNode = this;
 		for(String packageFragmentName : packageFragmentsList) {
 			if(createIfAbsent)
-				packagePropertiesNode = packagePropertiesNode.getOrCreateChild(packageFragmentName);
+				packageNode = packageNode.getOrCreateChild(packageFragmentName);
 			else {
-				packagePropertiesNode = packagePropertiesNode.getChild(packageFragmentName);
-				if(packagePropertiesNode == null)
+				packageNode = packageNode.getChild(packageFragmentName);
+				if(packageNode == null)
 					break;
 			}
 		}
-		return packagePropertiesNode;
+		return packageNode;
 	}
 	
-	public PackagePropertiesNode getChild(String subpackageName) {
+	public PackageNode getChild(String subpackageName) {
 		return children.get(subpackageName);
 	}
 
-	public PackagePropertiesNode getOrCreateChild(String subpackageName) {
-		PackagePropertiesNode child = children.get(subpackageName);
+	public PackageNode getOrCreateChild(String subpackageName) {
+		PackageNode child = children.get(subpackageName);
 		if(child == null)
 			child = addChild(subpackageName);
 		return child;
 	}
 	
-	private PackagePropertiesNode addChild(String subpackageName) {
-		PackagePropertiesNode child = new PackagePropertiesNode(subpackageName, this);
+	private PackageNode addChild(String subpackageName) {
+		PackageNode child = new PackageNode(getContext(), subpackageName, this);
 		children.put(subpackageName, child);
 		return child;
 	}
@@ -120,7 +122,7 @@ public class PackagePropertiesNode extends PropertiesNode {
 	}
 	
 	public PackageHierarchyRoot getRoot() {
-		PackagePropertiesNode root = this;
+		PackageNode root = this;
 		while(!root.isRoot())
 			root = root.getParent();
 		return (PackageHierarchyRoot)root;
@@ -140,17 +142,21 @@ public class PackagePropertiesNode extends PropertiesNode {
 		return sb.toString();
 	}
 	
-	public Path<PackagePropertiesNode> pathToRoot() {
+	public Path<PackageNode> pathToRoot() {
 		return new Path(new IterableToRoot(this));
 	}
 	
-	public Path<PackagePropertiesNode> pathToDescendant(String relativePackageName) {
+	public Path<PackageNode> pathToDescendant(String relativePackageName) {
 		return new Path(new IterableToDescendant(this, relativePackageName));
 	}
 
-	public Path<PackagePropertiesNode> allDescendants(SearchStrategy searchStrategy) {
+	public Path<PackageNode> allDescendants() {
+		return allDescendants(getContext().getSubPackagesTraversalStrategy());
+	}
+	
+	public Path<PackageNode> allDescendants(SearchStrategy searchStrategy) {
 		PackageTraverser packageTraverser = new PackageTraverser();
-		Iterable<PackagePropertiesNode> it;
+		Iterable<PackageNode> it;
 		if(searchStrategy.equals(SearchStrategy.PRE_ORDER))
 			it = packageTraverser.preOrderTraversal(this);
 		else if(searchStrategy.equals(SearchStrategy.POST_ORDER))

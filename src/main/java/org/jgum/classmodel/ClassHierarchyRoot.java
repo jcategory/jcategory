@@ -5,30 +5,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jgum.JGum;
 import org.jgum.classmodel.ClassHierarchyRoot.Any;
 import org.jgum.path.PropertiesNode;
 
-public class ClassHierarchyRoot extends AbstractClassPropertiesNode<Any> {
+public class ClassHierarchyRoot extends AbstractClassNode<Any> {
 
 	private Map<Class<?>, PropertiesNode> propertiesNodeIndex;
 	
-	private ClassPropertiesNode objectClassNode;
-	private List<InterfacePropertiesNode> rootInterfaceNodes;
+	private ClassNode objectClassNode;
+	private List<InterfaceNode> rootInterfaceNodes;
 	
 	static class Any {}
 	
-	public ClassHierarchyRoot() {
-		super(Any.class);
+	public ClassHierarchyRoot(JGum context) {
+		super(context, Any.class);
 		propertiesNodeIndex = new HashMap<>();
-		objectClassNode = ClassPropertiesNode.root();
+		objectClassNode = ClassNode.root(context);
 		rootInterfaceNodes = new ArrayList<>();
 	}
 
-	ClassPropertiesNode getObjectClassNode() {
+	ClassNode getObjectClassNode() {
 		return objectClassNode;
 	}
 
-	List<InterfacePropertiesNode> getRootInterfaceNodes() {
+	List<InterfaceNode> getRootInterfaceNodes() {
 		return rootInterfaceNodes;
 	}
 
@@ -52,28 +53,28 @@ public class ClassHierarchyRoot extends AbstractClassPropertiesNode<Any> {
 	}
 	
 	private PropertiesNode createClassNode(Class<?> clazz) {
-		ClassPropertiesNode parentClassNode = (ClassPropertiesNode) getOrCreateNode(clazz.getSuperclass());
-		List<InterfacePropertiesNode> superInterfaceNodes = new ArrayList<>();
+		ClassNode parentClassNode = (ClassNode) getOrCreateNode(clazz.getSuperclass());
+		List<InterfaceNode> superInterfaceNodes = new ArrayList<>();
 		for(Class<?> superInterface : clazz.getInterfaces()) {
-			InterfacePropertiesNode superInterfaceNode = (InterfacePropertiesNode) getOrCreateNode(superInterface);
+			InterfaceNode superInterfaceNode = (InterfaceNode) getOrCreateNode(superInterface);
 			superInterfaceNodes.add(superInterfaceNode);
 		}
-		ClassPropertiesNode classPropertiesNode = new ClassPropertiesNode(clazz, parentClassNode, superInterfaceNodes);
-		propertiesNodeIndex.put(clazz, classPropertiesNode);
-		return classPropertiesNode;
+		ClassNode classNode = new ClassNode(getContext(), clazz, parentClassNode, superInterfaceNodes);
+		propertiesNodeIndex.put(clazz, classNode);
+		return classNode;
 	}
 	
 	private PropertiesNode createInterfaceNode(Class<?> clazz) {
-		List<InterfacePropertiesNode> superInterfaceNodes = new ArrayList<>();
+		List<InterfaceNode> superInterfaceNodes = new ArrayList<>();
 		for(Class<?> superInterface : clazz.getInterfaces()) {
-			InterfacePropertiesNode superInterfaceNode = (InterfacePropertiesNode) getOrCreateNode(superInterface);
+			InterfaceNode superInterfaceNode = (InterfaceNode) getOrCreateNode(superInterface);
 			superInterfaceNodes.add(superInterfaceNode);
 		}
-		InterfacePropertiesNode interfacePropertiesNode = new InterfacePropertiesNode(clazz, superInterfaceNodes);
+		InterfaceNode interfaceNode = new InterfaceNode(getContext(), clazz, superInterfaceNodes);
 		if(superInterfaceNodes.isEmpty())
-			rootInterfaceNodes.add(interfacePropertiesNode);
-		propertiesNodeIndex.put(clazz, interfacePropertiesNode);
-		return interfacePropertiesNode;
+			rootInterfaceNodes.add(interfaceNode);
+		propertiesNodeIndex.put(clazz, interfaceNode);
+		return interfaceNode;
 	}
 	
 }
