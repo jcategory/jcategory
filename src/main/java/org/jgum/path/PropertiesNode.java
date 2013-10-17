@@ -1,4 +1,4 @@
-package org.jgum;
+package org.jgum.path;
 
 import java.util.HashMap;
 import java.util.Map;

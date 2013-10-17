@@ -3,8 +3,8 @@ package org.jgum.classmodel;
 import java.util.Collections;
 import java.util.List;
 
-import org.jgum.Path;
-import org.jgum.PropertiesNode;
+import org.jgum.path.Path;
+import org.jgum.path.PropertiesNode;
 
 public class AbstractClassPropertiesNode<T> extends PropertiesNode {
 

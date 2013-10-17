@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jgum.PropertiesNode;
 import org.jgum.classmodel.ClassHierarchyRoot.Any;
+import org.jgum.path.PropertiesNode;
 
 public class ClassHierarchyRoot extends AbstractClassPropertiesNode<Any> {
 

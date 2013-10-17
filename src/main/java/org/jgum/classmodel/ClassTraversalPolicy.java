@@ -1,7 +1,7 @@
 package org.jgum.classmodel;
 
-import org.jgum.CycleDetection;
-import org.jgum.SearchStrategy;
+import org.jgum.path.CycleDetection;
+import org.jgum.path.SearchStrategy;
 
 public class ClassTraversalPolicy {
 	

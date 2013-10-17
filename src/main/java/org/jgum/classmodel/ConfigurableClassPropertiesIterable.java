@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jgum.SearchStrategy;
+import org.jgum.path.SearchStrategy;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;

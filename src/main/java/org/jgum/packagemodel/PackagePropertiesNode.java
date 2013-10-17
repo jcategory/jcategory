@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.jgum.Path;
-import org.jgum.PropertiesNode;
-import org.jgum.SearchStrategy;
+import org.jgum.path.Path;
+import org.jgum.path.PropertiesNode;
+import org.jgum.path.SearchStrategy;
 
 public class PackagePropertiesNode extends PropertiesNode {
 	

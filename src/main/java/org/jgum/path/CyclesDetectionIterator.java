@@ -1,4 +1,4 @@
-package org.jgum;
+package org.jgum.path;
 
 import java.util.HashSet;
 import java.util.Iterator;

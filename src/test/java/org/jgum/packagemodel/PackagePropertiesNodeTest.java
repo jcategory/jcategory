@@ -7,7 +7,7 @@ import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.jgum.SearchStrategy;
+import org.jgum.path.SearchStrategy;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
