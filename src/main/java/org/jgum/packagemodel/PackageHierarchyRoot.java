@@ -1,7 +1,7 @@
 package org.jgum.packagemodel;
 
 import org.jgum.JGum;
-import org.jgum.path.Path;
+import org.jgum.graph.Path;
 
 
 public class PackageHierarchyRoot extends PackageNode {

@@ -5,22 +5,31 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.jgum.JGum;
-import org.jgum.path.JGumNode;
-import org.jgum.path.Path;
-import org.jgum.path.SearchStrategy;
+import org.jgum.graph.Node;
+import org.jgum.graph.Path;
 
-public class PackageNode extends JGumNode {
+public class PackageNode extends Node {
+	
+
+	
+//	public static TraversalPolicy<PackageNode> ancestorsTraversalPolicy(SearchStrategy searchStrategy) {
+//		return new TraversalPolicy<>(searchStrategy, CycleDetection.IGNORE, parentPackageFunction());
+//	}
+//	
+//	public static TraversalPolicy<PackageNode> descendantsTraversalPolicy(SearchStrategy searchStrategy, PackageOrder order) {
+//		return new TraversalPolicy<>(searchStrategy, CycleDetection.IGNORE, childrenPackagesFunction(order));
+//	}
+
+	
 	
 	private Map<String, PackageNode> children; //the children nodes
 	private PackageNode parent; //the parent node
 	private String packageFragment; //the package fragment name (i.e., the last sub-package in the full package name)
-	
 	
 	public static List<String> asPackageFragmentsList(String packageName) {
 		List<String> packageFragmentsList;
@@ -53,12 +62,15 @@ public class PackageNode extends JGumNode {
 		requireNonNull(packageFragment);
 		checkArgument( (parent != null && !packageFragment.isEmpty()) || (parent == null && packageFragment.isEmpty()) );
 		this.packageFragment = packageFragment;
-		this.parent = parent;
-		
+		this.parent = parent;	
 	}
 	
-	public Collection<PackageNode> getSubpackages() {
-		return children.values();
+	public String getPackageFragment() {
+		return packageFragment;
+	}
+	
+	public List<PackageNode> getSubpackages() {
+		return new ArrayList<>(children.values());
 	}
 	
 	public PackageNode getParent() {
@@ -142,28 +154,24 @@ public class PackageNode extends JGumNode {
 		return sb.toString();
 	}
 	
-	public Path<PackageNode> pathToRoot() {
-		return new Path(new IterableToRoot(this));
+	public Path<PackageNode> pathToDescendant(String relativePackageName) {
+		return new Path<PackageNode>(new IterableToDescendant(this, relativePackageName));
 	}
 	
-	public Path<PackageNode> pathToDescendant(String relativePackageName) {
-		return new Path(new IterableToDescendant(this, relativePackageName));
+	public Path<PackageNode> pathToRoot() {
+		return path(getContext().getBottomUpPackageTraversalPolicy());
+	}
+	
+	public Path<PackageNode> pathToRoot(BottomUpPackageTraversalPolicy policy) {
+		return path(policy);
 	}
 
 	public Path<PackageNode> allDescendants() {
-		return allDescendants(getContext().getSubPackagesTraversalStrategy());
+		return path(getContext().getTopDownPackageTraversalPolicy());
 	}
 	
-	public Path<PackageNode> allDescendants(SearchStrategy searchStrategy) {
-		PackageTraverser packageTraverser = new PackageTraverser();
-		Iterable<PackageNode> it;
-		if(searchStrategy.equals(SearchStrategy.PRE_ORDER))
-			it = packageTraverser.preOrderTraversal(this);
-		else if(searchStrategy.equals(SearchStrategy.POST_ORDER))
-			it = packageTraverser.postOrderTraversal(this);
-		else
-			it = packageTraverser.breadthFirstTraversal(this);
-		return new Path<>(it);
+	public Path<PackageNode> allDescendants(TopDownPackageTraversalPolicy policy) {
+		return path(policy);
 	}
 	
 }

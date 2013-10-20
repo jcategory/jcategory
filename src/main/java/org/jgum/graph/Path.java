@@ -1,18 +1,30 @@
-package org.jgum.path;
+package org.jgum.graph;
 
 import java.util.Iterator;
 
-public final class Path<T extends PropertiesNode> implements Iterable<T> {
+import com.google.common.base.Predicate;
+
+public final class Path<T extends Node> implements Iterable<T> {
 
 	private final Iterable<T> wrappedIterable;
 	private final CycleDetection cycleDetection;
+	private final Predicate<T> stopCondition;
 	
 	public Path(Iterable<T> wrappedIterable) {
-		this(wrappedIterable, CycleDetection.IGNORE);
+		this(wrappedIterable, null, CycleDetection.IGNORE);
+	}
+	
+	public Path(Iterable<T> wrappedIterable, Predicate<T> stopCondition) {
+		this(wrappedIterable, stopCondition, CycleDetection.IGNORE);
 	}
 	
 	public Path(Iterable<T> wrappedIterable, CycleDetection cycleDetection) {
+		this(wrappedIterable, null, cycleDetection);
+	}
+	
+	public Path(Iterable<T> wrappedIterable, Predicate<T> stopCondition, CycleDetection cycleDetection) {
 		this.wrappedIterable = wrappedIterable;
+		this.stopCondition = stopCondition;
 		this.cycleDetection = cycleDetection;
 	}
 	
@@ -37,10 +49,14 @@ public final class Path<T extends PropertiesNode> implements Iterable<T> {
 
 	@Override
 	public Iterator<T> iterator() {
+		Iterator<T> it;
 		if(cycleDetection.equals(CycleDetection.IGNORE))
-			return wrappedIterable.iterator();
+			it = wrappedIterable.iterator();
 		else
-			return new CyclesDetectionIterator<T>(wrappedIterable.iterator());
+			it = new CyclesDetectionIterator<T>(wrappedIterable.iterator());
+		if(stopCondition != null)
+			it = new StopOnConditionIterator(it, stopCondition);
+		return it;
 	}
 
 }

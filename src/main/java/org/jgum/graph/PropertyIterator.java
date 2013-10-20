@@ -1,4 +1,4 @@
-package org.jgum.path;
+package org.jgum.graph;
 
 import java.util.Iterator;
 
@@ -8,15 +8,15 @@ import com.google.common.collect.Iterators;
 
 public class PropertyIterator<T> extends AbstractIterator<T> {
 
-	private final Iterator<? extends PropertiesNode> propertyNodes;
+	private final Iterator<? extends Node> propertyNodes;
 	private final Object key;
 	
-	public PropertyIterator(Iterator<? extends PropertiesNode> propertyNodes, final Object key) {
+	public PropertyIterator(Iterator<? extends Node> propertyNodes, final Object key) {
 		this.key = key;
-		this.propertyNodes = Iterators.filter(propertyNodes, new Predicate<PropertiesNode>() {
+		this.propertyNodes = Iterators.filter(propertyNodes, new Predicate<Node>() {
 			@Override
-			public boolean apply(PropertiesNode propertiesNode) {
-				return propertiesNode.containsKey(key);
+			public boolean apply(Node node) {
+				return node.containsKey(key);
 			}
 		});
 	}
@@ -24,7 +24,7 @@ public class PropertyIterator<T> extends AbstractIterator<T> {
 	@Override
 	protected T computeNext() {
 		if(propertyNodes.hasNext()) {
-			PropertiesNode nextPropertiesNode = propertyNodes.next();
+			Node nextPropertiesNode = propertyNodes.next();
 			return (T) nextPropertiesNode.get(key);
 		} else
 			return endOfData();

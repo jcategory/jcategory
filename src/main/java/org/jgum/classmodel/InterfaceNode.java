@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.jgum.JGum;
 
-public class InterfaceNode<T> extends AbstractClassNode<T> {
+import com.google.common.collect.Lists;
+
+public class InterfaceNode<T> extends TypeNode<T> {
 
 	public List<ClassNode<? extends T>> knownImplementorNodes;
 	public List<InterfaceNode<? extends T>> knownSubInterfaceNodes;
@@ -43,6 +45,28 @@ public class InterfaceNode<T> extends AbstractClassNode<T> {
 	
 	public List<InterfaceNode<? extends T>> getKnownSubInterfaceNodes() {
 		return knownSubInterfaceNodes;
+	}
+
+	@Override
+	protected List<TypeNode<? super T>> getParents(Priority priority, InterfaceOrder interfaceOrder) {
+		List<TypeNode<? super T>> superInterfaceNodes = (List)getSuperInterfaceNodes();
+		if(interfaceOrder.equals(InterfaceOrder.INVERSE)) {
+			superInterfaceNodes = Lists.reverse(superInterfaceNodes);
+		}
+		return superInterfaceNodes;
+	}
+
+	@Override
+	protected List<TypeNode<? extends T>> getChildren(Priority priority) {
+		List<TypeNode<? extends T>> children;
+		if(priority.equals(Priority.CLASSES_FIRST)) {
+			children = (List)getKnownImplementorNodes();
+			children.addAll(getKnownSubInterfaceNodes());
+		} else {
+			children = (List)getKnownSubInterfaceNodes();
+			children.addAll(getKnownImplementorNodes());
+		}
+		return children;
 	}
 	
 }

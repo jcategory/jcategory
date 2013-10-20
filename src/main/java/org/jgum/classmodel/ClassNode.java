@@ -1,11 +1,15 @@
 package org.jgum.classmodel;
 
+import static java.util.Arrays.asList;
+
 import java.util.Collections;
 import java.util.List;
 
 import org.jgum.JGum;
 
-public class ClassNode<T> extends AbstractClassNode<T> {
+import com.google.common.collect.Lists;
+
+public class ClassNode<T> extends TypeNode<T> {
 	
 	public static ClassNode<Object> root(JGum context) {
 		return new ClassNode(context);
@@ -51,6 +55,28 @@ public class ClassNode<T> extends AbstractClassNode<T> {
 
 	public List<ClassNode<? extends T>> getKnownSubClassNodes() {
 		return knownSubClassNodes;
+	}
+
+	@Override
+	protected List<TypeNode<? super T>> getParents(Priority priority, InterfaceOrder interfaceOrder) {
+		List<TypeNode<? super T>> superInterfaceNodes = (List)getSuperInterfaceNodes();
+		if(interfaceOrder.equals(InterfaceOrder.INVERSE)) {
+			superInterfaceNodes = Lists.reverse(superInterfaceNodes);
+		}
+		List<TypeNode<? super T>> parents;
+		if(priority.equals(Priority.CLASSES_FIRST)) {
+			parents = (List)asList(getSuperClassNode());
+			parents.addAll(superInterfaceNodes);
+		} else {
+			parents = superInterfaceNodes;
+			parents.add(getSuperClassNode());
+		}
+		return parents;
+	}
+
+	@Override
+	protected List<TypeNode<? extends T>> getChildren(Priority priority) {
+		return (List)getKnownSubClassNodes();
 	}
 	
 }

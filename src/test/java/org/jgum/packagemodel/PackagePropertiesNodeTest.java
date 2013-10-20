@@ -8,7 +8,7 @@ import static org.junit.Assert.fail;
 import java.util.List;
 
 import org.jgum.JGum;
-import org.jgum.path.SearchStrategy;
+import org.jgum.graph.SearchStrategy;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -102,7 +102,7 @@ public class PackagePropertiesNodeTest {
 	@Test
 	public void testAllDescendantsPreOrder() {
 		PackageNode root = newPackagePropertiesRoot().getChild(packageP1);
-		List<PackageNode> preOrderList = Lists.newArrayList(root.allDescendants(SearchStrategy.PRE_ORDER));
+		List<PackageNode> preOrderList = Lists.newArrayList(root.allDescendants(new TopDownPackageTraversalPolicy(SearchStrategy.PRE_ORDER)));
 		assertEquals(p1PropertyValue, preOrderList.get(0).get(p1Property));
 		assertEquals(p2PropertyValue, preOrderList.get(1).get(p2Property));
 		assertEquals(p3PropertyValue, preOrderList.get(2).get(p3Property));
@@ -114,7 +114,7 @@ public class PackagePropertiesNodeTest {
 	@Test
 	public void testAllDescendantsPostOrder() {
 		PackageNode root = newPackagePropertiesRoot().getChild(packageP1);
-		List<PackageNode> postOrderList = Lists.newArrayList(root.allDescendants(SearchStrategy.POST_ORDER));
+		List<PackageNode> postOrderList = Lists.newArrayList(root.allDescendants(new TopDownPackageTraversalPolicy(SearchStrategy.POST_ORDER)));
 		assertEquals(p3PropertyValue, postOrderList.get(0).get(p3Property));
 		assertEquals(p5PropertyValue, postOrderList.get(1).get(p5Property));
 		assertEquals(p4PropertyValue, postOrderList.get(2).get(p4Property));
@@ -126,7 +126,7 @@ public class PackagePropertiesNodeTest {
 	@Test
 	public void testAllDescendantsBreadthFirst() {
 		PackageNode root = newPackagePropertiesRoot().getChild(packageP1);
-		List<PackageNode> breadthFirstList = Lists.newArrayList(root.allDescendants(SearchStrategy.BREADTH_FIRST));
+		List<PackageNode> breadthFirstList = Lists.newArrayList(root.allDescendants(new TopDownPackageTraversalPolicy(SearchStrategy.BREADTH_FIRST)));
 		assertEquals(p1PropertyValue, breadthFirstList.get(0).get(p1Property));
 		assertEquals(p2PropertyValue, breadthFirstList.get(1).get(p2Property));
 		assertEquals(p3PropertyValue, breadthFirstList.get(2).get(p3Property));

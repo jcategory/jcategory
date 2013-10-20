@@ -1,14 +1,23 @@
-package org.jgum.path;
+package org.jgum.graph;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class PropertiesNode {
+import org.jgum.JGum;
+
+public abstract class Node {
 
 	private Map<Object, Object> properties; //properties associated with this node
 	
-	public PropertiesNode() {
+	private final JGum context;
+	
+	public Node(JGum context) {
+		this.context = context;
 		properties = new HashMap<>();
+	}
+
+	public JGum getContext() {
+		return context;
 	}
 	
 	/**
@@ -40,4 +49,9 @@ public class PropertiesNode {
 	public String toString() {
 		return properties.toString();
 	}
+	
+	public <U extends Node> Path<U> path(TraversalPolicy<U> traversalPolicy) {
+		return new Path<>(new NodeIterable(this, traversalPolicy.searchStrategy, traversalPolicy.nextNodesFunction), traversalPolicy.cycleDetection);
+	}
+	
 }

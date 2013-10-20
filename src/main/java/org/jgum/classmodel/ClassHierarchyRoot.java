@@ -1,17 +1,26 @@
 package org.jgum.classmodel;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jgum.JGum;
 import org.jgum.classmodel.ClassHierarchyRoot.Any;
-import org.jgum.path.PropertiesNode;
+import org.jgum.graph.Node;
+import org.jgum.graph.NodeIterable;
+import org.jgum.graph.Path;
+import org.jgum.graph.TraversalPolicy;
 
-public class ClassHierarchyRoot extends AbstractClassNode<Any> {
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
-	private Map<Class<?>, PropertiesNode> propertiesNodeIndex;
+public class ClassHierarchyRoot extends TypeNode<Any> {
+
+	private Map<Class<?>, Node> propertiesNodeIndex;
 	
 	private ClassNode objectClassNode;
 	private List<InterfaceNode> rootInterfaceNodes;
@@ -33,26 +42,26 @@ public class ClassHierarchyRoot extends AbstractClassNode<Any> {
 		return rootInterfaceNodes;
 	}
 
-	public PropertiesNode get(Class<?> clazz) {
+	public Node get(Class<?> clazz) {
 		return propertiesNodeIndex.get(clazz);
 	}
 	
-	protected void put(Class<?> clazz, PropertiesNode propertiesNode) {
-		propertiesNodeIndex.put(clazz, propertiesNode);
+	protected void put(Class<?> clazz, Node node) {
+		propertiesNodeIndex.put(clazz, node);
 	}
 	
-	public PropertiesNode getOrCreateNode(Class<?> clazz) {
-		PropertiesNode propertiesNode = propertiesNodeIndex.get(clazz);
-		if(propertiesNode == null) {
+	public Node getOrCreateNode(Class<?> clazz) {
+		Node node = propertiesNodeIndex.get(clazz);
+		if(node == null) {
 			if(clazz.isInterface())
-				propertiesNode = createInterfaceNode(clazz);
+				node = createInterfaceNode(clazz);
 			else
-				propertiesNode = createClassNode(clazz);
+				node = createClassNode(clazz);
 		}
-		return propertiesNode;
+		return node;
 	}
 	
-	private PropertiesNode createClassNode(Class<?> clazz) {
+	private Node createClassNode(Class<?> clazz) {
 		ClassNode parentClassNode = (ClassNode) getOrCreateNode(clazz.getSuperclass());
 		List<InterfaceNode> superInterfaceNodes = new ArrayList<>();
 		for(Class<?> superInterface : clazz.getInterfaces()) {
@@ -64,7 +73,7 @@ public class ClassHierarchyRoot extends AbstractClassNode<Any> {
 		return classNode;
 	}
 	
-	private PropertiesNode createInterfaceNode(Class<?> clazz) {
+	private Node createInterfaceNode(Class<?> clazz) {
 		List<InterfaceNode> superInterfaceNodes = new ArrayList<>();
 		for(Class<?> superInterface : clazz.getInterfaces()) {
 			InterfaceNode superInterfaceNode = (InterfaceNode) getOrCreateNode(superInterface);
@@ -76,5 +85,32 @@ public class ClassHierarchyRoot extends AbstractClassNode<Any> {
 		propertiesNodeIndex.put(clazz, interfaceNode);
 		return interfaceNode;
 	}
+
+	@Override
+	protected List<Node> getParents(Priority priority, InterfaceOrder interfaceOrder) {
+		return Collections.emptyList();
+	}
+
+	@Override
+	protected List<Node> getChildren(Priority priority) {
+		List<Node> children;
+		if(priority.equals(Priority.CLASSES_FIRST)) {
+			children = (List)asList(getObjectClassNode());
+			children.addAll(getRootInterfaceNodes());
+		} else {
+			children = (List)getRootInterfaceNodes();
+			children.add(getObjectClassNode());
+		}
+		return children;
+	}
 	
+	public <U extends Node> Path<U> path(TraversalPolicy<U> traversalPolicy) {
+		Iterable<U> it = new NodeIterable(this, traversalPolicy.searchStrategy, traversalPolicy.nextNodesFunction);
+		return new Path<>(Iterables.filter(it, new Predicate<U>() {
+				@Override
+				public boolean apply(Node node) {
+					return !(node instanceof ClassHierarchyRoot);
+				}
+			}), traversalPolicy.cycleDetection);	
+	}
 }
