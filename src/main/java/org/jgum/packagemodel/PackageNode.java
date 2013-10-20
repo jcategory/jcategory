@@ -10,7 +10,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.jgum.JGum;
+import org.jgum.graph.CycleDetection;
 import org.jgum.graph.Node;
+import org.jgum.graph.SearchStrategy;
+import org.jgum.graph.TraversalPolicy;
 
 import com.google.common.collect.FluentIterable;
 
@@ -156,7 +159,7 @@ public class PackageNode extends Node {
 	}
 	
 	public FluentIterable<PackageNode> pathToDescendant(String relativePackageName) {
-		return FluentIterable.from(new IterableToDescendant(this, relativePackageName));
+		return path(new TraversalPolicy<PackageNode>(SearchStrategy.PRE_ORDER, CycleDetection.IGNORE, new ToDescendantFunction(this, relativePackageName)));
 	}
 	
 	public FluentIterable<PackageNode> pathToRoot() {

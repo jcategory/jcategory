@@ -6,6 +6,12 @@ import java.util.Set;
 
 import com.google.common.collect.AbstractIterator;
 
+/**
+ * An iterator that remembers the visited nodes. It will stop if an already visited node is returned.
+ * @author sergioc
+ *
+ * @param <T> the type of the iterator
+ */
 public class CyclesDetectionIterator<T> extends AbstractIterator<T> {
 
 	private final Set<T> visitedNodes;

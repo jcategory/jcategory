@@ -8,33 +8,50 @@ import org.jgum.JGum;
 
 import com.google.common.collect.FluentIterable;
 
+/**
+ * An abstract node in a graph with some arbitrary properties stored in a map.
+ * @author sergioc
+ *
+ */
 public abstract class Node {
 
 	private Map<Object, Object> properties; //properties associated with this node
-	
-	private final JGum context;
+	private final JGum context; //the context where this node exists
 	
 	public Node(JGum context) {
 		this.context = context;
 		properties = new HashMap<>();
 	}
 
+	/**
+	 * 
+	 * @return the context
+	 */
 	public JGum getContext() {
 		return context;
 	}
 	
 	/**
 	 * @param key the property name
-	 * @return the local value of the property (if any)
+	 * @return the value of the property in the current node (if any)
+	 * @see Map#get(Object)
 	 */
 	public Object get(Object key) {
 		return properties.get(key);
 	}
 	
+	/**
+	 * 
+	 * @see Map#containsKey(Object)
+	 */
 	public boolean containsKey(Object key) {
 		return properties.containsKey(key);
 	}
 	
+	/**
+	 * 
+	 * @see Map#put(Object,Object)
+	 */
 	public Object put(Object key, Object value) {
 		return properties.put(key, value);
 	}
@@ -48,11 +65,11 @@ public abstract class Node {
 			put(property, propertyValue);
 	}
 	
-	@Override
-	public String toString() {
-		return properties.toString();
-	}
-	
+	/**
+	 * 
+	 * @param traversalPolicy determines the nodes in the iterable
+	 * @return An iterable of nodes
+	 */
 	public <U extends Node> FluentIterable<U> path(TraversalPolicy<U> traversalPolicy) {
 		FluentIterable<U> it = NodeTraverser.<U>iterable((U)this, traversalPolicy.searchStrategy, traversalPolicy.nextNodesFunction);
 		if(traversalPolicy.cycleDetection.equals(CycleDetection.ENFORCE)) {
@@ -67,4 +84,9 @@ public abstract class Node {
 		return it;
 	}
 	
+	@Override
+	public String toString() {
+		return properties.toString();
+	}
+
 }

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.jgum.JGum;
@@ -13,6 +14,7 @@ import org.jgum.graph.SearchStrategy;
 import org.junit.Test;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
 public class PackagePropertiesNodeTest {
@@ -63,6 +65,19 @@ public class PackagePropertiesNodeTest {
 		assertEquals("p1", fragment1.getPackageName());
 		PackageNode fragment2 = new PackageNode(jGum, "p2", fragment1);
 		assertEquals("p1.p2", fragment2.getPackageName());
+	}
+	
+	@Test
+	public void testPathToDescendant() {
+		PackageHierarchyRoot root = newPackagePropertiesRoot();
+		FluentIterable<PackageNode> fit = root.pathToDescendant(packageP3);
+		assertEquals(4, fit.size());
+		Iterator<PackageNode> it = fit.iterator();
+		assertEquals("", it.next().getPackageFragment());
+		assertEquals("p1", it.next().getPackageFragment());
+		assertEquals("p2", it.next().getPackageFragment());
+		assertEquals("p3", it.next().getPackageFragment());
+		assertEquals(3, root.pathToDescendant("p1.p2.px").size());
 	}
 	
 	@Test
