@@ -11,7 +11,8 @@ import java.util.TreeMap;
 
 import org.jgum.JGum;
 import org.jgum.graph.Node;
-import org.jgum.graph.Path;
+
+import com.google.common.collect.FluentIterable;
 
 public class PackageNode extends Node {
 	
@@ -154,23 +155,23 @@ public class PackageNode extends Node {
 		return sb.toString();
 	}
 	
-	public Path<PackageNode> pathToDescendant(String relativePackageName) {
-		return new Path<PackageNode>(new IterableToDescendant(this, relativePackageName));
+	public FluentIterable<PackageNode> pathToDescendant(String relativePackageName) {
+		return FluentIterable.from(new IterableToDescendant(this, relativePackageName));
 	}
 	
-	public Path<PackageNode> pathToRoot() {
+	public FluentIterable<PackageNode> pathToRoot() {
 		return path(getContext().getBottomUpPackageTraversalPolicy());
 	}
 	
-	public Path<PackageNode> pathToRoot(BottomUpPackageTraversalPolicy policy) {
+	public FluentIterable<PackageNode> pathToRoot(BottomUpPackageTraversalPolicy policy) {
 		return path(policy);
 	}
 
-	public Path<PackageNode> allDescendants() {
+	public FluentIterable<PackageNode> allDescendants() {
 		return path(getContext().getTopDownPackageTraversalPolicy());
 	}
 	
-	public Path<PackageNode> allDescendants(TopDownPackageTraversalPolicy policy) {
+	public FluentIterable<PackageNode> allDescendants(TopDownPackageTraversalPolicy policy) {
 		return path(policy);
 	}
 	

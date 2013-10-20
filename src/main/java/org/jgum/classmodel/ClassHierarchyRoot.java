@@ -11,12 +11,10 @@ import java.util.Map;
 import org.jgum.JGum;
 import org.jgum.classmodel.ClassHierarchyRoot.Any;
 import org.jgum.graph.Node;
-import org.jgum.graph.NodeIterable;
-import org.jgum.graph.Path;
 import org.jgum.graph.TraversalPolicy;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
+import com.google.common.collect.FluentIterable;
 
 public class ClassHierarchyRoot extends TypeNode<Any> {
 
@@ -104,13 +102,15 @@ public class ClassHierarchyRoot extends TypeNode<Any> {
 		return children;
 	}
 	
-	public <U extends Node> Path<U> path(TraversalPolicy<U> traversalPolicy) {
-		Iterable<U> it = new NodeIterable(this, traversalPolicy.searchStrategy, traversalPolicy.nextNodesFunction);
-		return new Path<>(Iterables.filter(it, new Predicate<U>() {
-				@Override
-				public boolean apply(Node node) {
-					return !(node instanceof ClassHierarchyRoot);
-				}
-			}), traversalPolicy.cycleDetection);	
+	@Override
+	public <U extends Node> FluentIterable<U> path(TraversalPolicy<U> traversalPolicy) {
+		FluentIterable<U> it = super.path(traversalPolicy);
+		return it.filter(new Predicate<U>() {
+			@Override
+			public boolean apply(Node node) {
+				return !(node instanceof ClassHierarchyRoot);
+			}
+		});	
 	}
+
 }

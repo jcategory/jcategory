@@ -1,6 +1,7 @@
 package org.jgum.packagemodel;
 
 
+import static org.jgum.graph.PropertyIterable.properties;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -11,6 +12,7 @@ import org.jgum.JGum;
 import org.jgum.graph.SearchStrategy;
 import org.junit.Test;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 public class PackagePropertiesNodeTest {
@@ -71,21 +73,21 @@ public class PackagePropertiesNodeTest {
 		assertNull(root.get(packageP1, "wrongProperty"));
 		assertNull(root.get(packageP2, "wrongProperty"));
 
-		assertEquals(rootPropertyValue, root.pathToDescendant(packageP1).first(rootProperty));
-		assertEquals(p1PropertyValue, root.pathToDescendant(packageP1).first(p1Property));
-		assertNull(root.pathToDescendant(packageP1).first(p2Property));
-		assertEquals(p1PropertyValue, root.pathToDescendant(packageP2).first(p1Property));
-		assertEquals(p2PropertyValue, root.pathToDescendant(packageP2).first(p2Property));
+		assertEquals(rootPropertyValue, properties(root.pathToDescendant(packageP1), rootProperty).first().get());
+		assertEquals(p1PropertyValue, properties(root.pathToDescendant(packageP1), p1Property).first().get());
+		assertEquals(Optional.absent(), properties(root.pathToDescendant(packageP1), p2Property).first());
+		assertEquals(p1PropertyValue, properties(root.pathToDescendant(packageP2), p1Property).first().get());
+		assertEquals(p2PropertyValue, properties(root.pathToDescendant(packageP2), p2Property).first().get());
 		
-		assertEquals(rootPropertyValue, root.pathToRoot().first(rootProperty));
-		assertEquals(p1PropertyValue, root.getDescendant(packageP1).pathToRoot().first(p1Property));
-		assertEquals(p2PropertyValue, root.getDescendant(packageP2).pathToRoot().first(p2Property));
-		assertEquals(p1PropertyValue, root.getDescendant(packageP2).pathToRoot().first(p1Property)); //the property is not defined in p2, so it should inherit from p1
-		assertEquals(p8PropertyValue, root.getDescendant(packageP8).pathToRoot().first(p8Property));
+		assertEquals(rootPropertyValue, properties(root.pathToRoot(), rootProperty).first().get());
+		assertEquals(p1PropertyValue, properties(root.getDescendant(packageP1).pathToRoot(), p1Property).first().get());
+		assertEquals(p2PropertyValue, properties(root.getDescendant(packageP2).pathToRoot(), p2Property).first().get());
+		assertEquals(p1PropertyValue, properties(root.getDescendant(packageP2).pathToRoot(), p1Property).first().get()); //the property is not defined in p2, so it should inherit from p1
+		assertEquals(p8PropertyValue, properties(root.getDescendant(packageP8).pathToRoot(), p8Property).first().get());
 		
 		//now let's override one property in one subpackage
 		root.getDescendant(packageP2).put(p1Property, p2PropertyValue);
-		assertEquals(p2PropertyValue, root.getDescendant(packageP2).pathToRoot().first(p1Property));
+		assertEquals(p2PropertyValue, properties(root.getDescendant(packageP2).pathToRoot(), p1Property).first().get());
 		
 		//overriding the same property
 		root.getDescendant(packageP2).put(p1Property, p2PropertyValue);

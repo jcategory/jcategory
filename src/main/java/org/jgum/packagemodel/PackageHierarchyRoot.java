@@ -1,7 +1,8 @@
 package org.jgum.packagemodel;
 
 import org.jgum.JGum;
-import org.jgum.graph.Path;
+
+import com.google.common.collect.FluentIterable;
 
 
 public class PackageHierarchyRoot extends PackageNode {
@@ -22,7 +23,7 @@ public class PackageHierarchyRoot extends PackageNode {
 		return get(pakkage.getName(), key);
 	}
 	
-	public Path<PackageNode> pathToDescendant(Package pakkage) {
+	public FluentIterable<PackageNode> pathToDescendant(Package pakkage) {
 		return pathToDescendant(pakkage.getName());
 	}
 	

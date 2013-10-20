@@ -7,7 +7,7 @@ import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Iterators;
 
 public class PropertyIterator<T> extends AbstractIterator<T> {
-
+	
 	private final Iterator<? extends Node> propertyNodes;
 	private final Object key;
 	

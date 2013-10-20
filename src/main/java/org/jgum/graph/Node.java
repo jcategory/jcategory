@@ -1,9 +1,12 @@
 package org.jgum.graph;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.jgum.JGum;
+
+import com.google.common.collect.FluentIterable;
 
 public abstract class Node {
 
@@ -50,8 +53,18 @@ public abstract class Node {
 		return properties.toString();
 	}
 	
-	public <U extends Node> Path<U> path(TraversalPolicy<U> traversalPolicy) {
-		return new Path<>(new NodeIterable(this, traversalPolicy.searchStrategy, traversalPolicy.nextNodesFunction), traversalPolicy.cycleDetection);
+	public <U extends Node> FluentIterable<U> path(TraversalPolicy<U> traversalPolicy) {
+		FluentIterable<U> it = NodeTraverser.<U>iterable((U)this, traversalPolicy.searchStrategy, traversalPolicy.nextNodesFunction);
+		if(traversalPolicy.cycleDetection.equals(CycleDetection.ENFORCE)) {
+			final Iterable<U> itAux = it;
+			it = FluentIterable.from(new Iterable<U>() {
+				@Override
+				public Iterator<U> iterator() {
+					return new CyclesDetectionIterator<U>(itAux.iterator());
+				}
+			});
+		}
+		return it;
 	}
 	
 }
