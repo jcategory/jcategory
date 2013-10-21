@@ -6,29 +6,39 @@ import org.jgum.classmodel.InterfaceOrder;
 import org.jgum.classmodel.Priority;
 import org.jgum.classmodel.TopDownTypeTraversalPolicy;
 import org.jgum.classmodel.TypeNode;
-import org.jgum.graph.CycleDetection;
+import org.jgum.graph.DuplicatesDetection;
 import org.jgum.graph.SearchStrategy;
 import org.jgum.packagemodel.BottomUpPackageTraversalPolicy;
 import org.jgum.packagemodel.PackageHierarchyRoot;
 import org.jgum.packagemodel.PackageNode;
 import org.jgum.packagemodel.TopDownPackageTraversalPolicy;
 
+/**
+ * Defines a context for a graph of Java meta-object artifacts (classes, interfaces and packages) associated with certain properties.
+ * It also defines default mechanisms for traversing such graph, therefore influencing the order in which properties are found.
+ * @author sergioc
+ *
+ */
 public class JGum {
 
+	//Default strategy for bottom up traversing of a graph denoting a class hierarchy given a descendant class 
 	public static final BottomUpTypeTraversalPolicy<TypeNode<?>> DEFAULT_BOTTOM_UP_TYPE_TRAVERSAL_POLICY = 
-			new BottomUpTypeTraversalPolicy<>(SearchStrategy.PRE_ORDER, CycleDetection.IGNORE, Priority.INTERFACES_FIRST, InterfaceOrder.INVERSE);
+			new BottomUpTypeTraversalPolicy<>(SearchStrategy.PRE_ORDER, DuplicatesDetection.ENFORCE, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE);
 	
+	//Default strategy for top down traversing of a graph denoting a class hierarchy given an ancestor class 
 	public static final TopDownTypeTraversalPolicy<TypeNode<?>> DEFAULT_TOP_DOWN_CLASS_TRAVERSAL_POLICY = 
-			new TopDownTypeTraversalPolicy<>(SearchStrategy.BREADTH_FIRST, CycleDetection.IGNORE, Priority.INTERFACES_FIRST);
+			new TopDownTypeTraversalPolicy<>(SearchStrategy.BREADTH_FIRST, DuplicatesDetection.ENFORCE, Priority.INTERFACES_FIRST);
 	
+	//Default strategy for bottom up traversing of a tree denoting a package hierarchy given a subpackage 
 	public static final BottomUpPackageTraversalPolicy DEFAULT_BOTTOM_UP_PACKAGE_TRAVERSAL_POLICY = 
 			new BottomUpPackageTraversalPolicy(SearchStrategy.PRE_ORDER);
 	
+	//Default strategy for top down traversing of a tree denoting a package hierarchy given a root package 
 	public static final TopDownPackageTraversalPolicy DEFAULT_TOP_DOWN_PACKAGE_TRAVERSAL_POLICY = 
 			new TopDownPackageTraversalPolicy(SearchStrategy.PRE_ORDER);
 	
-	private final PackageHierarchyRoot packageHierarchyRoot;
-	private final ClassHierarchyRoot classHierarchyRoot;
+	private final PackageHierarchyRoot packageHierarchyRoot; //the root of the package tree
+	private final ClassHierarchyRoot classHierarchyRoot; //the root of the class hierarchy graph
 	
 	private final BottomUpTypeTraversalPolicy<TypeNode<?>> bottomUpTypeTraversalPolicy;
 	private final TopDownTypeTraversalPolicy<TypeNode<?>> topDownTypeTraversalPolicy;

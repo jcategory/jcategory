@@ -10,8 +10,9 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.jgum.JGum;
-import org.jgum.graph.CycleDetection;
+import org.jgum.graph.DuplicatesDetection;
 import org.jgum.graph.Node;
+import org.jgum.graph.PropertyIterable;
 import org.jgum.graph.SearchStrategy;
 import org.jgum.graph.TraversalPolicy;
 
@@ -22,11 +23,11 @@ public class PackageNode extends Node {
 
 	
 //	public static TraversalPolicy<PackageNode> ancestorsTraversalPolicy(SearchStrategy searchStrategy) {
-//		return new TraversalPolicy<>(searchStrategy, CycleDetection.IGNORE, parentPackageFunction());
+//		return new TraversalPolicy<>(searchStrategy, DuplicatesDetection.IGNORE, parentPackageFunction());
 //	}
 //	
 //	public static TraversalPolicy<PackageNode> descendantsTraversalPolicy(SearchStrategy searchStrategy, PackageOrder order) {
-//		return new TraversalPolicy<>(searchStrategy, CycleDetection.IGNORE, childrenPackagesFunction(order));
+//		return new TraversalPolicy<>(searchStrategy, DuplicatesDetection.IGNORE, childrenPackagesFunction(order));
 //	}
 
 	
@@ -34,6 +35,7 @@ public class PackageNode extends Node {
 	private Map<String, PackageNode> children; //the children nodes
 	private PackageNode parent; //the parent node
 	private String packageFragment; //the package fragment name (i.e., the last sub-package in the full package name)
+	private String packageName; //the full name of the package, lazily initialized
 	
 	public static List<String> asPackageFragmentsList(String packageName) {
 		List<String> packageFragmentsList;
@@ -149,17 +151,20 @@ public class PackageNode extends Node {
 	 * @return the package name of this node
 	 */
 	public String getPackageName() {
-		StringBuilder sb = new StringBuilder();
-		if(!isRoot() && !parent.isRoot()) {
-			sb.append(parent.getPackageName());
-			sb.append(".");
+		if(packageName == null) {
+			StringBuilder sb = new StringBuilder();
+			if(!isRoot() && !parent.isRoot()) {
+				sb.append(parent.getPackageName());
+				sb.append(".");
+			}
+			sb.append(packageFragment);
+			packageName = sb.toString();
 		}
-		sb.append(packageFragment);
-		return sb.toString();
+		return packageName;
 	}
 	
 	public FluentIterable<PackageNode> pathToDescendant(String relativePackageName) {
-		return path(new TraversalPolicy<PackageNode>(SearchStrategy.PRE_ORDER, CycleDetection.IGNORE, new ToDescendantFunction(this, relativePackageName)));
+		return path(new TraversalPolicy<PackageNode>(SearchStrategy.PRE_ORDER, DuplicatesDetection.IGNORE, new ToDescendantFunction(this, relativePackageName)));
 	}
 	
 	public FluentIterable<PackageNode> pathToRoot() {
@@ -178,4 +183,14 @@ public class PackageNode extends Node {
 		return path(policy);
 	}
 	
+	@Override
+	public <T> FluentIterable<T> propertyInHierarchy(Object key) {
+		return PropertyIterable.<T>properties(pathToRoot(), key);
+	}
+	
+	@Override
+	public String toString() {
+		return getPackageName() + super.toString();
+	}
+
 }

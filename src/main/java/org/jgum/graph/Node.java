@@ -9,13 +9,13 @@ import org.jgum.JGum;
 import com.google.common.collect.FluentIterable;
 
 /**
- * An abstract node in a graph with some arbitrary properties stored in a map.
+ * A node in a graph with some arbitrary named properties.
  * @author sergioc
  *
  */
 public abstract class Node {
 
-	private Map<Object, Object> properties; //properties associated with this node
+	private Map<Object, Object> properties; //properties associated with this node are backed up in this map
 	private final JGum context; //the context where this node exists
 	
 	public Node(JGum context) {
@@ -72,17 +72,23 @@ public abstract class Node {
 	 */
 	public <U extends Node> FluentIterable<U> path(TraversalPolicy<U> traversalPolicy) {
 		FluentIterable<U> it = NodeTraverser.<U>iterable((U)this, traversalPolicy.searchStrategy, traversalPolicy.nextNodesFunction);
-		if(traversalPolicy.cycleDetection.equals(CycleDetection.ENFORCE)) {
+		if(traversalPolicy.duplicatesDetection.equals(DuplicatesDetection.ENFORCE)) {
 			final Iterable<U> itAux = it;
 			it = FluentIterable.from(new Iterable<U>() {
 				@Override
 				public Iterator<U> iterator() {
-					return new CyclesDetectionIterator<U>(itAux.iterator());
+					return new DuplicatesDetectionIterator<U>(itAux.iterator());
 				}
 			});
 		}
 		return it;
 	}
+	
+	public <U> FluentIterable<U> propertyInPath(TraversalPolicy<?> traversalPolicy, Object key) {
+		return PropertyIterable.<U>properties(path(traversalPolicy), key);
+	}
+	
+	public abstract <T> FluentIterable<T> propertyInHierarchy(Object key);
 	
 	@Override
 	public String toString() {

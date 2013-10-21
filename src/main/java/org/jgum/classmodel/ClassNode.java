@@ -1,7 +1,6 @@
 package org.jgum.classmodel;
 
-import static java.util.Arrays.asList;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,6 +27,7 @@ public class ClassNode<T> extends TypeNode<T> {
 	
 	public ClassNode(JGum context, Class<T> wrappedClass, ClassNode<? super T> superClassNode, List<InterfaceNode<? super T>> superInterfaceNodes) {
 		super(context, wrappedClass, superInterfaceNodes);
+		knownSubClassNodes = new ArrayList<>();
 		if(superClassNode != null)
 			setSuperClassNode(superClassNode);
 	}
@@ -59,17 +59,20 @@ public class ClassNode<T> extends TypeNode<T> {
 
 	@Override
 	protected List<TypeNode<? super T>> getParents(Priority priority, InterfaceOrder interfaceOrder) {
-		List<TypeNode<? super T>> superInterfaceNodes = (List)getSuperInterfaceNodes();
-		if(interfaceOrder.equals(InterfaceOrder.INVERSE)) {
-			superInterfaceNodes = Lists.reverse(superInterfaceNodes);
+		List<InterfaceNode<? super T>> superInterfaceNodes = (List)getSuperInterfaceNodes();
+		if(interfaceOrder.equals(InterfaceOrder.REVERSE)) {
+			superInterfaceNodes = Lists.reverse(superInterfaceNodes); 
 		}
-		List<TypeNode<? super T>> parents;
-		if(priority.equals(Priority.CLASSES_FIRST)) {
-			parents = (List)asList(getSuperClassNode());
-			parents.addAll(superInterfaceNodes);
-		} else {
-			parents = superInterfaceNodes;
-			parents.add(getSuperClassNode());
+		//the reversed list does not support addition of elements,
+		//then a new list is created.
+		List<TypeNode<? super T>> parents = new ArrayList<TypeNode<? super T>>(superInterfaceNodes);
+		ClassNode<? super T> superClassNode = getSuperClassNode();
+		if(superClassNode != null) {
+			if(priority.equals(Priority.CLASSES_FIRST)) {
+				parents.add(0, superClassNode);
+			} else {
+				parents.add(superClassNode);
+			}
 		}
 		return parents;
 	}

@@ -4,7 +4,7 @@ import static java.util.Arrays.asList;
 
 import java.util.List;
 
-import org.jgum.graph.CycleDetection;
+import org.jgum.graph.DuplicatesDetection;
 import org.jgum.graph.SearchStrategy;
 import org.jgum.graph.TraversalPolicy;
 
@@ -22,7 +22,7 @@ public class BottomUpPackageTraversalPolicy extends TraversalPolicy<PackageNode>
 	}
 	
 	public BottomUpPackageTraversalPolicy(SearchStrategy searchStrategy) {
-		super(searchStrategy, CycleDetection.IGNORE, parentPackageFunction());
+		super(searchStrategy, DuplicatesDetection.IGNORE, parentPackageFunction());
 	}
 	
 }

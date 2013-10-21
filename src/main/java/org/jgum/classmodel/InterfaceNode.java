@@ -50,7 +50,7 @@ public class InterfaceNode<T> extends TypeNode<T> {
 	@Override
 	protected List<TypeNode<? super T>> getParents(Priority priority, InterfaceOrder interfaceOrder) {
 		List<TypeNode<? super T>> superInterfaceNodes = (List)getSuperInterfaceNodes();
-		if(interfaceOrder.equals(InterfaceOrder.INVERSE)) {
+		if(interfaceOrder.equals(InterfaceOrder.REVERSE)) {
 			superInterfaceNodes = Lists.reverse(superInterfaceNodes);
 		}
 		return superInterfaceNodes;

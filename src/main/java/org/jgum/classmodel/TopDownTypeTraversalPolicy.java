@@ -2,7 +2,7 @@ package org.jgum.classmodel;
 
 import java.util.List;
 
-import org.jgum.graph.CycleDetection;
+import org.jgum.graph.DuplicatesDetection;
 import org.jgum.graph.SearchStrategy;
 import org.jgum.graph.TraversalPolicy;
 
@@ -19,8 +19,8 @@ public class TopDownTypeTraversalPolicy<T extends TypeNode<?>> extends Traversal
 		};
 	}
 	
-	public TopDownTypeTraversalPolicy(SearchStrategy searchStrategy, CycleDetection cycleDetection, Priority priority) {
-		super(searchStrategy, cycleDetection, TopDownTypeTraversalPolicy.<T>childrenTypeFunction(priority));
+	public TopDownTypeTraversalPolicy(SearchStrategy searchStrategy, DuplicatesDetection duplicatesDetection, Priority priority) {
+		super(searchStrategy, duplicatesDetection, TopDownTypeTraversalPolicy.<T>childrenTypeFunction(priority));
 	}
 	
 }

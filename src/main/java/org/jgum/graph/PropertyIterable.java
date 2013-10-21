@@ -6,7 +6,7 @@ import com.google.common.collect.FluentIterable;
 
 public class PropertyIterable<T> implements Iterable<T> {
 	
-	public static <U extends Node> FluentIterable<U> properties(Iterable<U> nodes, Object key) {
+	public static <U> FluentIterable<U> properties(Iterable<? extends Node> nodes, Object key) {
 		return FluentIterable.<U>from(new PropertyIterable<U>(nodes, key));
 	}
 	

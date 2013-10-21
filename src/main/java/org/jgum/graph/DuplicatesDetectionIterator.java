@@ -12,12 +12,12 @@ import com.google.common.collect.AbstractIterator;
  *
  * @param <T> the type of the iterator
  */
-public class CyclesDetectionIterator<T> extends AbstractIterator<T> {
+public class DuplicatesDetectionIterator<T> extends AbstractIterator<T> {
 
 	private final Set<T> visitedNodes;
 	private final Iterator<T> wrappedIterator;
 	
-	public CyclesDetectionIterator(Iterator<T> wrappedIterator) {
+	public DuplicatesDetectionIterator(Iterator<T> wrappedIterator) {
 		this.wrappedIterator = wrappedIterator;
 		visitedNodes = new HashSet<>();
 	}
@@ -26,10 +26,14 @@ public class CyclesDetectionIterator<T> extends AbstractIterator<T> {
 	protected T computeNext() {
 		if(wrappedIterator.hasNext()) {
 			T next = wrappedIterator.next();
-			if(visitedNodes.add(next)) //true if next was not on the set
-				return next;
+			if(visitedNodes.contains(next)) {
+				next = computeNext();
+			} else {
+				visitedNodes.add(next);
+			}
+			return next;
 		} 
-		return super.endOfData();
+		return endOfData();
 	}
 
 }

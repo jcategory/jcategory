@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.jgum.graph.CycleDetection;
+import org.jgum.graph.DuplicatesDetection;
 import org.jgum.graph.SearchStrategy;
 import org.jgum.graph.TraversalPolicy;
 
@@ -33,11 +33,11 @@ public class TopDownPackageTraversalPolicy extends TraversalPolicy<PackageNode> 
 	}
 	
 	public TopDownPackageTraversalPolicy(SearchStrategy searchStrategy) {
-		super(searchStrategy, CycleDetection.IGNORE, childrenPackagesFunction());
+		super(searchStrategy, DuplicatesDetection.IGNORE, childrenPackagesFunction());
 	}
 	
 	public TopDownPackageTraversalPolicy(SearchStrategy searchStrategy, Comparator<PackageNode> comparator) {
-		super(searchStrategy, CycleDetection.IGNORE, childrenPackagesFunction(comparator));
+		super(searchStrategy, DuplicatesDetection.IGNORE, childrenPackagesFunction(comparator));
 	}
 
 }

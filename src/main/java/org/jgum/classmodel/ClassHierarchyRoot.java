@@ -18,10 +18,10 @@ import com.google.common.collect.FluentIterable;
 
 public class ClassHierarchyRoot extends TypeNode<Any> {
 
-	private Map<Class<?>, Node> propertiesNodeIndex;
+	private Map<Class<?>, TypeNode<?>> propertiesNodeIndex;
 	
-	private ClassNode objectClassNode;
-	private List<InterfaceNode> rootInterfaceNodes;
+	private ClassNode<Object> objectClassNode;
+	private List<InterfaceNode<?>> rootInterfaceNodes;
 	
 	static class Any {}
 	
@@ -29,27 +29,28 @@ public class ClassHierarchyRoot extends TypeNode<Any> {
 		super(context, Any.class);
 		propertiesNodeIndex = new HashMap<>();
 		objectClassNode = ClassNode.root(context);
+		putNode(Object.class, objectClassNode);
 		rootInterfaceNodes = new ArrayList<>();
 	}
 
-	ClassNode getObjectClassNode() {
+	ClassNode<Object> getRootClassNode() {
 		return objectClassNode;
 	}
 
-	List<InterfaceNode> getRootInterfaceNodes() {
+	List<InterfaceNode<?>> getRootInterfaceNodes() {
 		return rootInterfaceNodes;
 	}
 
-	public Node get(Class<?> clazz) {
-		return propertiesNodeIndex.get(clazz);
+	public <T> TypeNode<T> getNode(Class<T> clazz) {
+		return (TypeNode<T>) propertiesNodeIndex.get(clazz);
 	}
 	
-	protected void put(Class<?> clazz, Node node) {
+	protected <T> void putNode(Class<T> clazz, TypeNode<T> node) {
 		propertiesNodeIndex.put(clazz, node);
 	}
 	
-	public Node getOrCreateNode(Class<?> clazz) {
-		Node node = propertiesNodeIndex.get(clazz);
+	public <T> TypeNode<T> getOrCreateNode(Class<T> clazz) {
+		TypeNode<T> node = getNode(clazz);
 		if(node == null) {
 			if(clazz.isInterface())
 				node = createInterfaceNode(clazz);
@@ -59,7 +60,7 @@ public class ClassHierarchyRoot extends TypeNode<Any> {
 		return node;
 	}
 	
-	private Node createClassNode(Class<?> clazz) {
+	private <T> TypeNode<T> createClassNode(Class<T> clazz) {
 		ClassNode parentClassNode = (ClassNode) getOrCreateNode(clazz.getSuperclass());
 		List<InterfaceNode> superInterfaceNodes = new ArrayList<>();
 		for(Class<?> superInterface : clazz.getInterfaces()) {
@@ -67,11 +68,11 @@ public class ClassHierarchyRoot extends TypeNode<Any> {
 			superInterfaceNodes.add(superInterfaceNode);
 		}
 		ClassNode classNode = new ClassNode(getContext(), clazz, parentClassNode, superInterfaceNodes);
-		propertiesNodeIndex.put(clazz, classNode);
+		putNode(clazz, classNode);
 		return classNode;
 	}
 	
-	private Node createInterfaceNode(Class<?> clazz) {
+	private <T> TypeNode<T> createInterfaceNode(Class<T> clazz) {
 		List<InterfaceNode> superInterfaceNodes = new ArrayList<>();
 		for(Class<?> superInterface : clazz.getInterfaces()) {
 			InterfaceNode superInterfaceNode = (InterfaceNode) getOrCreateNode(superInterface);
@@ -85,23 +86,23 @@ public class ClassHierarchyRoot extends TypeNode<Any> {
 	}
 
 	@Override
-	protected List<Node> getParents(Priority priority, InterfaceOrder interfaceOrder) {
+	protected List<TypeNode<?>> getParents(Priority priority, InterfaceOrder interfaceOrder) {
 		return Collections.emptyList();
 	}
 
 	@Override
-	protected List<Node> getChildren(Priority priority) {
-		List<Node> children;
+	protected List<TypeNode<?>> getChildren(Priority priority) {
+		List<TypeNode<?>> children;
 		if(priority.equals(Priority.CLASSES_FIRST)) {
-			children = (List)asList(getObjectClassNode());
+			children = (List)asList(getRootClassNode());
 			children.addAll(getRootInterfaceNodes());
 		} else {
 			children = (List)getRootInterfaceNodes();
-			children.add(getObjectClassNode());
+			children.add(getRootClassNode());
 		}
 		return children;
 	}
-	
+
 	@Override
 	public <U extends Node> FluentIterable<U> path(TraversalPolicy<U> traversalPolicy) {
 		FluentIterable<U> it = super.path(traversalPolicy);
