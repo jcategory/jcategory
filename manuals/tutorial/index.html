@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>JGum User Guide</title>
+
+	<link rel="stylesheet" href="styles/manual.css" />
+
+	<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery.tableofcontents.min.js"></script>
+    
+    <script type="text/javascript">//<![CDATA[
+(function ($) {
+	$(document).ready(function(){
+	        $('#table_of_content_entries').tableOfContents('#content', {startLevel:2, depth: 3});
+	    })
+})(jQuery);
+//]]></script>
+
+
+</head>
+
+
+
+
+<body>
+
+<h1>JGum User Guide</h1>
+<p>&nbsp;</p>
+<div id="table_of_content">
+  <h4>Contents</h4>
+  <ol id='table_of_content_entries'></ol>
+</div>
+
+<div id='content'>
+  <h1>Title</h1>
+  <h2>Overview</h2>
+  <h3>Example</h3>   
+  
+</div>
+
+</body>
+</html>

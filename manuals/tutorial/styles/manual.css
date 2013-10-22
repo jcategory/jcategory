@@ -1,0 +1,82 @@
+/*
+html, body {
+	margin: 0;
+	padding: 0;
+	width:100%;
+	height: 100%;
+}
+*/
+
+
+body {
+	
+	font: 1em Helvetica, Verdana, Arial, sans-serif;
+	line-height: 1.3em;
+	font-size: 15px;
+	
+	
+	/*
+	background: #42413C;
+	color: #000;
+	*/
+	/*min-width:600px; Minimum width of layout - remove line if not required */
+					/* The min-width property does not work in old versions of Internet Explorer */
+	border:0;		/* This removes the border around the viewport in old versions of IE */
+}
+
+h1, h2, h3 {
+	
+	line-height: 1.1;
+	margin: 0.3em 0;
+	font-weight: 700;
+}
+
+h1 {
+	font-size: 1.7em;
+	color: #444444;
+}
+
+h2 {
+	font-size: 1.5em;
+	color: #222222;
+}
+
+h3 {
+	font-size: 1.2em;
+	color: #111111;
+}
+
+
+
+a img { /* this selector removes the default blue border displayed in some browsers around an image when it is surrounded by a link */
+	border: none;
+}
+
+/* removes the bottom line in links with images that iexplorer puts*/
+.linkWithImg{
+	text-decoration: none;
+}
+
+
+/* ~~ miscellaneous classes ~~ */
+
+.clearfloat { /* this class can be placed on a <br /> or empty div as the final element following the last floated div (within the #main) if the #footer is removed or taken out of the #main */
+	clear:both;
+	height:0;
+	font-size: 1px;
+	line-height: 0px;
+}
+
+
+.blockImage {
+	display: block;
+	border: none;
+	margin: 0;
+	padding: 0;
+}
+/* *** end real content *** */
+
+#table_of_content {
+	background:#F0F0EE
+}
+
