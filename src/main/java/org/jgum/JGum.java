@@ -1,7 +1,7 @@
 package org.jgum;
 
+import org.jgum.classmodel.AnyClassRoot;
 import org.jgum.classmodel.BottomUpTypeTraversalPolicy;
-import org.jgum.classmodel.ClassHierarchyRoot;
 import org.jgum.classmodel.InterfaceOrder;
 import org.jgum.classmodel.Priority;
 import org.jgum.classmodel.TopDownTypeTraversalPolicy;
@@ -9,8 +9,8 @@ import org.jgum.classmodel.TypeNode;
 import org.jgum.graph.DuplicatesDetection;
 import org.jgum.graph.SearchStrategy;
 import org.jgum.packagemodel.BottomUpPackageTraversalPolicy;
-import org.jgum.packagemodel.PackageHierarchyRoot;
 import org.jgum.packagemodel.PackageNode;
+import org.jgum.packagemodel.PackageRoot;
 import org.jgum.packagemodel.TopDownPackageTraversalPolicy;
 
 /**
@@ -37,8 +37,8 @@ public class JGum {
 	public static final TopDownPackageTraversalPolicy DEFAULT_TOP_DOWN_PACKAGE_TRAVERSAL_POLICY = 
 			new TopDownPackageTraversalPolicy(SearchStrategy.PRE_ORDER);
 	
-	private final PackageHierarchyRoot packageHierarchyRoot; //the root of the package tree
-	private final ClassHierarchyRoot classHierarchyRoot; //the root of the class hierarchy graph
+	private final PackageRoot packageRoot; //the root of the package tree
+	private final AnyClassRoot anyClassRoot; //the root of the class hierarchy graph
 	
 	private final BottomUpTypeTraversalPolicy<TypeNode<?>> bottomUpTypeTraversalPolicy;
 	private final TopDownTypeTraversalPolicy<TypeNode<?>> topDownTypeTraversalPolicy;
@@ -59,22 +59,34 @@ public class JGum {
 	
 	public JGum(BottomUpTypeTraversalPolicy<TypeNode<?>> bottomUpTypeTraversalPolicy, TopDownTypeTraversalPolicy<TypeNode<?>> topDownTypeTraversalPolicy,
 			BottomUpPackageTraversalPolicy bottomUpPackageTraversalPolicy, TopDownPackageTraversalPolicy topDownPackageTraversalPolicy) {
-		packageHierarchyRoot = new PackageHierarchyRoot(this);
-		classHierarchyRoot = new ClassHierarchyRoot(this);
+		packageRoot = new PackageRoot(this);
+		anyClassRoot = new AnyClassRoot(this);
 		this.bottomUpTypeTraversalPolicy = bottomUpTypeTraversalPolicy;
 		this.topDownTypeTraversalPolicy = topDownTypeTraversalPolicy;
 		this.bottomUpPackageTraversalPolicy = bottomUpPackageTraversalPolicy;
 		this.topDownPackageTraversalPolicy = topDownPackageTraversalPolicy;
 	}
 	
-	public PackageNode getPackageHierarchyRoot() {
-		return packageHierarchyRoot;
+	public PackageRoot forPackageRoot() {
+		return packageRoot;
 	}
 
-	public ClassHierarchyRoot getClassHierarchyRoot() {
-		return classHierarchyRoot;
+	public PackageNode forPackage(String packageName) {
+		return packageRoot.getOrCreateDescendant(packageName);
+	}
+	
+	public PackageNode forPackage(Package pakkage) {
+		return packageRoot.getOrCreateDescendant(pakkage);
+	}
+	
+	public AnyClassRoot forAnyClassRoot() {
+		return anyClassRoot;
 	}
 
+	public <T> TypeNode<T> forClass(Class<T> clazz) {
+		return anyClassRoot.getOrCreateNode(clazz);
+	}
+	
 	public BottomUpTypeTraversalPolicy<TypeNode<?>> getBottomUpTypeTraversalPolicy() {
 		return bottomUpTypeTraversalPolicy;
 	}

@@ -84,11 +84,21 @@ public abstract class Node {
 		return it;
 	}
 	
-	public <U> FluentIterable<U> propertyInPath(TraversalPolicy<?> traversalPolicy, Object key) {
-		return PropertyIterable.<U>properties(path(traversalPolicy), key);
+	public abstract <U extends Node> FluentIterable<U> bottomUpPath();
+
+	public abstract <U extends Node> FluentIterable<U> topDownPath();
+	
+	public <U> FluentIterable<U> bottomUpPathProperties(Object key) {
+		return PropertyIterable.<U>properties(bottomUpPath(), key);
 	}
 	
-	public abstract <T> FluentIterable<T> propertyInHierarchy(Object key);
+	public <U> FluentIterable<U> topDownPathProperties(Object key) {
+		return PropertyIterable.<U>properties(topDownPath(), key);
+	}
+	
+	public <U> FluentIterable<U> pathProperties(TraversalPolicy<?> traversalPolicy, Object key) {
+		return PropertyIterable.<U>properties(path(traversalPolicy), key);
+	}
 	
 	@Override
 	public String toString() {

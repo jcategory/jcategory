@@ -5,9 +5,9 @@ import org.jgum.JGum;
 import com.google.common.collect.FluentIterable;
 
 
-public class PackageHierarchyRoot extends PackageNode {
+public class PackageRoot extends PackageNode {
 
-	public PackageHierarchyRoot(JGum context) {
+	public PackageRoot(JGum context) {
 		super(context);
 	}
 	

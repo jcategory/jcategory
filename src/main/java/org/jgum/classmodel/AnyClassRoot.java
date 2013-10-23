@@ -9,14 +9,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.jgum.JGum;
-import org.jgum.classmodel.ClassHierarchyRoot.Any;
+import org.jgum.classmodel.AnyClassRoot.Any;
 import org.jgum.graph.Node;
 import org.jgum.graph.TraversalPolicy;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 
-public class ClassHierarchyRoot extends TypeNode<Any> {
+/**
+ * The root node in a hierarchy of classes and interfaces.
+ * @author sergioc
+ *
+ */
+public class AnyClassRoot extends TypeNode<Any> {
 
 	private Map<Class<?>, TypeNode<?>> propertiesNodeIndex;
 	
@@ -25,7 +30,7 @@ public class ClassHierarchyRoot extends TypeNode<Any> {
 	
 	static class Any {}
 	
-	public ClassHierarchyRoot(JGum context) {
+	public AnyClassRoot(JGum context) {
 		super(context, Any.class);
 		propertiesNodeIndex = new HashMap<>();
 		objectClassNode = ClassNode.root(context);
@@ -109,7 +114,7 @@ public class ClassHierarchyRoot extends TypeNode<Any> {
 		return it.filter(new Predicate<U>() {
 			@Override
 			public boolean apply(Node node) {
-				return !(node instanceof ClassHierarchyRoot);
+				return !(node instanceof AnyClassRoot);
 			}
 		});	
 	}

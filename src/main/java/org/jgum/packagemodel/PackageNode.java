@@ -3,8 +3,10 @@ package org.jgum.packagemodel;
 import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static org.jgum.graph.PropertyIterable.properties;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -16,22 +18,11 @@ import org.jgum.graph.PropertyIterable;
 import org.jgum.graph.SearchStrategy;
 import org.jgum.graph.TraversalPolicy;
 
+import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
 public class PackageNode extends Node {
-	
 
-	
-//	public static TraversalPolicy<PackageNode> ancestorsTraversalPolicy(SearchStrategy searchStrategy) {
-//		return new TraversalPolicy<>(searchStrategy, DuplicatesDetection.IGNORE, parentPackageFunction());
-//	}
-//	
-//	public static TraversalPolicy<PackageNode> descendantsTraversalPolicy(SearchStrategy searchStrategy, PackageOrder order) {
-//		return new TraversalPolicy<>(searchStrategy, DuplicatesDetection.IGNORE, childrenPackagesFunction(order));
-//	}
-
-	
-	
 	private Map<String, PackageNode> children; //the children nodes
 	private PackageNode parent; //the parent node
 	private String packageFragment; //the package fragment name (i.e., the last sub-package in the full package name)
@@ -139,11 +130,11 @@ public class PackageNode extends Node {
 		return parent == null;
 	}
 	
-	public PackageHierarchyRoot getRoot() {
+	public PackageRoot getRoot() {
 		PackageNode root = this;
 		while(!root.isRoot())
 			root = root.getParent();
-		return (PackageHierarchyRoot)root;
+		return (PackageRoot)root;
 	}
 	
 	/**
@@ -163,34 +154,60 @@ public class PackageNode extends Node {
 		return packageName;
 	}
 	
+	@Override
+	public FluentIterable<PackageNode> bottomUpPath() {
+		return path(getContext().getBottomUpPackageTraversalPolicy());
+	}
+
+	@Override
+	public FluentIterable<PackageNode> topDownPath() {
+		return path(getContext().getTopDownPackageTraversalPolicy());
+	}
+	
 	public FluentIterable<PackageNode> pathToDescendant(String relativePackageName) {
 		return path(new TraversalPolicy<PackageNode>(SearchStrategy.PRE_ORDER, DuplicatesDetection.IGNORE, new ToDescendantFunction(this, relativePackageName)));
 	}
 	
-	public FluentIterable<PackageNode> pathToRoot() {
-		return path(getContext().getBottomUpPackageTraversalPolicy());
-	}
-	
-	public FluentIterable<PackageNode> pathToRoot(BottomUpPackageTraversalPolicy policy) {
-		return path(policy);
-	}
-
-	public FluentIterable<PackageNode> allDescendants() {
-		return path(getContext().getTopDownPackageTraversalPolicy());
-	}
-	
-	public FluentIterable<PackageNode> allDescendants(TopDownPackageTraversalPolicy policy) {
-		return path(policy);
-	}
-	
-	@Override
-	public <T> FluentIterable<T> propertyInHierarchy(Object key) {
-		return PropertyIterable.<T>properties(pathToRoot(), key);
+	public <U> FluentIterable<U> pathToDescendantProperties(String relativePackageName, Object key) {
+		return properties(pathToDescendant(relativePackageName), key);
 	}
 	
 	@Override
 	public String toString() {
 		return getPackageName() + super.toString();
+	}
+
+	
+	public class ToDescendantFunction implements Function<PackageNode, List<PackageNode>> {
+
+		private final PackageNode firstPackageNode;
+		private final Iterable<String> packageFragmentsIterable;
+		private Iterator<String> packageFragmentsIterator;
+		
+		public ToDescendantFunction(PackageNode packageNode, String relativePackageName) {
+			this(packageNode, PackageNode.asPackageFragmentsList(relativePackageName));
+		}
+		
+		private ToDescendantFunction(PackageNode packageNode, Iterable<String> packageFragmentsIterable) {
+			this.firstPackageNode = packageNode;
+			this.packageFragmentsIterable = packageFragmentsIterable;
+		}
+		
+		@Override
+		public List<PackageNode> apply(PackageNode packageNode) {
+			if(packageNode.equals(firstPackageNode)) {
+				packageFragmentsIterator = packageFragmentsIterable.iterator();
+			}
+			List<PackageNode> children = new ArrayList<>();
+			PackageNode child = null;
+			if(packageFragmentsIterator.hasNext()) {
+				child = packageNode.getChild(packageFragmentsIterator.next());
+			}
+			if(child != null)
+				children.add(child);
+			return children;
+		}
+		
 	}
 
 }

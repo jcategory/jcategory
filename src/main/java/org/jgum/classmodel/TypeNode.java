@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.jgum.JGum;
 import org.jgum.graph.Node;
-import org.jgum.graph.PropertyIterable;
 
 import com.google.common.collect.FluentIterable;
 
@@ -46,26 +45,23 @@ public abstract class TypeNode<T> extends Node {
 		return (FluentIterable)path(DEFAULT_BOTTOM_UP_TYPE_TRAVERSAL_POLICY).skip(1).filter(InterfaceNode.class);
 	}
 	
-	public <U extends TypeNode<?>> FluentIterable<U> bottomUpPath() {
+	@Override
+	public <U extends Node> FluentIterable<U> bottomUpPath() {
 		return path((BottomUpTypeTraversalPolicy)getContext().getBottomUpTypeTraversalPolicy());
 	}
 	
-	public <U extends TypeNode<?>> FluentIterable<U> topDownPath() {
+	@Override
+	public <U extends Node> FluentIterable<U> topDownPath() {
 		return path((TopDownTypeTraversalPolicy)getContext().getTopDownTypeTraversalPolicy());
-	}
-	
-	@Override
-	public <U> FluentIterable<U> propertyInHierarchy(Object key) {
-		return PropertyIterable.<U>properties(bottomUpPath(), key);
-	}
-	
-	@Override
-	public String toString() {
-		return wrappedClazz.getName() + super.toString();
 	}
 	
 	protected abstract <U extends TypeNode<? super T>> List<U> getParents(Priority priority, InterfaceOrder interfaceOrder);
 
 	protected abstract <U extends TypeNode<? extends T>> List<U> getChildren(Priority priority);
+	
+	@Override
+	public String toString() {
+		return wrappedClazz.getName() + super.toString();
+	}
 	
 }

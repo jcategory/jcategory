@@ -22,7 +22,7 @@ import org.junit.Test;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
-public class ClassHierarchyPropertiesTest {
+public class ClassPropertiesTest {
 
 	private List<Class<?>> getClasses(FluentIterable<? extends TypeNode<?>> typeNodes) {
 		return typeNodes.transform(new Function<TypeNode<?>, Class<?>>() {
@@ -36,7 +36,7 @@ public class ClassHierarchyPropertiesTest {
 	@Test
 	public void addingNodes() {
 		JGum jgum = new JGum();
-		ClassHierarchyRoot hierarchyRoot = jgum.getClassHierarchyRoot();
+		AnyClassRoot hierarchyRoot = jgum.forAnyClassRoot();
 		assertNotNull(hierarchyRoot.getNode(Object.class));
 		assertNull(hierarchyRoot.getNode(ArrayList.class));
 		ClassNode<ArrayList> arrayListNode = (ClassNode<ArrayList>)hierarchyRoot.getOrCreateNode(ArrayList.class);
@@ -48,7 +48,7 @@ public class ClassHierarchyPropertiesTest {
 	@Test
 	public void bottomUpPathTest() {
 		JGum jgum = new JGum();
-		ClassHierarchyRoot hierarchyRoot = jgum.getClassHierarchyRoot();
+		AnyClassRoot hierarchyRoot = jgum.forAnyClassRoot();
 		ClassNode<ArrayList> arrayListNode = (ClassNode<ArrayList>)hierarchyRoot.getOrCreateNode(ArrayList.class);
 		
 		FluentIterable<TypeNode<?>> arrayListBottomUpPath;
@@ -91,7 +91,7 @@ public class ClassHierarchyPropertiesTest {
 	@Test
 	public void topDownPathTest() {
 		JGum jgum = new JGum();
-		ClassHierarchyRoot hierarchyRoot = jgum.getClassHierarchyRoot();
+		AnyClassRoot hierarchyRoot = jgum.forAnyClassRoot();
 		hierarchyRoot.getOrCreateNode(ArrayList.class);
 		FluentIterable<TypeNode<?>> rootTopDownPath;
 		rootTopDownPath = hierarchyRoot.topDownPath();
@@ -104,7 +104,7 @@ public class ClassHierarchyPropertiesTest {
 	@Test
 	public void attachProperties() {
 		JGum jgum = new JGum();
-		ClassHierarchyRoot hierarchyRoot = jgum.getClassHierarchyRoot();
+		AnyClassRoot hierarchyRoot = jgum.forAnyClassRoot();
 		String key = "key"; //the property name
 		String v1 = "v1";
 		String v2 = "v2";
@@ -117,7 +117,7 @@ public class ClassHierarchyPropertiesTest {
 		hierarchyRoot.getNode(AbstractCollection.class).put(key, v3);
 		hierarchyRoot.getNode(Object.class).put(key, v4);
 		//Verifying the properties
-		Iterator<?> propertiesIt = arrayListNode.propertyInHierarchy(key).iterator();
+		Iterator<?> propertiesIt = arrayListNode.bottomUpPathProperties(key).iterator();
 		assertEquals(v1, propertiesIt.next());
 		assertEquals(v2, propertiesIt.next());
 		assertEquals(v3, propertiesIt.next());
@@ -125,7 +125,7 @@ public class ClassHierarchyPropertiesTest {
 		
 		//Repeating the same example as above, but inserting the properties in a different order
 		jgum = new JGum();
-		hierarchyRoot = jgum.getClassHierarchyRoot();
+		hierarchyRoot = jgum.forAnyClassRoot();
 		arrayListNode = hierarchyRoot.getOrCreateNode(ArrayList.class);
 		//Properties added in an arbitrary order:
 		hierarchyRoot.getNode(List.class).put(key, v2);
@@ -133,7 +133,7 @@ public class ClassHierarchyPropertiesTest {
 		arrayListNode.put(key, v1);
 		hierarchyRoot.getNode(AbstractCollection.class).put(key, v3);
 		//but the result is the same:
-		propertiesIt = arrayListNode.propertyInHierarchy(key).iterator();
+		propertiesIt = arrayListNode.bottomUpPathProperties(key).iterator();
 		assertEquals(v1, propertiesIt.next());
 		assertEquals(v2, propertiesIt.next());
 		assertEquals(v3, propertiesIt.next());
