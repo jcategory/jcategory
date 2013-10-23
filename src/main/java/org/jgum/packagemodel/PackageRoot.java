@@ -24,7 +24,7 @@ public class PackageRoot extends PackageNode {
 	}
 	
 	public FluentIterable<PackageNode> pathToDescendant(Package pakkage) {
-		return pathToDescendant(pakkage.getName());
+		return topDownPath(pakkage.getName());
 	}
 	
 }

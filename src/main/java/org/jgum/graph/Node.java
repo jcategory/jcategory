@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.jgum.JGum;
 
+import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
 /**
@@ -13,16 +14,26 @@ import com.google.common.collect.FluentIterable;
  * @author sergioc
  *
  */
-public abstract class Node {
+public abstract class Node<T> {
 
+	private T value;
 	private Map<Object, Object> properties; //properties associated with this node are backed up in this map
 	private final JGum context; //the context where this node exists
 	
-	public Node(JGum context) {
+	public Node(JGum context, T value) {
 		this.context = context;
+		this.value = value;
 		properties = new HashMap<>();
 	}
 
+	/**
+	 * 
+	 * @return the value of this node
+	 */
+	public T getValue() {
+		return value;
+	}
+	
 	/**
 	 * 
 	 * @return the context
@@ -70,7 +81,7 @@ public abstract class Node {
 	 * @param traversalPolicy determines the nodes in the iterable
 	 * @return An iterable of nodes
 	 */
-	public <U extends Node> FluentIterable<U> path(TraversalPolicy<U> traversalPolicy) {
+	public <U extends Node<?>> FluentIterable<U> path(TraversalPolicy<U> traversalPolicy) {
 		FluentIterable<U> it = NodeTraverser.<U>iterable((U)this, traversalPolicy.searchStrategy, traversalPolicy.nextNodesFunction);
 		if(traversalPolicy.duplicatesDetection.equals(DuplicatesDetection.ENFORCE)) {
 			final Iterable<U> itAux = it;
@@ -84,9 +95,22 @@ public abstract class Node {
 		return it;
 	}
 	
-	public abstract <U extends Node> FluentIterable<U> bottomUpPath();
+	public <U> FluentIterable<U> pathValues(TraversalPolicy<?> traversalPolicy) {
+		return Node.<U>pathValues((FluentIterable)path(traversalPolicy));
+	}
+	
+	public static <U> FluentIterable<U> pathValues(FluentIterable<? extends Node<?>> path) {
+		return path.transform(new Function<Node<?>, U>() {
+			@Override
+			public U apply(Node<?> node) {
+				return (U)node.getValue();
+			}
+		});
+	} 
+	
+	public abstract <U extends Node<?>> FluentIterable<U> bottomUpPath();
 
-	public abstract <U extends Node> FluentIterable<U> topDownPath();
+	public abstract <U extends Node<?>> FluentIterable<U> topDownPath();
 	
 	public <U> FluentIterable<U> bottomUpPathProperties(Object key) {
 		return PropertyIterable.<U>properties(bottomUpPath(), key);

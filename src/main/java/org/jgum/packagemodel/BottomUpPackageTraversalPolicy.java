@@ -2,6 +2,7 @@ package org.jgum.packagemodel;
 
 import static java.util.Arrays.asList;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.jgum.graph.DuplicatesDetection;
@@ -16,7 +17,11 @@ public class BottomUpPackageTraversalPolicy extends TraversalPolicy<PackageNode>
 		return new Function<PackageNode, List<PackageNode>>() {
 			@Override
 			public List<PackageNode> apply(PackageNode packageNode) {
-				return asList(packageNode.getParent());
+				PackageNode parentPackageNode = packageNode.getParent();
+				if(parentPackageNode != null)
+					return asList(parentPackageNode);
+				else
+					return Collections.emptyList();
 			}
 		};
 	}

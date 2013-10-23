@@ -67,15 +67,15 @@ public class PackagePropertiesTest {
 	@Test
 	public void testPathToDescendant() {
 		PackageRoot root = newPackagePropertiesRoot();
-		FluentIterable<PackageNode> fit = root.pathToDescendant(packageP3);
+		FluentIterable<PackageNode> fit = root.topDownPath(packageP3);
 		assertEquals(4, fit.size());
 		Iterator<PackageNode> it = fit.iterator();
-		assertEquals("", it.next().getPackageFragment());
-		assertEquals("p1", it.next().getPackageFragment());
-		assertEquals("p2", it.next().getPackageFragment());
-		assertEquals("p3", it.next().getPackageFragment());
+		assertEquals("", it.next().getValue());
+		assertEquals("p1", it.next().getValue());
+		assertEquals("p2", it.next().getValue());
+		assertEquals("p3", it.next().getValue());
 		//will not include nodes that do not exist already in the package node
-		assertEquals(3, root.pathToDescendant("p1.p2.px.py").size()); //the returned path includes the root (default) package node, p1 and p2.
+		assertEquals(5, root.topDownPath("p1.p2.px.py").size()); //the returned path includes the root (default) package node, existing nodes p1 and p2, and the new nodes px and py.
 	}
 	
 	@Test
@@ -86,11 +86,11 @@ public class PackagePropertiesTest {
 		assertNull(root.get(packageP1, "wrongProperty"));
 		assertNull(root.get(packageP2, "wrongProperty"));
 
-		assertEquals(rootProperty, root.pathToDescendantProperties(packageP1, rootProperty).first().get());
-		assertEquals(p1Property, root.pathToDescendantProperties(packageP1, p1Property).first().get());
-		assertEquals(Optional.absent(), root.pathToDescendantProperties(packageP1, p2Property).first());
-		assertEquals(p1Property, root.pathToDescendantProperties(packageP2, p1Property).first().get());
-		assertEquals(p2Property, root.pathToDescendantProperties(packageP2, p2Property).first().get());
+		assertEquals(rootProperty, root.topDownPathProperties(packageP1, rootProperty).first().get());
+		assertEquals(p1Property, root.topDownPathProperties(packageP1, p1Property).first().get());
+		assertEquals(Optional.absent(), root.topDownPathProperties(packageP1, p2Property).first());
+		assertEquals(p1Property, root.topDownPathProperties(packageP2, p1Property).first().get());
+		assertEquals(p2Property, root.topDownPathProperties(packageP2, p2Property).first().get());
 		
 		Iterator<String> propertiesIt = root.<String>topDownPathProperties(p6Property).iterator();
 		assertTrue(propertiesIt.hasNext());

@@ -16,22 +16,14 @@ import java.util.RandomAccess;
 
 import org.jgum.JGum;
 import org.jgum.graph.DuplicatesDetection;
+import org.jgum.graph.Node;
 import org.jgum.graph.SearchStrategy;
 import org.junit.Test;
 
-import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
 public class ClassPropertiesTest {
 
-	private List<Class<?>> getClasses(FluentIterable<? extends TypeNode<?>> typeNodes) {
-		return typeNodes.transform(new Function<TypeNode<?>, Class<?>>() {
-			@Override
-			public Class<?> apply(TypeNode<?> typeNode) {
-				return typeNode.getWrappedClass();
-			}
-		}).toList();
-	}
 	
 	@Test
 	public void addingNodes() {
@@ -58,7 +50,7 @@ public class ClassPropertiesTest {
 		assertNotNull(arrayListBottomUpPath);
 		//System.out.println(arrayListBottomUpPath);
 		List<Class<?>> classes;
-		classes = getClasses(arrayListBottomUpPath);
+		classes = Node.<Class<?>>pathValues(arrayListBottomUpPath).toList();
 		assertEquals(asList(ArrayList.class, Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
 				AbstractList.class, List.class, Collection.class, Iterable.class, 
 				AbstractCollection.class, Collection.class, Iterable.class, Object.class), classes);
@@ -67,7 +59,7 @@ public class ClassPropertiesTest {
 				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, DuplicatesDetection.IGNORE, Priority.CLASSES_FIRST, InterfaceOrder.DIRECT));
 		assertNotNull(arrayListBottomUpPath);
 		//System.out.println(arrayListBottomUpPath);
-		classes = getClasses(arrayListBottomUpPath);
+		classes = Node.<Class<?>>pathValues(arrayListBottomUpPath).toList();
 		assertEquals(asList(ArrayList.class, AbstractList.class, AbstractCollection.class, Object.class, 
 				Collection.class, Iterable.class, List.class, Collection.class, Iterable.class, 
 				List.class, Collection.class, Iterable.class, RandomAccess.class, Cloneable.class, Serializable.class
@@ -77,15 +69,15 @@ public class ClassPropertiesTest {
 				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, DuplicatesDetection.ENFORCE, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE));
 		assertNotNull(arrayListBottomUpPath);
 		//System.out.println(arrayListBottomUpPath);
-		classes = getClasses(arrayListBottomUpPath);
+		classes = Node.<Class<?>>pathValues(arrayListBottomUpPath).toList();
 		assertEquals(asList(ArrayList.class, Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
 				AbstractList.class, AbstractCollection.class, Object.class), classes);
 		
 		FluentIterable<ClassNode<? super ArrayList>> ancestorsPath = arrayListNode.getAncestorClasses();
-		assertEquals(asList(AbstractList.class, AbstractCollection.class, Object.class), getClasses(ancestorsPath));
+		assertEquals(asList(AbstractList.class, AbstractCollection.class, Object.class), Node.<Class<?>>pathValues(ancestorsPath).toList());
 		
 		FluentIterable<InterfaceNode<? super ArrayList>> interfacesPath = arrayListNode.getAncestorInterfaces();
-		assertEquals(asList(Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class), getClasses(interfacesPath));
+		assertEquals(asList(Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class), Node.<Class<?>>pathValues(interfacesPath).toList());
 	}
 	
 	@Test
@@ -97,7 +89,7 @@ public class ClassPropertiesTest {
 		rootTopDownPath = hierarchyRoot.topDownPath();
 		assertEquals(asList(java.lang.Iterable.class, java.util.RandomAccess.class, java.lang.Cloneable.class, java.io.Serializable.class, 
 				java.lang.Object.class, java.util.Collection.class, java.util.ArrayList.class, java.util.AbstractCollection.class, 
-				java.util.List.class, java.util.AbstractList.class), getClasses(rootTopDownPath));
+				java.util.List.class, java.util.AbstractList.class), Node.<Class<?>>pathValues(rootTopDownPath).toList());
 		//System.out.println(rootTopDownPath);
 	}
 

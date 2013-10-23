@@ -10,9 +10,8 @@ import org.jgum.graph.Node;
 
 import com.google.common.collect.FluentIterable;
 
-public abstract class TypeNode<T> extends Node {
-	
-	protected Class<T> wrappedClazz;
+public abstract class TypeNode<T> extends Node<Class<T>> {
+
 	private List<InterfaceNode<? super T>> superInterfaceNodes;
 
 	public TypeNode(JGum context, Class<T> wrappedClazz) {
@@ -20,15 +19,10 @@ public abstract class TypeNode<T> extends Node {
 	}
 	
 	public TypeNode(JGum context, Class<T> wrappedClazz, List<InterfaceNode<? super T>> superInterfaceNodes) {
-		super(context);
-		this.wrappedClazz = wrappedClazz;
+		super(context, wrappedClazz);
 		setSuperInterfaceNodes(superInterfaceNodes);
 	}
-	
-	public Class<T> getWrappedClass() {
-		return wrappedClazz;
-	}
-	
+
 	public List<InterfaceNode<? super T>> getSuperInterfaceNodes() {
 		return superInterfaceNodes;
 	}
@@ -46,12 +40,12 @@ public abstract class TypeNode<T> extends Node {
 	}
 	
 	@Override
-	public <U extends Node> FluentIterable<U> bottomUpPath() {
+	public <U extends Node<?>> FluentIterable<U> bottomUpPath() {
 		return path((BottomUpTypeTraversalPolicy)getContext().getBottomUpTypeTraversalPolicy());
 	}
 	
 	@Override
-	public <U extends Node> FluentIterable<U> topDownPath() {
+	public <U extends Node<?>> FluentIterable<U> topDownPath() {
 		return path((TopDownTypeTraversalPolicy)getContext().getTopDownTypeTraversalPolicy());
 	}
 	
@@ -61,7 +55,7 @@ public abstract class TypeNode<T> extends Node {
 	
 	@Override
 	public String toString() {
-		return wrappedClazz.getName() + super.toString();
+		return getValue().getName() + super.toString();
 	}
 	
 }

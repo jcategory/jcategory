@@ -109,7 +109,7 @@ public class AnyClassRoot extends TypeNode<Any> {
 	}
 
 	@Override
-	public <U extends Node> FluentIterable<U> path(TraversalPolicy<U> traversalPolicy) {
+	public <U extends Node<?>> FluentIterable<U> path(TraversalPolicy<U> traversalPolicy) {
 		FluentIterable<U> it = super.path(traversalPolicy);
 		return it.filter(new Predicate<U>() {
 			@Override
