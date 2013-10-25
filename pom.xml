@@ -42,6 +42,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<apidocsDirectory>docs/apidocs</apidocsDirectory>
 	</properties>
 
 
@@ -92,6 +93,7 @@
 				</configuration>
 			</plugin>
 
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -106,13 +108,38 @@
 				</executions>
 			</plugin>
 
+			
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-clean-plugin</artifactId>
+	            <version>2.5</version>
+	            <configuration>
+	                <filesets>
+	                    <fileset>
+	                        <directory>${apidocsDirectory}</directory>
+	                        <includes>
+	                            <include>**/*</include>
+	                        </includes>
+	                        <followSymlinks>false</followSymlinks>
+	                    </fileset>
+	                </filesets>
+	            </configuration>
+	        </plugin>
+
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.9</version>
 				
 				<configuration>
-					<outputDirectory>${project.reporting.outputDirectory}/apidocs</outputDirectory> 
+				    <!-- 
+				    	The following properties are set to generate the documentation in 'docs/apidocs'.
+				    	In this way, the same folder is used for documentation generated with either 'mvn javadoc:jar' or 'mvn javadoc:javadoc'.
+				    	see: http://maven.apache.org/plugins/maven-javadoc-plugin/javadoc-mojo.html#outputDirectory 
+				    -->
+					<outputDirectory>${apidocsDirectory}</outputDirectory> <!-- output for 'mvn javadoc:jar' -->
+					<reportOutputDirectory>${apidocsDirectory}</reportOutputDirectory> <!-- output for 'mvn javadoc:javadoc' -->
 				</configuration>
 				
 				<executions>
@@ -121,15 +148,16 @@
 						<goals>
 							<goal>jar</goal>
 						</goals>
-						<!-- 
+<!-- 
 						<configuration>
               				<additionalparam>-Xdoclint:none</additionalparam>
             			</configuration>
-            			 -->
+ -->
 					</execution>
 				</executions>
 			</plugin>
 
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -153,6 +181,7 @@
 				</executions>
 			</plugin>
 
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
