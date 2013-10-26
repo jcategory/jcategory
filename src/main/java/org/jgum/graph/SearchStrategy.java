@@ -1,7 +1,7 @@
 package org.jgum.graph;
 
 /**
- * Determines how the next nodes in a graph should be visited
+ * Determines how the next nodes in a hierarchical graph should be visited.
  * @author sergioc
  *
  */

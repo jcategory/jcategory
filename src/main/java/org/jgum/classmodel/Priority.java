@@ -1,7 +1,7 @@
 package org.jgum.classmodel;
 
 /**
- * Determines if classes should be visited before interfaces
+ * Determines if classes should be visited before interfaces.
  * @author sergioc
  *
  */
