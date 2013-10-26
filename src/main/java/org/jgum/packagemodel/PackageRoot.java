@@ -1,48 +1,37 @@
 package org.jgum.packagemodel;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.jgum.JGum;
+import org.jgum.graph.NodeCreationListener;
 
 import com.google.common.collect.FluentIterable;
 
-
+/**
+ * The root node in a hierarchy of packages.
+ * @author sergioc
+ *
+ */
 public class PackageRoot extends PackageNode {
 
-	private Map<String, PackageNode> nodeIndex;
+	private List<NodeCreationListener<PackageNode>> packageNodeCreationListeners;
 	
 	public PackageRoot(JGum context) {
 		super(context);
-		nodeIndex = new HashMap<>();
-		nodeIndex.put("", this);
+		packageNodeCreationListeners = new ArrayList<>();
 	}
 	
 	public PackageNode getNode(Package pakkage) {
 		return getNode(pakkage.getName());
 	}
 	
-	@Override
-	public PackageNode getNode(String packageName) {
-		return nodeIndex.get(packageName);
-	}
-	
-	private void putNode(String packageName, PackageNode node) {
-		nodeIndex.put(packageName, node);
-	}
-	
 	public PackageNode getOrCreateNode(Package pakkage) {
 		return getOrCreateNode(pakkage.getName());
 	}
 	
-	@Override
-	public PackageNode getOrCreateNode(String packageName) {
-		PackageNode node = getNode(packageName);
-		if(node == null) {
-			node = super.getOrCreateNode(packageName);
-			putNode(packageName, node);
-		}
-		return node;
+	public PackageNode getOrCreateNode(String relativePackageName) {
+		return super.getOrCreateNode(relativePackageName);
 	}
 	
 	public Object get(Package pakkage, Object key) {
@@ -51,6 +40,12 @@ public class PackageRoot extends PackageNode {
 	
 	public FluentIterable<PackageNode> pathToDescendant(Package pakkage) {
 		return topDownPath(pakkage.getName());
+	}
+	
+	void notifyCreationListeners(PackageNode node) {
+		for(NodeCreationListener<PackageNode> listener : packageNodeCreationListeners) {
+			listener.onNodeCreation(node);
+		}
 	}
 	
 }

@@ -18,19 +18,20 @@ import java.util.RandomAccess;
 import org.jgum.JGum;
 import org.jgum.graph.DuplicatesDetection;
 import org.jgum.graph.Node;
+import org.jgum.graph.NodeCreationListener;
 import org.jgum.graph.SearchStrategy;
+import org.jgum.testutil.CounterCreationListener;
 import org.junit.Test;
 
 import com.google.common.collect.FluentIterable;
 
 public class ClassPropertiesTest {
 
-	
 	@Test
 	public void addingNodes() {
 		JGum jgum = new JGum();
-		AnyClassRoot hierarchyRoot = jgum.forAnyClassRoot();
-		assertNotNull(hierarchyRoot.getNode(Object.class));
+		AnyClassRoot hierarchyRoot = jgum.getClassHierarchyGraph();
+		assertNull(hierarchyRoot.getNode(Object.class));
 		assertNull(hierarchyRoot.getNode(ArrayList.class));
 		ClassNode<ArrayList> arrayListNode = (ClassNode<ArrayList>)hierarchyRoot.getOrCreateNode(ArrayList.class);
 		assertNotNull(arrayListNode);
@@ -41,7 +42,7 @@ public class ClassPropertiesTest {
 	@Test
 	public void noPropertyInTypeRootTest() {
 		JGum jgum = new JGum();
-		AnyClassRoot hierarchyRoot = jgum.forAnyClassRoot();
+		AnyClassRoot hierarchyRoot = jgum.getClassHierarchyGraph();
 		try {
 			hierarchyRoot.put("x", "x");
 			fail();
@@ -55,7 +56,7 @@ public class ClassPropertiesTest {
 	@Test
 	public void bottomUpPathTest() {
 		JGum jgum = new JGum();
-		AnyClassRoot hierarchyRoot = jgum.forAnyClassRoot();
+		AnyClassRoot hierarchyRoot = jgum.getClassHierarchyGraph();
 		ClassNode<ArrayList> arrayListNode = (ClassNode<ArrayList>)hierarchyRoot.getOrCreateNode(ArrayList.class);
 		
 		FluentIterable<TypeNode<?>> arrayListBottomUpPath;
@@ -98,7 +99,7 @@ public class ClassPropertiesTest {
 	@Test
 	public void topDownPathTest() {
 		JGum jgum = new JGum();
-		AnyClassRoot hierarchyRoot = jgum.forAnyClassRoot();
+		AnyClassRoot hierarchyRoot = jgum.getClassHierarchyGraph();
 		hierarchyRoot.getOrCreateNode(ArrayList.class);
 		FluentIterable<TypeNode<?>> rootTopDownPath;
 		rootTopDownPath = hierarchyRoot.topDownPath();
@@ -111,7 +112,7 @@ public class ClassPropertiesTest {
 	@Test
 	public void attachProperties() {
 		JGum jgum = new JGum();
-		AnyClassRoot hierarchyRoot = jgum.forAnyClassRoot();
+		AnyClassRoot hierarchyRoot = jgum.getClassHierarchyGraph();
 		String key = "key"; //the property name
 		String v1 = "v1";
 		String v2 = "v2";
@@ -132,7 +133,7 @@ public class ClassPropertiesTest {
 		
 		//Repeating the same example as above, but inserting the properties in a different order
 		jgum = new JGum();
-		hierarchyRoot = jgum.forAnyClassRoot();
+		hierarchyRoot = jgum.getClassHierarchyGraph();
 		arrayListNode = hierarchyRoot.getOrCreateNode(ArrayList.class);
 		//Properties added in an arbitrary order:
 		hierarchyRoot.getNode(List.class).put(key, v2);
@@ -145,6 +146,15 @@ public class ClassPropertiesTest {
 		assertEquals(v2, propertiesIt.next());
 		assertEquals(v3, propertiesIt.next());
 		assertEquals(v4, propertiesIt.next());
+	}
+	
+	@Test
+	public void testListener() {
+		JGum jgum = new JGum();
+		CounterCreationListener listener = new CounterCreationListener();
+		jgum.getClassHierarchyGraph().addNodeCreationListener((NodeCreationListener)listener);
+		jgum.forClass(ArrayList.class);
+		assertEquals(10, listener.getCounter()); //there are 10 classes and interfaces in the class hierarchy of ArrayList.
 	}
 
 }

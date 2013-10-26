@@ -11,6 +11,8 @@ import java.util.Map;
 import org.jgum.JGum;
 import org.jgum.classmodel.AnyClassRoot.Any;
 import org.jgum.graph.Node;
+import org.jgum.graph.NodeCreationListener;
+import org.jgum.graph.NodeCreationListenersManager;
 import org.jgum.graph.TraversalPolicy;
 
 import com.google.common.base.Predicate;
@@ -23,17 +25,17 @@ import com.google.common.collect.FluentIterable;
  */
 public class AnyClassRoot extends TypeNode<Any> {
 
-	private Map<Class<?>, TypeNode<?>> nodeIndex;
-	
+	private final NodeCreationListenersManager listenersManager;
+	private final Map<Class<?>, TypeNode<?>> nodeIndex;
 	private ClassNode<Object> objectClassNode;
-	private List<InterfaceNode<?>> rootInterfaceNodes;
+	private final List<InterfaceNode<?>> rootInterfaceNodes;
 	
 	static class Any {}
 	
 	public AnyClassRoot(JGum context) {
 		super(context, Any.class);
 		nodeIndex = new HashMap<>();
-		objectClassNode = ClassNode.root(context);
+		listenersManager = new NodeCreationListenersManager();
 		putNode(Object.class, objectClassNode);
 		rootInterfaceNodes = new ArrayList<>();
 	}
@@ -49,6 +51,9 @@ public class AnyClassRoot extends TypeNode<Any> {
 	}
 	
 	public ClassNode<Object> getRootClassNode() {
+		if(objectClassNode == null) {
+			objectClassNode = (ClassNode<Object>)getOrCreateNode(Object.class);
+		}
 		return objectClassNode;
 	}
 
@@ -62,6 +67,7 @@ public class AnyClassRoot extends TypeNode<Any> {
 	
 	private <T> void putNode(Class<T> clazz, TypeNode<T> node) {
 		nodeIndex.put(clazz, node);
+		notifyCreationListeners(node);
 	}
 	
 	public <T> TypeNode<T> getOrCreateNode(Class<T> clazz) {
@@ -76,13 +82,18 @@ public class AnyClassRoot extends TypeNode<Any> {
 	}
 	
 	private <T> TypeNode<T> createClassNode(Class<T> clazz) {
-		ClassNode parentClassNode = (ClassNode) getOrCreateNode(clazz.getSuperclass());
-		List<InterfaceNode> superInterfaceNodes = new ArrayList<>();
-		for(Class<?> superInterface : clazz.getInterfaces()) {
-			InterfaceNode superInterfaceNode = (InterfaceNode) getOrCreateNode(superInterface);
-			superInterfaceNodes.add(superInterfaceNode);
+		ClassNode classNode;
+		if(Object.class.equals(clazz)) {
+			classNode = ClassNode.root(getContext());
+		} else {
+			ClassNode parentClassNode = (ClassNode) getOrCreateNode(clazz.getSuperclass());
+			List<InterfaceNode> superInterfaceNodes = new ArrayList<>();
+			for(Class<?> superInterface : clazz.getInterfaces()) {
+				InterfaceNode superInterfaceNode = (InterfaceNode) getOrCreateNode(superInterface);
+				superInterfaceNodes.add(superInterfaceNode);
+			}
+			classNode = new ClassNode(getContext(), clazz, parentClassNode, superInterfaceNodes);
 		}
-		ClassNode classNode = new ClassNode(getContext(), clazz, parentClassNode, superInterfaceNodes);
 		putNode(clazz, classNode);
 		return classNode;
 	}
@@ -96,7 +107,7 @@ public class AnyClassRoot extends TypeNode<Any> {
 		InterfaceNode interfaceNode = new InterfaceNode(getContext(), clazz, superInterfaceNodes);
 		if(superInterfaceNodes.isEmpty())
 			rootInterfaceNodes.add(interfaceNode);
-		nodeIndex.put(clazz, interfaceNode);
+		putNode(clazz, interfaceNode);
 		return interfaceNode;
 	}
 
@@ -129,4 +140,11 @@ public class AnyClassRoot extends TypeNode<Any> {
 		});	
 	}
 
+	public void addNodeCreationListener(NodeCreationListener<TypeNode<?>> creationListener) {
+		listenersManager.addNodeCreationListener(creationListener);
+	}
+	
+	void notifyCreationListeners(TypeNode<?> node) {
+		listenersManager.notifyCreationListeners(node);
+	}
 }

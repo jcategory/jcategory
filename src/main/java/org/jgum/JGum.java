@@ -11,6 +11,7 @@ import org.jgum.graph.SearchStrategy;
 import org.jgum.packagemodel.BottomUpPackageTraversalPolicy;
 import org.jgum.packagemodel.PackageNode;
 import org.jgum.packagemodel.PackageRoot;
+import org.jgum.packagemodel.PackageTree;
 import org.jgum.packagemodel.TopDownPackageTraversalPolicy;
 
 /**
@@ -46,15 +47,15 @@ public class JGum {
 	public static final TopDownPackageTraversalPolicy DEFAULT_TOP_DOWN_PACKAGE_TRAVERSAL_POLICY = 
 			new TopDownPackageTraversalPolicy(SearchStrategy.PRE_ORDER);
 	
-	private final PackageRoot packageRoot; //the root of the package tree.
-	private final AnyClassRoot anyClassRoot; //the root of the class (and interfaces) hierarchy graph.
 	
+	private final AnyClassRoot classHierarchyGraph; //the class (and interface) hierarchy graph.
+	private final PackageTree packageTree; //the package tree.
 	
 	private final BottomUpTypeTraversalPolicy<TypeNode<?>> bottomUpTypeTraversalPolicy; //bottom up class traversing strategy for this context.
 	private final TopDownTypeTraversalPolicy<TypeNode<?>> topDownTypeTraversalPolicy; //top down class traversing strategy for this context.
 	private final BottomUpPackageTraversalPolicy bottomUpPackageTraversalPolicy; //bottom up package traversing strategy for this context.
 	private final TopDownPackageTraversalPolicy topDownPackageTraversalPolicy; //top down package traversing strategy for this context.
-	
+
 	/**
 	 * Creates a new context with default traversing strategies.
 	 */
@@ -91,8 +92,8 @@ public class JGum {
 	 */
 	public JGum(BottomUpTypeTraversalPolicy<TypeNode<?>> bottomUpTypeTraversalPolicy, TopDownTypeTraversalPolicy<TypeNode<?>> topDownTypeTraversalPolicy,
 			BottomUpPackageTraversalPolicy bottomUpPackageTraversalPolicy, TopDownPackageTraversalPolicy topDownPackageTraversalPolicy) {
-		packageRoot = new PackageRoot(this);
-		anyClassRoot = new AnyClassRoot(this);
+		packageTree = new PackageTree(this);
+		classHierarchyGraph = new AnyClassRoot(this);
 		this.bottomUpTypeTraversalPolicy = bottomUpTypeTraversalPolicy;
 		this.topDownTypeTraversalPolicy = topDownTypeTraversalPolicy;
 		this.bottomUpPackageTraversalPolicy = bottomUpPackageTraversalPolicy;
@@ -101,10 +102,18 @@ public class JGum {
 	
 	/**
 	 * 
+	 * @return the package tree associated with this context.
+	 */
+	public PackageTree getPackageTree() {
+		return packageTree;
+	}
+	
+	/**
+	 * 
 	 * @return the node corresponding to the root package.
 	 */
 	public PackageRoot forPackageRoot() {
-		return packageRoot;
+		return packageTree.getRoot();
 	}
 
 	/**
@@ -113,7 +122,7 @@ public class JGum {
 	 * @return a package node corresponding to the given package name.
 	 */
 	public PackageNode forPackage(String packageName) {
-		return packageRoot.getOrCreateNode(packageName);
+		return forPackageRoot().getOrCreateNode(packageName);
 	}
 	
 	/**
@@ -122,15 +131,15 @@ public class JGum {
 	 * @return a package node corresponding to the given Package object.
 	 */
 	public PackageNode forPackage(Package pakkage) {
-		return packageRoot.getOrCreateNode(pakkage);
+		return forPackageRoot().getOrCreateNode(pakkage);
 	}
 	
 	/**
 	 * 
-	 * @return a node corresponding to the root of the class and interface hierarchy.
+	 * @return the class hierarchy graph associated with this context. This object is a node corresponding to the root of both the class and interface hierarchy.
 	 */
-	public AnyClassRoot forAnyClassRoot() {
-		return anyClassRoot;
+	public AnyClassRoot getClassHierarchyGraph() {
+		return classHierarchyGraph;
 	}
 
 	/**
@@ -139,7 +148,7 @@ public class JGum {
 	 * @return a node corresponding to the given class.
 	 */
 	public <T> TypeNode<T> forClass(Class<T> clazz) {
-		return anyClassRoot.getOrCreateNode(clazz);
+		return classHierarchyGraph.getOrCreateNode(clazz);
 	}
 	
 	/**

@@ -1,6 +1,5 @@
 package org.jgum.packagemodel;
 
-import static com.google.common.base.Preconditions.checkArgument;
 import static java.util.Arrays.asList;
 import static org.jgum.graph.PropertyIterable.properties;
 
@@ -18,6 +17,11 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
+/**
+ * A node wrapping a package object.
+ * @author sergioc
+ *
+ */
 public class PackageNode extends Node<String> {
 
 	private Map<String, PackageNode> children; //the children nodes
@@ -39,9 +43,7 @@ public class PackageNode extends Node<String> {
 	 * Creates a root PackageNode
 	 */
 	protected PackageNode(JGum context) {
-		super(context, "");
-		parent = null;
-		children = new TreeMap<>(); //to preserve insertion order
+		this(context, "", null);
 	}
 	
 	/**
@@ -51,9 +53,8 @@ public class PackageNode extends Node<String> {
 	 */
 	protected PackageNode(JGum context, String packageFragment, PackageNode parent) {
 		super(context, packageFragment);
-		checkArgument( (parent != null && !packageFragment.isEmpty()) || (parent == null && packageFragment.isEmpty()) );
 		this.parent = parent;
-		children = new TreeMap<>();
+		children = new TreeMap<>(); //to preserve insertion order
 	}
 
 	public List<PackageNode> getChildren() {
@@ -73,26 +74,23 @@ public class PackageNode extends Node<String> {
 	}
 	
 	public PackageNode getNode(String relativePackageName) {
-		return getNode(relativePackageName, false);
+		PackageNode node = this;
+		List<String> packageFragmentsList = asPackageFragmentsList(relativePackageName);
+		for(String packageFragment : packageFragmentsList) {
+			node = node.getChild(packageFragment);
+			if(node == null)
+				break;
+		}
+		return node;
 	}
 	
 	protected PackageNode getOrCreateNode(String relativePackageName) {
-		return getNode(relativePackageName, true);
-	}
-	
-	private PackageNode getNode(String relativePackageName, boolean createIfAbsent) {
+		PackageNode node = this;
 		List<String> packageFragmentsList = asPackageFragmentsList(relativePackageName);
-		PackageNode packageNode = this;
-		for(String packageFragmentName : packageFragmentsList) {
-			if(createIfAbsent)
-				packageNode = packageNode.getOrCreateChild(packageFragmentName);
-			else {
-				packageNode = packageNode.getChild(packageFragmentName);
-				if(packageNode == null)
-					break;
-			}
+		for(String packageFragment : packageFragmentsList) {
+			node = node.getOrCreateChild(packageFragment);
 		}
-		return packageNode;
+		return node;
 	}
 	
 	private PackageNode getChild(String subpackageName) {
@@ -101,14 +99,16 @@ public class PackageNode extends Node<String> {
 
 	private PackageNode getOrCreateChild(String subpackageName) {
 		PackageNode child = children.get(subpackageName);
-		if(child == null)
+		if(child == null) {
 			child = addChild(subpackageName);
+		}
 		return child;
 	}
 	
 	private PackageNode addChild(String subpackageName) {
 		PackageNode child = new PackageNode(getContext(), subpackageName, this);
 		children.put(subpackageName, child);
+		getContext().getPackageTree().notifyCreationListeners(child);
 		return child;
 	}
 	

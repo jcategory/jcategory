@@ -12,7 +12,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jgum.JGum;
+import org.jgum.graph.NodeCreationListener;
 import org.jgum.graph.SearchStrategy;
+import org.jgum.testutil.CounterCreationListener;
 import org.junit.Test;
 
 import com.google.common.base.Optional;
@@ -115,7 +117,6 @@ public class PackagePropertiesTest {
 		assertEquals(p8Property, properties(root.getNode(packageP8).bottomUpPath(), p8Property).first().get());
 		
 
-
 		//now let's override one property in one subpackage
 		root.getNode(packageP2).put(p1Property, p2Property);
 		assertEquals(p2Property, properties(root.getNode(packageP2).bottomUpPath(), p1Property).first().get());
@@ -167,5 +168,17 @@ public class PackagePropertiesTest {
 		assertEquals(p6Property, breadthFirstList.get(4).get(p6Property));
 		assertEquals(p5Property, breadthFirstList.get(5).get(p5Property));
 	}
-	
+
+	@Test
+	public void testListener() {
+		JGum jgum = new JGum();
+		CounterCreationListener listener = new CounterCreationListener();
+		jgum.getPackageTree().addNodeCreationListener((NodeCreationListener)listener);
+		PackageNode packageNode = jgum.forPackage("x.y.z");
+		assertEquals(4, listener.getCounter()); //added 3 packages + the root (empty) package
+		packageNode.getOrCreateNode(""); //will return the sender node since the relative package is the empty package
+		assertEquals(4, listener.getCounter());
+		jgum.forPackage("x.y.a.b"); //will trigger the creation of two additional packages
+		assertEquals(6, listener.getCounter());
+	}
 }
