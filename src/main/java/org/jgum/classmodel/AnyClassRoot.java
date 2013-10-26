@@ -38,6 +38,16 @@ public class AnyClassRoot extends TypeNode<Any> {
 		rootInterfaceNodes = new ArrayList<>();
 	}
 
+	@Override
+	public Object put(Object key, Object value) {
+		throw new UnsupportedOperationException("The root of the class and interface hierarchy cannot hold properties");
+	}
+	
+	@Override
+	public void put(Object key, Object value, boolean canOverride) {
+		throw new UnsupportedOperationException("The root of the class and interface hierarchy cannot hold properties");
+	}
+	
 	public ClassNode<Object> getRootClassNode() {
 		return objectClassNode;
 	}

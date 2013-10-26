@@ -4,6 +4,7 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.Serializable;
 import java.util.AbstractCollection;
@@ -35,6 +36,20 @@ public class ClassPropertiesTest {
 		assertNotNull(arrayListNode);
 		assertEquals(0, hierarchyRoot.getAncestorClasses().size());
 		assertEquals(0, hierarchyRoot.getAncestorInterfaces().size());
+	}
+	
+	@Test
+	public void noPropertyInTypeRootTest() {
+		JGum jgum = new JGum();
+		AnyClassRoot hierarchyRoot = jgum.forAnyClassRoot();
+		try {
+			hierarchyRoot.put("x", "x");
+			fail();
+		} catch(UnsupportedOperationException e){}
+		try {
+			hierarchyRoot.put("x", "x", true);
+			fail();
+		} catch(UnsupportedOperationException e){}
 	}
 	
 	@Test
