@@ -22,19 +22,27 @@ import org.jgum.packagemodel.TopDownPackageTraversalPolicy;
  */
 public class JGum {
 
-	//Default strategy for bottom up traversing (given a descendant class ) of a graph denoting a class hierarchy.
+	/**
+	 * Default strategy for bottom up traversing (given a descendant class ) of a graph denoting a class hierarchy.
+	 */
 	public static final BottomUpTypeTraversalPolicy<TypeNode<?>> DEFAULT_BOTTOM_UP_TYPE_TRAVERSAL_POLICY = 
 			new BottomUpTypeTraversalPolicy<>(SearchStrategy.PRE_ORDER, DuplicatesDetection.ENFORCE, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE);
 	
-	//Default strategy for top down traversing (given an ancestor class) of a graph denoting a class hierarchy.
+	/**
+	 * Default strategy for top down traversing (given an ancestor class) of a graph denoting a class hierarchy.
+	 */
 	public static final TopDownTypeTraversalPolicy<TypeNode<?>> DEFAULT_TOP_DOWN_CLASS_TRAVERSAL_POLICY = 
 			new TopDownTypeTraversalPolicy<>(SearchStrategy.BREADTH_FIRST, DuplicatesDetection.ENFORCE, Priority.INTERFACES_FIRST);
 	
-	//Default strategy for bottom up traversing (given a subpackage) of a tree denoting a package hierarchy.
+	/**
+	 * Default strategy for bottom up traversing (given a subpackage) of a tree denoting a package hierarchy.
+	 */
 	public static final BottomUpPackageTraversalPolicy DEFAULT_BOTTOM_UP_PACKAGE_TRAVERSAL_POLICY = 
 			new BottomUpPackageTraversalPolicy(SearchStrategy.PRE_ORDER);
 	
-	//Default strategy for top down traversing (given an ancestor package) of a tree denoting a package hierarchy.
+	/**
+	 * Default strategy for top down traversing (given an ancestor package) of a tree denoting a package hierarchy.
+	 */
 	public static final TopDownPackageTraversalPolicy DEFAULT_TOP_DOWN_PACKAGE_TRAVERSAL_POLICY = 
 			new TopDownPackageTraversalPolicy(SearchStrategy.PRE_ORDER);
 	
@@ -134,18 +142,34 @@ public class JGum {
 		return anyClassRoot.getOrCreateNode(clazz);
 	}
 	
+	/**
+	 * 
+	 * @return the bottom up class traversing strategy for this context.
+	 */
 	public BottomUpTypeTraversalPolicy<TypeNode<?>> getBottomUpTypeTraversalPolicy() {
 		return bottomUpTypeTraversalPolicy;
 	}
 
+	/**
+	 * 
+	 * @return the top down class traversing strategy for this context.
+	 */
 	public TopDownTypeTraversalPolicy<TypeNode<?>> getTopDownTypeTraversalPolicy() {
 		return topDownTypeTraversalPolicy;
 	}
 
+	/**
+	 * 
+	 * @return the bottom up package traversing strategy for this context.
+	 */
 	public BottomUpPackageTraversalPolicy getBottomUpPackageTraversalPolicy() {
 		return bottomUpPackageTraversalPolicy;
 	}
 
+	/**
+	 * 
+	 * @return the top down package traversing strategy for this context.
+	 */
 	public TopDownPackageTraversalPolicy getTopDownPackageTraversalPolicy() {
 		return topDownPackageTraversalPolicy;
 	}

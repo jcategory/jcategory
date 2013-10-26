@@ -11,6 +11,12 @@ import org.jgum.graph.Node;
 
 import com.google.common.collect.FluentIterable;
 
+/**
+ * A node wrapping a class object (either a class or an interface).
+ * @author sergioc
+ *
+ * @param <T> the type of the wrapped class.
+ */
 public abstract class TypeNode<T> extends Node<Class<T>> {
 
 	private List<InterfaceNode<? super T>> superInterfaceNodes;

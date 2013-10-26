@@ -10,8 +10,17 @@ import org.jgum.graph.TraversalPolicy;
 
 import com.google.common.base.Function;
 
+/**
+ * A class facilitating the definition of top-down traversal policies in a tree of package nodes.
+ * @author sergioc
+ *
+ */
 public class TopDownPackageTraversalPolicy extends TraversalPolicy<PackageNode> {
 
+	/**
+	 * 
+	 * @return a function mapping a PackageNode to its children.
+	 */
 	public static Function<PackageNode, List<PackageNode>> childrenPackagesFunction() {
 		return new Function<PackageNode, List<PackageNode>>() {
 			@Override
@@ -21,6 +30,11 @@ public class TopDownPackageTraversalPolicy extends TraversalPolicy<PackageNode> 
 		};
 	}
 	
+	/**
+	 * 
+	 * @param comparator determines how children should be ordered.
+	 * @return a function mapping a PackageNode to its children, ordering the children according to the given comparator.
+	 */
 	public static Function<PackageNode, List<PackageNode>> childrenPackagesFunction(final Comparator<PackageNode> comparator) {
 		return new Function<PackageNode, List<PackageNode>>() {
 			@Override
@@ -32,10 +46,19 @@ public class TopDownPackageTraversalPolicy extends TraversalPolicy<PackageNode> 
 		};
 	}
 	
+	/**
+	 * 
+	 * @param searchStrategy how the nodes in the top-down path should be traversed.
+	 */
 	public TopDownPackageTraversalPolicy(SearchStrategy searchStrategy) {
 		super(searchStrategy, DuplicatesDetection.IGNORE, childrenPackagesFunction());
 	}
 	
+	/**
+	 * 
+	 * @param searchStrategy how the nodes in the top-down path should be traversed.
+	 * @param comparator determines how children packages should be ordered.
+	 */
 	public TopDownPackageTraversalPolicy(SearchStrategy searchStrategy, Comparator<PackageNode> comparator) {
 		super(searchStrategy, DuplicatesDetection.IGNORE, childrenPackagesFunction(comparator));
 	}

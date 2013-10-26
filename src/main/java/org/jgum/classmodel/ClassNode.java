@@ -8,6 +8,12 @@ import org.jgum.JGum;
 
 import com.google.common.collect.Lists;
 
+/**
+ * A node wrapping a class (not an interface) object.
+ * @author sergioc
+ *
+ * @param <T> the type of the wrapped class.
+ */
 public class ClassNode<T> extends TypeNode<T> {
 	
 	static ClassNode<Object> root(JGum context) {

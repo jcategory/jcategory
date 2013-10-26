@@ -8,6 +8,12 @@ import org.jgum.JGum;
 
 import com.google.common.collect.Lists;
 
+/**
+ * A node wrapping an interface object.
+ * @author sergioc
+ *
+ * @param <T> the type of the wrapped interface.
+ */
 public class InterfaceNode<T> extends TypeNode<T> {
 
 	private List<ClassNode<? extends T>> knownImplementorNodes;
