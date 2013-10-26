@@ -67,6 +67,10 @@ public class PackagePropertiesTest {
 	@Test
 	public void testPathToDescendant() {
 		PackageRoot root = newPackagePropertiesRoot();
+		
+		assertEquals("", root.topDownPath("").first().get().getPackageName());
+		assertEquals(packageP3, root.getNode(packageP3).topDownPath("").first().get().getPackageName());
+		
 		FluentIterable<PackageNode> fit = root.topDownPath(packageP3);
 		assertEquals(4, fit.size());
 		Iterator<PackageNode> it = fit.iterator();
@@ -98,30 +102,30 @@ public class PackagePropertiesTest {
 		assertFalse(propertiesIt.hasNext());
 		
 		assertEquals(rootProperty, root.bottomUpPathProperties(rootProperty).first().get());
-		assertEquals(p1Property, root.getDescendant(packageP1).bottomUpPathProperties(p1Property).first().get());
-		assertEquals(p2Property, root.getDescendant(packageP2).bottomUpPathProperties(p2Property).first().get());
-		assertEquals(p1Property, root.getDescendant(packageP2).bottomUpPathProperties(p1Property).first().get());
-		assertEquals(p8Property, root.getDescendant(packageP8).bottomUpPathProperties(p8Property).first().get());
+		assertEquals(p1Property, root.getNode(packageP1).bottomUpPathProperties(p1Property).first().get());
+		assertEquals(p2Property, root.getNode(packageP2).bottomUpPathProperties(p2Property).first().get());
+		assertEquals(p1Property, root.getNode(packageP2).bottomUpPathProperties(p1Property).first().get());
+		assertEquals(p8Property, root.getNode(packageP8).bottomUpPathProperties(p8Property).first().get());
 		
 		//another way to write the same as above
 		assertEquals(rootProperty, root.bottomUpPathProperties(rootProperty).first().get());
-		assertEquals(p1Property, properties(root.getDescendant(packageP1).bottomUpPath(), p1Property).first().get());
-		assertEquals(p2Property, properties(root.getDescendant(packageP2).bottomUpPath(), p2Property).first().get());
-		assertEquals(p1Property, properties(root.getDescendant(packageP2).bottomUpPath(), p1Property).first().get()); //the property is not defined in p2, so it should inherit from p1
-		assertEquals(p8Property, properties(root.getDescendant(packageP8).bottomUpPath(), p8Property).first().get());
+		assertEquals(p1Property, properties(root.getNode(packageP1).bottomUpPath(), p1Property).first().get());
+		assertEquals(p2Property, properties(root.getNode(packageP2).bottomUpPath(), p2Property).first().get());
+		assertEquals(p1Property, properties(root.getNode(packageP2).bottomUpPath(), p1Property).first().get()); //the property is not defined in p2, so it should inherit from p1
+		assertEquals(p8Property, properties(root.getNode(packageP8).bottomUpPath(), p8Property).first().get());
 		
 
 
 		//now let's override one property in one subpackage
-		root.getDescendant(packageP2).put(p1Property, p2Property);
-		assertEquals(p2Property, properties(root.getDescendant(packageP2).bottomUpPath(), p1Property).first().get());
+		root.getNode(packageP2).put(p1Property, p2Property);
+		assertEquals(p2Property, properties(root.getNode(packageP2).bottomUpPath(), p1Property).first().get());
 		
 		//overriding the same property
-		root.getDescendant(packageP2).put(p1Property, p2Property);
+		root.getNode(packageP2).put(p1Property, p2Property);
 		
 		try {
 			//attempting to override the same property without allowing overrides
-			root.getDescendant(packageP2).put(p1Property, p2Property, false);
+			root.getNode(packageP2).put(p1Property, p2Property, false);
 			fail("Expected exception not thrown when overridding package property");
 		} catch(Exception e) {
 			//expected
@@ -130,7 +134,7 @@ public class PackagePropertiesTest {
 
 	@Test
 	public void testAllDescendantsPreOrder() {
-		PackageNode root = newPackagePropertiesRoot().getChild(packageP1);
+		PackageNode root = newPackagePropertiesRoot().getNode(packageP1);
 		List<PackageNode> preOrderList = Lists.newArrayList(root.path(new TopDownPackageTraversalPolicy(SearchStrategy.PRE_ORDER)));
 		assertEquals(p1Property, preOrderList.get(0).get(p1Property));
 		assertEquals(p2Property, preOrderList.get(1).get(p2Property));
@@ -142,7 +146,7 @@ public class PackagePropertiesTest {
 	
 	@Test
 	public void testAllDescendantsPostOrder() {
-		PackageNode root = newPackagePropertiesRoot().getChild(packageP1);
+		PackageNode root = newPackagePropertiesRoot().getNode(packageP1);
 		List<PackageNode> postOrderList = Lists.newArrayList(root.path(new TopDownPackageTraversalPolicy(SearchStrategy.POST_ORDER)));
 		assertEquals(p3Property, postOrderList.get(0).get(p3Property));
 		assertEquals(p5Property, postOrderList.get(1).get(p5Property));
@@ -154,7 +158,7 @@ public class PackagePropertiesTest {
 	
 	@Test
 	public void testAllDescendantsBreadthFirst() {
-		PackageNode root = newPackagePropertiesRoot().getChild(packageP1);
+		PackageNode root = newPackagePropertiesRoot().getNode(packageP1);
 		List<PackageNode> breadthFirstList = Lists.newArrayList(root.path(new TopDownPackageTraversalPolicy(SearchStrategy.BREADTH_FIRST)));
 		assertEquals(p1Property, breadthFirstList.get(0).get(p1Property));
 		assertEquals(p2Property, breadthFirstList.get(1).get(p2Property));

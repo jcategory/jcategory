@@ -14,7 +14,8 @@ import org.jgum.packagemodel.PackageRoot;
 import org.jgum.packagemodel.TopDownPackageTraversalPolicy;
 
 /**
- * Defines a context for a graph of Java meta-object artifacts (classes, interfaces and packages) associated with certain properties.
+ * Defines a context for a graph of Java meta-object artifacts (classes, interfaces and packages).
+ * Such meta-objects are associated with custom properties.
  * It also defines default mechanisms for traversing such graph, therefore influencing the order in which properties are found.
  * @author sergioc
  *
@@ -72,11 +73,11 @@ public class JGum {
 	}
 
 	public PackageNode forPackage(String packageName) {
-		return packageRoot.getOrCreateDescendant(packageName);
+		return packageRoot.getOrCreateNode(packageName);
 	}
 	
 	public PackageNode forPackage(Package pakkage) {
-		return packageRoot.getOrCreateDescendant(pakkage);
+		return packageRoot.getOrCreateNode(pakkage);
 	}
 	
 	public AnyClassRoot forAnyClassRoot() {

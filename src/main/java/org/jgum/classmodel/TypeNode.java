@@ -2,6 +2,7 @@ package org.jgum.classmodel;
 
 import static org.jgum.JGum.DEFAULT_BOTTOM_UP_TYPE_TRAVERSAL_POLICY;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,17 +15,17 @@ public abstract class TypeNode<T> extends Node<Class<T>> {
 
 	private List<InterfaceNode<? super T>> superInterfaceNodes;
 
-	public TypeNode(JGum context, Class<T> wrappedClazz) {
+	TypeNode(JGum context, Class<T> wrappedClazz) {
 		this(context, wrappedClazz, Collections.<InterfaceNode<? super T>>emptyList());
 	}
 	
-	public TypeNode(JGum context, Class<T> wrappedClazz, List<InterfaceNode<? super T>> superInterfaceNodes) {
+	TypeNode(JGum context, Class<T> wrappedClazz, List<InterfaceNode<? super T>> superInterfaceNodes) {
 		super(context, wrappedClazz);
 		setSuperInterfaceNodes(superInterfaceNodes);
 	}
 
 	public List<InterfaceNode<? super T>> getSuperInterfaceNodes() {
-		return superInterfaceNodes;
+		return new ArrayList<>((superInterfaceNodes));
 	}
 	
 	protected void setSuperInterfaceNodes(List<InterfaceNode<? super T>> superInterfaceNodes) {

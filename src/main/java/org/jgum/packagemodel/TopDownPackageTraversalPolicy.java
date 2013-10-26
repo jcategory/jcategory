@@ -16,7 +16,7 @@ public class TopDownPackageTraversalPolicy extends TraversalPolicy<PackageNode> 
 		return new Function<PackageNode, List<PackageNode>>() {
 			@Override
 			public List<PackageNode> apply(PackageNode packageNode) {
-				return packageNode.getSubpackages();
+				return packageNode.getChildren();
 			}
 		};
 	}
@@ -25,7 +25,7 @@ public class TopDownPackageTraversalPolicy extends TraversalPolicy<PackageNode> 
 		return new Function<PackageNode, List<PackageNode>>() {
 			@Override
 			public List<PackageNode> apply(PackageNode packageNode) {
-				List<PackageNode> subPackages = packageNode.getSubpackages();
+				List<PackageNode> subPackages = packageNode.getChildren();
 				Collections.sort(subPackages, comparator);
 				return subPackages;
 			}

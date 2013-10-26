@@ -10,24 +10,24 @@ import com.google.common.collect.Lists;
 
 public class InterfaceNode<T> extends TypeNode<T> {
 
-	public List<ClassNode<? extends T>> knownImplementorNodes;
-	public List<InterfaceNode<? extends T>> knownSubInterfaceNodes;
+	private List<ClassNode<? extends T>> knownImplementorNodes;
+	private List<InterfaceNode<? extends T>> knownSubInterfaceNodes;
 	
-	public InterfaceNode(JGum context, Class<T> interfaze) {
+	InterfaceNode(JGum context, Class<T> interfaze) {
 		this(context, interfaze, Collections.<InterfaceNode<? super T>>emptyList());
 	}
 	
-	public InterfaceNode(JGum context, Class<T> wrappedInterface, List<InterfaceNode<? super T>> superInterfaceNodes) {
+	InterfaceNode(JGum context, Class<T> wrappedInterface, List<InterfaceNode<? super T>> superInterfaceNodes) {
 		super(context, wrappedInterface, superInterfaceNodes);
 		knownImplementorNodes = new ArrayList<>();
 		knownSubInterfaceNodes = new ArrayList<>();
 	}	
 	
-	protected void addKnownImplementorNode(ClassNode<? extends T> implementorNode) {
+	void addKnownImplementorNode(ClassNode<? extends T> implementorNode) {
 		knownImplementorNodes.add(implementorNode);
 	}
 	
-	protected void addKnownSubInterfaceNode(InterfaceNode<? extends T> subInterfaceNode) {
+	void addKnownSubInterfaceNode(InterfaceNode<? extends T> subInterfaceNode) {
 		knownSubInterfaceNodes.add(subInterfaceNode);
 	}
 	
@@ -40,11 +40,11 @@ public class InterfaceNode<T> extends TypeNode<T> {
 	}
 	
 	public List<ClassNode<? extends T>> getKnownImplementorNodes() {
-		return knownImplementorNodes;
+		return new ArrayList<>(knownImplementorNodes);
 	}
 	
 	public List<InterfaceNode<? extends T>> getKnownSubInterfaceNodes() {
-		return knownSubInterfaceNodes;
+		return new ArrayList<>(knownSubInterfaceNodes);
 	}
 
 	@Override

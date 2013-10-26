@@ -23,7 +23,7 @@ import com.google.common.collect.FluentIterable;
  */
 public class AnyClassRoot extends TypeNode<Any> {
 
-	private Map<Class<?>, TypeNode<?>> propertiesNodeIndex;
+	private Map<Class<?>, TypeNode<?>> nodeIndex;
 	
 	private ClassNode<Object> objectClassNode;
 	private List<InterfaceNode<?>> rootInterfaceNodes;
@@ -32,26 +32,26 @@ public class AnyClassRoot extends TypeNode<Any> {
 	
 	public AnyClassRoot(JGum context) {
 		super(context, Any.class);
-		propertiesNodeIndex = new HashMap<>();
+		nodeIndex = new HashMap<>();
 		objectClassNode = ClassNode.root(context);
 		putNode(Object.class, objectClassNode);
 		rootInterfaceNodes = new ArrayList<>();
 	}
 
-	ClassNode<Object> getRootClassNode() {
+	public ClassNode<Object> getRootClassNode() {
 		return objectClassNode;
 	}
 
-	List<InterfaceNode<?>> getRootInterfaceNodes() {
-		return rootInterfaceNodes;
+	public List<InterfaceNode<?>> getRootInterfaceNodes() {
+		return new ArrayList<>(rootInterfaceNodes);
 	}
 
 	public <T> TypeNode<T> getNode(Class<T> clazz) {
-		return (TypeNode<T>) propertiesNodeIndex.get(clazz);
+		return (TypeNode<T>) nodeIndex.get(clazz);
 	}
 	
-	protected <T> void putNode(Class<T> clazz, TypeNode<T> node) {
-		propertiesNodeIndex.put(clazz, node);
+	private <T> void putNode(Class<T> clazz, TypeNode<T> node) {
+		nodeIndex.put(clazz, node);
 	}
 	
 	public <T> TypeNode<T> getOrCreateNode(Class<T> clazz) {
@@ -86,7 +86,7 @@ public class AnyClassRoot extends TypeNode<Any> {
 		InterfaceNode interfaceNode = new InterfaceNode(getContext(), clazz, superInterfaceNodes);
 		if(superInterfaceNodes.isEmpty())
 			rootInterfaceNodes.add(interfaceNode);
-		propertiesNodeIndex.put(clazz, interfaceNode);
+		nodeIndex.put(clazz, interfaceNode);
 		return interfaceNode;
 	}
 

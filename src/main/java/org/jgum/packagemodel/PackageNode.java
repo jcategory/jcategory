@@ -12,8 +12,11 @@ import java.util.TreeMap;
 import org.jgum.JGum;
 import org.jgum.graph.Node;
 import org.jgum.graph.SearchStrategy;
+import org.jgum.graph.StopUntilConditionIterable;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 
 public class PackageNode extends Node<String> {
 
@@ -21,7 +24,7 @@ public class PackageNode extends Node<String> {
 	private PackageNode parent; //the parent node
 	private String packageName; //the full name of the package, lazily initialized
 	
-	public static List<String> asPackageFragmentsList(String packageName) {
+	static List<String> asPackageFragmentsList(String packageName) {
 		List<String> packageFragmentsList;
 		if(packageName.isEmpty())
 			packageFragmentsList = new ArrayList<>();
@@ -46,14 +49,14 @@ public class PackageNode extends Node<String> {
 	 * @param packageFragment the name of this node package fragment.
 	 * @param parent the parent node 
 	 */
-	public PackageNode(JGum context, String packageFragment, PackageNode parent) {
+	protected PackageNode(JGum context, String packageFragment, PackageNode parent) {
 		super(context, packageFragment);
 		checkArgument( (parent != null && !packageFragment.isEmpty()) || (parent == null && packageFragment.isEmpty()) );
 		this.parent = parent;
 		children = new TreeMap<>();
 	}
 
-	public List<PackageNode> getSubpackages() {
+	public List<PackageNode> getChildren() {
 		return new ArrayList<>(children.values());
 	}
 	
@@ -62,22 +65,22 @@ public class PackageNode extends Node<String> {
 	}
 	
 	public Object get(String relativePackageName, Object key) {
-		PackageNode packageNode = getDescendant(relativePackageName);
+		PackageNode packageNode = getNode(relativePackageName);
 		if(packageNode == null)
 			return null;
 		else
 			return packageNode.get(key);
 	}
 	
-	public PackageNode getDescendant(String relativePackageName) {
-		return getDescendant(relativePackageName, false);
+	public PackageNode getNode(String relativePackageName) {
+		return getNode(relativePackageName, false);
 	}
 	
-	public PackageNode getOrCreateDescendant(String relativePackageName) {
-		return getDescendant(relativePackageName, true);
+	protected PackageNode getOrCreateNode(String relativePackageName) {
+		return getNode(relativePackageName, true);
 	}
 	
-	private PackageNode getDescendant(String relativePackageName, boolean createIfAbsent) {
+	private PackageNode getNode(String relativePackageName, boolean createIfAbsent) {
 		List<String> packageFragmentsList = asPackageFragmentsList(relativePackageName);
 		PackageNode packageNode = this;
 		for(String packageFragmentName : packageFragmentsList) {
@@ -92,11 +95,11 @@ public class PackageNode extends Node<String> {
 		return packageNode;
 	}
 	
-	public PackageNode getChild(String subpackageName) {
+	private PackageNode getChild(String subpackageName) {
 		return children.get(subpackageName);
 	}
 
-	public PackageNode getOrCreateChild(String subpackageName) {
+	private PackageNode getOrCreateChild(String subpackageName) {
 		PackageNode child = children.get(subpackageName);
 		if(child == null)
 			child = addChild(subpackageName);
@@ -146,13 +149,25 @@ public class PackageNode extends Node<String> {
 		return path(getContext().getBottomUpPackageTraversalPolicy());
 	}
 
+	public <U> FluentIterable<U> bottomUpPathProperties(Object key) {
+		return properties(bottomUpPath(), key);
+	}
+	
 	@Override
 	public FluentIterable<PackageNode> topDownPath() {
 		return path(getContext().getTopDownPackageTraversalPolicy());
 	}
 	
 	public FluentIterable<PackageNode> topDownPath(String relativePackageName) {
-		return getOrCreateDescendant(relativePackageName).path(new BottomUpPackageTraversalPolicy(SearchStrategy.POST_ORDER));
+		Iterable<PackageNode> bottomUpIterable = getOrCreateNode(relativePackageName).path(new BottomUpPackageTraversalPolicy(SearchStrategy.PRE_ORDER));
+		Iterable<PackageNode> filteredBottomUpIterable = new StopUntilConditionIterable(bottomUpIterable, new Predicate<PackageNode>() {
+			@Override
+			public boolean apply(PackageNode node) {
+				return PackageNode.this.equals(node);
+			}
+		});
+		Iterable<PackageNode> topDownIterable = Lists.reverse(Lists.newArrayList(filteredBottomUpIterable));
+		return FluentIterable.from(topDownIterable);
 	}
 	
 	public <U> FluentIterable<U> topDownPathProperties(String relativePackageName, Object key) {

@@ -10,7 +10,7 @@ import com.google.common.collect.Lists;
 
 public class ClassNode<T> extends TypeNode<T> {
 	
-	public static ClassNode<Object> root(JGum context) {
+	static ClassNode<Object> root(JGum context) {
 		return new ClassNode(context);
 	}
 	
@@ -21,11 +21,11 @@ public class ClassNode<T> extends TypeNode<T> {
 		this(context, (Class<T>) Object.class, null);
 	}
 	
-	public ClassNode(JGum context, Class<T> wrappedClass, ClassNode<? super T> parentClassNode) {
+	ClassNode(JGum context, Class<T> wrappedClass, ClassNode<? super T> parentClassNode) {
 		this(context, wrappedClass, parentClassNode, Collections.<InterfaceNode<? super T>>emptyList());
 	}
 	
-	public ClassNode(JGum context, Class<T> wrappedClass, ClassNode<? super T> superClassNode, List<InterfaceNode<? super T>> superInterfaceNodes) {
+	ClassNode(JGum context, Class<T> wrappedClass, ClassNode<? super T> superClassNode, List<InterfaceNode<? super T>> superInterfaceNodes) {
 		super(context, wrappedClass, superInterfaceNodes);
 		knownSubClassNodes = new ArrayList<>();
 		if(superClassNode != null)
@@ -36,12 +36,12 @@ public class ClassNode<T> extends TypeNode<T> {
 		return superClassNode;
 	}
 	
-	public void setSuperClassNode(ClassNode<? super T> superClassNode) {
+	private void setSuperClassNode(ClassNode<? super T> superClassNode) {
 		this.superClassNode = superClassNode;
 		superClassNode.addKnownSubClassNode((ClassNode<? extends T>) this);
 	}
 	
-	protected void addKnownSubClassNode(ClassNode<? extends T> subClassNode) {
+	private void addKnownSubClassNode(ClassNode<? extends T> subClassNode) {
 		knownSubClassNodes.add(subClassNode);
 	}
 	
@@ -54,18 +54,18 @@ public class ClassNode<T> extends TypeNode<T> {
 	}
 
 	public List<ClassNode<? extends T>> getKnownSubClassNodes() {
-		return knownSubClassNodes;
+		return new ArrayList<>(knownSubClassNodes);
 	}
 
 	@Override
 	protected List<TypeNode<? super T>> getParents(Priority priority, InterfaceOrder interfaceOrder) {
 		List<InterfaceNode<? super T>> superInterfaceNodes = (List)getSuperInterfaceNodes();
 		if(interfaceOrder.equals(InterfaceOrder.REVERSE)) {
-			superInterfaceNodes = Lists.reverse(superInterfaceNodes); 
+			//the reversed list does not support addition of elements,
+			//then a new list is created.
+			superInterfaceNodes = new ArrayList<>(Lists.reverse(superInterfaceNodes)); 
 		}
-		//the reversed list does not support addition of elements,
-		//then a new list is created.
-		List<TypeNode<? super T>> parents = new ArrayList<TypeNode<? super T>>(superInterfaceNodes);
+		List<TypeNode<? super T>> parents = (List)superInterfaceNodes;
 		ClassNode<? super T> superClassNode = getSuperClassNode();
 		if(superClassNode != null) {
 			if(priority.equals(Priority.CLASSES_FIRST)) {
