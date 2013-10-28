@@ -6,6 +6,6 @@ from hierarchical Java meta-objects (e.g., classes and packages).
 
 Its code was factored out from other projects of the author with the hope that it may help other people dealing with similar kind of problems.
 
-In case you would like to know more about it, you may find interesting this short [tutorial](http://jgum.github.com/tutorial/ "JGum Tutorial") 
-and the [API](http://jgum.github.com/apidocs/ "API documentation ") documentation.
-
+In case you would like to know more about it, you may find interesting 
+the [API](http://jgum.github.com/apidocs/ "API documentation ") documentation.
+<!-- this short [tutorial](http://jgum.github.com/tutorial/ "JGum Tutorial") and --> 
