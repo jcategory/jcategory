@@ -1,14 +1,14 @@
 package org.jgum.testutil;
 
-import org.jgum.graph.Node;
-import org.jgum.graph.NodeCreationListener;
+import org.jgum.category.Category;
+import org.jgum.category.CategoryCreationListener;
 
-public class CounterCreationListener implements NodeCreationListener<Node<?>> {
+public class CounterCreationListener implements CategoryCreationListener<Category<?>> {
 
 	private int counter;
 	
 	@Override
-	public void onNodeCreation(Node node) {
+	public void onNodeCreation(Category category) {
 		counter++;
 	}
 	
