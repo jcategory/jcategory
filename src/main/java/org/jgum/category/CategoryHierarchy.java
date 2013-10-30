@@ -11,17 +11,23 @@ import com.google.common.collect.FluentIterable;
  *
  * @param <T>
  */
-public class CategoryHierarchy<T extends Category<?>> {
+public abstract class CategoryHierarchy<T extends Category<?>> {
 
 	private final Function<T, FluentIterable<T>> bottomUpLinearizationFunction; //bottom up type linearization function.
 	private final Function<T, FluentIterable<T>> topDownLinearizationFunction; //top down type linearization function.
-	private final CategoryCreationListenersManager listenersManager;
+	private final CategoryCreationListenersManager listenersManager; //category listeners notified when a new category is created.
 	
 	public CategoryHierarchy(Function<T, FluentIterable<T>> bottomUpLinearizationFunction, Function<T, FluentIterable<T>> topDownLinearizationFunction) {
 		this.bottomUpLinearizationFunction = bottomUpLinearizationFunction;
 		this.topDownLinearizationFunction = topDownLinearizationFunction;
 		listenersManager = new CategoryCreationListenersManager();
 	}
+	
+	/**
+	 * 
+	 * @return the root category in this hierarchy.
+	 */
+	public abstract T getRoot();
 	
 	protected void notifyCreationListeners(T newCategory) {
 		listenersManager.notifyCreationListeners(newCategory);

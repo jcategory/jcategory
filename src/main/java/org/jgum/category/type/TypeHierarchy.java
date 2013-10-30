@@ -20,6 +20,7 @@ public class TypeHierarchy extends CategoryHierarchy<TypeCategory<?>> {
 		categoryIndex = new HashMap<>();
 	}
 	
+	@Override
 	public TypeCategoryRoot getRoot() {
 		if(typeCategoryRoot == null) {
 			typeCategoryRoot = new TypeCategoryRoot(this);

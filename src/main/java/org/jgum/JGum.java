@@ -22,7 +22,7 @@ import com.google.common.collect.FluentIterable;
  * @author sergioc
  *
  */
-public class JGum {
+public class JGum extends HierarchyRegister {
 
 	/**
 	 * Default linearization function for bottom up traversing (given a descendant class) of a graph denoting a class hierarchy.
@@ -64,6 +64,9 @@ public class JGum {
 		this(DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION, DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION, DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION, DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION);
 	}
 	
+	public static final Object JGUM_TYPE_HIERARCHY_ID = new Object(); //the id under which the type hierarchy is registered on the hierarchy register.
+	public static final Object JGUM_NAME_HIERARCHY_ID = new Object(); //the id under which the name hierarchy is registered on the hierarchy register.
+	
 	/**
 	 * Creates a new context with the given class and name linearization functions.
 	 * @param bottomUpTypeLinearizationFunction the bottom up class linearization function.
@@ -80,7 +83,9 @@ public class JGum {
 		this.bottomUpNameLinearizationFunction = bottomUpNameLinearizationFunction;
 		this.topDownNameLinearizationFunction = topDownNameLinearizationFunction;
 		nameHierarchy = new NameHierarchy(bottomUpNameLinearizationFunction, topDownNameLinearizationFunction);
+		register(JGUM_TYPE_HIERARCHY_ID, nameHierarchy);
 		typeHierarchy = new TypeHierarchy(bottomUpTypeLinearizationFunction, topDownTypeLinearizationFunction);
+		register(JGUM_NAME_HIERARCHY_ID, typeHierarchy);
 	}
 	
 	/**

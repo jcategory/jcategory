@@ -19,6 +19,7 @@ public class NameHierarchy extends CategoryHierarchy<NameCategory> {
 		super((Function)bottomUpLinearization, (Function)topDownLinearization);
 	}
 	
+	@Override
 	public NameCategory getRoot() {
 		if(nameCategoryRoot == null) {
 			nameCategoryRoot = new NameCategory(this);
