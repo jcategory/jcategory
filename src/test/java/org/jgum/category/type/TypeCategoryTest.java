@@ -20,6 +20,7 @@ import org.jgum.category.CategoryCreationListener;
 import org.jgum.category.CategoryProperty;
 import org.jgum.category.DuplicatesDetection;
 import org.jgum.category.SearchStrategy;
+import org.jgum.category.type.TypeCategoryRoot.Any;
 import org.jgum.testutil.CounterCreationListener;
 import org.junit.Test;
 
@@ -63,20 +64,23 @@ public class TypeCategoryTest {
 		assertNotNull(arrayListBottomUpPath);
 		//System.out.println(arrayListBottomUpPath);
 		List<Class<?>> classes;
-		System.out.println(arrayListBottomUpPath);
 		classes = Category.<Class<?>>linearizeValues(arrayListBottomUpPath).toList();
-		assertEquals(asList(ArrayList.class, Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
-				AbstractList.class, List.class, Collection.class, Iterable.class, 
-				AbstractCollection.class, Collection.class, Iterable.class, Object.class), classes);
+		assertEquals(asList(ArrayList.class, Serializable.class, Any.class, Cloneable.class, Any.class, RandomAccess.class, Any.class,
+				List.class, Collection.class, Iterable.class, Any.class,
+				AbstractList.class, List.class, Collection.class, Iterable.class, Any.class,
+				AbstractCollection.class, Collection.class, Iterable.class, Any.class, 
+				Object.class, Any.class), classes);
 
 		arrayListBottomUpPath = arrayListNode.linearize(
 				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DIRECT, DuplicatesDetection.IGNORE));
 		assertNotNull(arrayListBottomUpPath);
 		//System.out.println(arrayListBottomUpPath);
 		classes = Category.<Class<?>>linearizeValues(arrayListBottomUpPath).toList();
-		assertEquals(asList(ArrayList.class, AbstractList.class, AbstractCollection.class, Object.class, 
-				Collection.class, Iterable.class, List.class, Collection.class, Iterable.class, 
-				List.class, Collection.class, Iterable.class, RandomAccess.class, Cloneable.class, Serializable.class
+		assertEquals(asList(ArrayList.class, AbstractList.class, AbstractCollection.class, Object.class, Any.class,
+				Collection.class, Iterable.class, Any.class, 
+				List.class, Collection.class, Iterable.class, Any.class,
+				List.class, Collection.class, Iterable.class, Any.class, 
+				RandomAccess.class, Any.class, Cloneable.class, Any.class, Serializable.class, Any.class
 				), classes);
 		
 		arrayListBottomUpPath = arrayListNode.linearize(
@@ -84,7 +88,7 @@ public class TypeCategoryTest {
 		assertNotNull(arrayListBottomUpPath);
 		//System.out.println(arrayListBottomUpPath);
 		classes = Category.<Class<?>>linearizeValues(arrayListBottomUpPath).toList();
-		assertEquals(asList(ArrayList.class, Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
+		assertEquals(asList(ArrayList.class, Serializable.class, Any.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
 				AbstractList.class, AbstractCollection.class, Object.class), classes);
 		
 		FluentIterable<ClassCategory<? super ArrayList>> ancestorsPath = arrayListNode.getAncestorClasses();
@@ -101,10 +105,10 @@ public class TypeCategoryTest {
 		hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		FluentIterable<TypeCategory<?>> rootTopDownPath;
 		rootTopDownPath = hierarchy.getRoot().topDownLinearization();
-		assertEquals(asList(java.lang.Iterable.class, java.util.RandomAccess.class, java.lang.Cloneable.class, java.io.Serializable.class, 
+		//System.out.println(rootTopDownPath);
+		assertEquals(asList(Any.class, java.lang.Iterable.class, java.util.RandomAccess.class, java.lang.Cloneable.class, java.io.Serializable.class, 
 				java.lang.Object.class, java.util.Collection.class, java.util.ArrayList.class, java.util.AbstractCollection.class, 
 				java.util.List.class, java.util.AbstractList.class), Category.<Class<?>>linearizeValues(rootTopDownPath).toList());
-		//System.out.println(rootTopDownPath);
 	}
 
 	@Test
@@ -152,7 +156,8 @@ public class TypeCategoryTest {
 		CounterCreationListener listener = new CounterCreationListener();
 		jgum.getTypeHierarchy().addNodeCreationListener((CategoryCreationListener)listener);
 		jgum.forClass(ArrayList.class);
-		assertEquals(10, listener.getCounter()); //there are 10 classes and interfaces in the class hierarchy of ArrayList.
+		//there are 10 classes and interfaces in the class hierarchy of ArrayList + the Any class located at the root of the class and interface hierarchy.
+		assertEquals(11, listener.getCounter()); 
 	}
 
 }

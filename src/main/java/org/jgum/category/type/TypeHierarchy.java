@@ -64,16 +64,20 @@ public class TypeHierarchy extends CategoryHierarchy<TypeCategory<?>> {
 		putTypeCategory(clazz, classCategory);
 		return classCategory;
 	}
-	
+
 	private <T> InterfaceCategory<T> createInterfaceCategory(Class<T> clazz) {
 		List<InterfaceCategory> superInterfaceNodes = new ArrayList<>();
 		for(Class<?> superInterface : clazz.getInterfaces()) {
 			InterfaceCategory superInterfaceNode = (InterfaceCategory) getOrCreateTypeCategory(superInterface);
 			superInterfaceNodes.add(superInterfaceNode);
 		}
-		InterfaceCategory interfaceCategory = new InterfaceCategory(this, clazz, superInterfaceNodes);
-		if(superInterfaceNodes.isEmpty())
+		InterfaceCategory interfaceCategory;
+		if(superInterfaceNodes.isEmpty()) {
+			interfaceCategory = new InterfaceCategory(this, clazz, typeCategoryRoot);
 			typeCategoryRoot.addRootInterfaceNode(interfaceCategory);
+		} else {
+			interfaceCategory = new InterfaceCategory(this, clazz, superInterfaceNodes);
+		}
 		putTypeCategory(clazz, interfaceCategory);
 		return interfaceCategory;
 	}

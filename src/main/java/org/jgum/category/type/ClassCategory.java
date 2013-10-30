@@ -19,18 +19,18 @@ import com.google.common.collect.Lists;
  */
 public class ClassCategory<T> extends TypeCategory<T> {
 
-	private TypeCategory<? super T> parentCategory;
+	private TypeCategory<?> parentCategory;
 	private List<ClassCategory<? extends T>> knownSubClassNodes;
 	
 	ClassCategory(TypeHierarchy typeHierarchy, TypeCategoryRoot parentCategory) {
 		this(typeHierarchy, (Class<T>) Object.class, parentCategory);
 	}
 	
-	ClassCategory(TypeHierarchy typeHierarchy, Class<T> wrappedClass, TypeCategory<? super T> parentCategory) {
+	ClassCategory(TypeHierarchy typeHierarchy, Class<T> wrappedClass, TypeCategory<?> parentCategory) {
 		this(typeHierarchy, wrappedClass, parentCategory, Collections.<InterfaceCategory<? super T>>emptyList());
 	}
 	
-	ClassCategory(TypeHierarchy typeHierarchy, Class<T> wrappedClass, TypeCategory<? super T> parentCategory, List<InterfaceCategory<? super T>> superInterfaceNodes) {
+	ClassCategory(TypeHierarchy typeHierarchy, Class<T> wrappedClass, TypeCategory<?> parentCategory, List<InterfaceCategory<? super T>> superInterfaceNodes) {
 		super(wrappedClass, typeHierarchy, superInterfaceNodes);
 		knownSubClassNodes = new ArrayList<>();
 		this.parentCategory = parentCategory;
@@ -38,7 +38,7 @@ public class ClassCategory<T> extends TypeCategory<T> {
 			((ClassCategory)parentCategory).addKnownSubClassNode((ClassCategory<? extends T>) this);
 	}
 	
-	public TypeCategory<? super T> getParentCategory() {
+	public TypeCategory<?> getParentCategory() {
 		return parentCategory;
 	}
 	
@@ -69,7 +69,7 @@ public class ClassCategory<T> extends TypeCategory<T> {
 	}
 	
 	@Override
-	protected List<TypeCategory<? super T>> getParents(Priority priority, InterfaceOrder interfaceOrder) {
+	protected List<TypeCategory<?>> getParents(Priority priority, InterfaceOrder interfaceOrder) {
 		ClassCategory<? super T> superClassNode = getSuperClassNode();
 		if(superClassNode != null) {
 			List<InterfaceCategory<? super T>> superInterfaceNodes = (List)getSuperInterfaceNodes();
@@ -78,7 +78,7 @@ public class ClassCategory<T> extends TypeCategory<T> {
 				//then a new list is created.
 				superInterfaceNodes = new ArrayList<>(Lists.reverse(superInterfaceNodes)); 
 			}
-			List<TypeCategory<? super T>> parents = (List)superInterfaceNodes;
+			List<TypeCategory<?>> parents = (List)superInterfaceNodes;
 			if(priority.equals(Priority.CLASSES_FIRST)) {
 				parents.add(0, superClassNode);
 			} else {

@@ -6,20 +6,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.jgum.category.type.TypeCategoryRoot.Any;
+
 /**
  * The root node in a hierarchy of classes and interfaces.
  * @author sergioc
  *
  */
-public class TypeCategoryRoot extends TypeCategory<Object> {
+public class TypeCategoryRoot extends TypeCategory<Any> {
 
+	public static class Any {}
+	
 	private ClassCategory<Object> objectClassNode;
 	private final List<InterfaceCategory<?>> rootInterfaceNodes;
 	
-	//public static class Any {}
-	
 	TypeCategoryRoot(TypeHierarchy typeHierarchy) {
-		super(null, typeHierarchy);
+		super(Any.class, typeHierarchy);
 		rootInterfaceNodes = new ArrayList<>();
 	}
 
