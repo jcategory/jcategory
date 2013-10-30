@@ -1,48 +1,50 @@
 package org.jgum.category;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-
-import org.jgum.JGum;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
 /**
- * A node in a hierarchical graph associated with some arbitrary named properties.
+ * A hierarchical category associated with some arbitrary named properties.
  * @author sergioc
  *
  */
 public abstract class Category<T> {
 
-	private T value; //the value of this node.
-	private Map<Object, Object> properties; //properties associated with this node are backed up in this map.
+	private T id; //the identifier of this category.
+	private Map<Object, Object> properties; //properties associated with this category are backed up in this map.
+	private final CategoryHierarchy<?> categoryHierarchy; //the hierarchy where this category exists.
 	
 	/**
-	 * 
-	 * @param context the context in which this node is created.
-	 * @param value the value of this node.
+	 * @param id the id identifying this category.
+	 * @param categoryHierarchy the hierarchy where this category exists.
 	 */
-	public Category(T value) {
-		this.value = value;
+	public Category(T value, CategoryHierarchy<?> categoryHierarchy) {
+		this.id = value;
+		this.categoryHierarchy = categoryHierarchy;
 		properties = new HashMap<>();
 	}
 
+	public CategoryHierarchy<?> getCategoryHierarchy() {
+		return categoryHierarchy;
+	}
+	
 	/**
 	 * 
-	 * @return the value of this node.
+	 * @return the identifier of this category.
 	 */
-	public T getValue() {
-		return value;
+	public T getId() {
+		return id;
 	}
 	
 	/**
 	 * @param key the property name.
-	 * @return the value of the property in the current node (if any).
+	 * @return the id of the property in the current node (if any).
 	 * @see Map#get(Object)
 	 */
-	public Object get(Object key) {
+	public Object getProperty(Object key) {
 		return properties.get(key);
 	}
 	
@@ -50,7 +52,7 @@ public abstract class Category<T> {
 	 * 
 	 * @see Map#containsKey(Object)
 	 */
-	public boolean containsKey(Object key) {
+	public boolean containsProperty(Object key) {
 		return properties.containsKey(key);
 	}
 	
@@ -58,106 +60,76 @@ public abstract class Category<T> {
 	 * 
 	 * @see Map#put(Object,Object)
 	 */
-	public Object put(Object key, Object value) {
+	public Object putProperty(Object key, Object value) {
 		return properties.put(key, value);
 	}
 	
 	/**
 	 * 
 	 * @param property the property.
-	 * @param propertyValue the value of the property.
+	 * @param propertyValue the id of the property.
 	 * @param canOverride a boolean indicating if the property can be overridden or not. 
 	 * @throws RuntimeException if the property exists and it cannot be overridden.
 	 */
-	public void put(Object property, Object propertyValue, boolean canOverride) {
-		Object currentPropertyValue = get(property);
+	public void putProperty(Object key, Object propertyValue, boolean canOverride) {
+		Object currentPropertyValue = getProperty(key);
 		if(currentPropertyValue!=null && !canOverride)
-			throw new RuntimeException("The node already has a value for the property \"" + property + "\":" + currentPropertyValue +
+			throw new RuntimeException("The node already has a id for the property \"" + key + "\":" + currentPropertyValue +
 				". Attempting to override this property with: " + propertyValue + ".");
 		else
-			put(property, propertyValue);
+			putProperty(key, propertyValue);
 	}
 	
 	/**
 	 * 
-	 * @param traversalPolicy determines the nodes in the iterable.
-	 * @return An iterable of nodes, according to the given traversal policy.
+	 * @param linearization is a linearization function.
+	 * @return An iterable of nodes, according to the given linearization function.
 	 */
-	public <U extends Category<?>> FluentIterable<U> linearization(TraversalPolicy<U> traversalPolicy) {
-		FluentIterable<U> it = CategoryTraverser.<U>iterable((U)this, traversalPolicy.searchStrategy, traversalPolicy.nextNodesFunction);
-		if(traversalPolicy.duplicatesDetection.equals(DuplicatesDetection.ENFORCE)) {
-			final Iterable<U> itAux = it;
-			it = FluentIterable.from(new Iterable<U>() {
-				@Override
-				public Iterator<U> iterator() {
-					return new DuplicatesDetectionIterator<U>(itAux.iterator());
-				}
-			});
-		}
-		return it;
+	public <U extends Category<?>> FluentIterable<U> linearize(Function<U,FluentIterable<U>> linearizationFunction) {
+		return linearizationFunction.apply((U)this);
 	}
 	
 	/**
 	 * 
-	 * @param traversalPolicy determines the nodes which values will be part of the returning iterable.
-	 * @return An iterable of node values, according to the given traversal policy.
+	 * @param linearization is a linearization function.
+	 * @return An iterable of node values, according to the given linearization function.
 	 */
-	public <U> FluentIterable<U> linearizationValues(TraversalPolicy<?> traversalPolicy) {
-		return Category.<U>linearizationValues((FluentIterable)linearization(traversalPolicy));
+	public <U> FluentIterable<U> linearizeValues(Function<? extends Category<?>, FluentIterable<? extends Category<?>>> linearization) {
+		return Category.<U>linearizeValues((FluentIterable)linearize((Function)linearization));
 	}
 	
-	public static <U> FluentIterable<U> linearizationValues(FluentIterable<? extends Category<?>> path) {
+	public static <U> FluentIterable<U> linearizeValues(FluentIterable<? extends Category<?>> path) {
 		return path.transform(new Function<Category<?>, U>() {
 			@Override
 			public U apply(Category<?> node) {
-				return (U)node.getValue();
+				return (U)node.getId();
 			}
 		});
 	} 
 	
 	/**
 	 * 
-	 * @return the bottom up path according to the default policies configured in the context.
+	 * @return a linearization using the default bottom up linearization function.
 	 */
-	public abstract <U extends Category<?>> FluentIterable<U> bottomUpLinearization();
+	public <U extends Category<?>> FluentIterable<U> bottomUpLinearization() {
+		return (FluentIterable<U>)linearize(categoryHierarchy.getBottomUpLinearizationFunction());
+	}
 
 	/**
 	 * 
-	 * @return the top down path according to the default policies configured in the context.
+	 * @return a linearization using the default top down linearization function.
 	 */
-	public abstract <U extends Category<?>> FluentIterable<U> topDownLinearization();
-	
-	/**
-	 * 
-	 * @param key the property
-	 * @return An iterable of node properties according to the default bottom-up traversal policy (only nodes in the path including the given property will be considered).
-	 */
-	public <U> FluentIterable<U> bottomUpLinearizationProperties(Object key) {
-		return PropertyIterable.<U>properties(bottomUpLinearization(), key);
-	}
-	
-	/**
-	 * 
-	 * @param key the property
-	 * @return An iterable of node properties according to the default top-down traversal policy (only nodes in the path including the given property will be considered).
-	 */
-	public <U> FluentIterable<U> topDownLinearizationProperties(Object key) {
-		return PropertyIterable.<U>properties(topDownLinearization(), key);
-	}
-	
-	/**
-	 * 
-	 * @param traversalPolicy determines the nodes which properties will be part of the returning iterable.
-	 * @param key the property
-	 * @return An iterable of node properties according to the given traversal policy (only nodes in the path including the given property will be considered).
-	 */
-	public <U> FluentIterable<U> linearizationProperties(TraversalPolicy<?> traversalPolicy, Object key) {
-		return PropertyIterable.<U>properties(linearization(traversalPolicy), key);
+	public <U extends Category<?>> FluentIterable<U> topDownLinearization() {
+		return (FluentIterable<U>)linearize(categoryHierarchy.getTopDownLinearizationFunction());
 	}
 	
 	@Override
 	public String toString() {
-		return properties.toString();
+		return "["+idToString()+"]" + properties.toString();
+	}
+	
+	protected String idToString() {
+		return id.toString();
 	}
 
 }

@@ -1,5 +1,7 @@
 package org.jgum.category.type;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,13 +18,15 @@ public class InterfaceCategory<T> extends TypeCategory<T> {
 
 	private List<ClassCategory<? extends T>> knownImplementorNodes;
 	private List<InterfaceCategory<? extends T>> knownSubInterfaceNodes;
+	private TypeCategoryRoot defaultParentCategory; //the parent category of this interface in case it does not have super interfaces.
 	
-	InterfaceCategory(TypeHierarchy typeHierarchy, Class<T> interfaze) {
+	InterfaceCategory(TypeHierarchy typeHierarchy, Class<T> interfaze, TypeCategoryRoot parentCategory) {
 		this(typeHierarchy, interfaze, Collections.<InterfaceCategory<? super T>>emptyList());
+		this.defaultParentCategory = parentCategory;
 	}
 	
 	InterfaceCategory(TypeHierarchy typeHierarchy, Class<T> wrappedInterface, List<InterfaceCategory<? super T>> superInterfaceNodes) {
-		super(typeHierarchy, wrappedInterface, superInterfaceNodes);
+		super(wrappedInterface, typeHierarchy, superInterfaceNodes);
 		knownImplementorNodes = new ArrayList<>();
 		knownSubInterfaceNodes = new ArrayList<>();
 	}	
@@ -53,11 +57,15 @@ public class InterfaceCategory<T> extends TypeCategory<T> {
 
 	@Override
 	protected List<TypeCategory<? super T>> getParents(Priority priority, InterfaceOrder interfaceOrder) {
-		List<TypeCategory<? super T>> superInterfaceNodes = (List)getSuperInterfaceNodes();
-		if(interfaceOrder.equals(InterfaceOrder.REVERSE)) {
-			superInterfaceNodes = Lists.reverse(superInterfaceNodes);
+		if(defaultParentCategory != null) {
+			return (List)asList(defaultParentCategory);
+		} else {
+			List<TypeCategory<? super T>> superInterfaceNodes = (List)getSuperInterfaceNodes();
+			if(interfaceOrder.equals(InterfaceOrder.REVERSE)) {
+				superInterfaceNodes = Lists.reverse(superInterfaceNodes);
+			}
+			return superInterfaceNodes;
 		}
-		return superInterfaceNodes;
 	}
 
 	@Override

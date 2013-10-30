@@ -8,7 +8,7 @@ public class CounterCreationListener implements CategoryCreationListener<Categor
 	private int counter;
 	
 	@Override
-	public void onNodeCreation(Category category) {
+	public void onCategoryCreation(Category<?> category) {
 		counter++;
 	}
 	

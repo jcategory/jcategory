@@ -9,7 +9,7 @@ import org.jgum.category.TraversalPolicy;
 import com.google.common.base.Function;
 
 /**
- * A class facilitating the definition of bottom-up traversal policies in a graph of class nodes.
+ * A class facilitating the definition of bottom-up linearization functions in a graph of type nodes.
  * @author sergioc
  *
  */
@@ -18,8 +18,8 @@ public class BottomUpTypeTraversalPolicy<T extends TypeCategory<?>> extends Trav
 	/**
 	 * 
 	 * @param priority if classes should be visited before interfaces.
-	 * @param interfaceOrder if the interfaces should be traversed in declaration order or inversing the order.
-	 * @return a function mapping a TypeCategory to its parent.
+	 * @param interfaceOrder if the interfaces should be traversed in their declaration order or inversing their order.
+	 * @return a function mapping a TypeCategory to a bottom-up linearization.
 	 */
 	public static <U extends TypeCategory<?>> Function<U, List<U>> parentTypeFunction(final Priority priority, final InterfaceOrder interfaceOrder) {
 		return new Function<U, List<U>>() {

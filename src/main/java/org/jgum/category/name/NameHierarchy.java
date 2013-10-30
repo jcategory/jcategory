@@ -1,64 +1,35 @@
 package org.jgum.category.name;
 
-import org.jgum.JGum;
-import org.jgum.category.CategoryCreationListener;
-import org.jgum.category.CategoryCreationListenersManager;
+import org.jgum.category.CategoryHierarchy;
+
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 
 /**
  * A package tree.
  * @author sergioc
  *
  */
-public class NameHierarchy {
+public class NameHierarchy extends CategoryHierarchy<NameCategory> {
 
-	private NameCategoryRoot nameCategoryRoot;
-	private final JGum context;
-	private final CategoryCreationListenersManager listenersManager;
+	private NameCategory nameCategoryRoot;
 	
-	private final BottomUpNameTraversalPolicy bottomUpNameTraversalPolicy; //bottom up package traversing strategy for this context.
-	private final TopDownNameTraversalPolicy topDownNameTraversalPolicy; //top down package traversing strategy for this context.
-	
-	public NameHierarchy(JGum context) {
-		this.context = context;
-		bottomUpNameTraversalPolicy = context.getBottomUpNameTraversalPolicy();
-		topDownNameTraversalPolicy = context.getTopDownNameTraversalPolicy();
-		listenersManager = new CategoryCreationListenersManager();
+	public NameHierarchy(Function<? extends NameCategory, FluentIterable<? extends NameCategory>> bottomUpLinearization, 
+			Function<? extends NameCategory, FluentIterable<? extends NameCategory>> topDownLinearization) {
+		super((Function)bottomUpLinearization, (Function)topDownLinearization);
 	}
 	
-	public NameCategoryRoot getRoot() {
+	public NameCategory getRoot() {
 		if(nameCategoryRoot == null) {
-			nameCategoryRoot = new NameCategoryRoot(this);
+			nameCategoryRoot = new NameCategory(this);
 			notifyCreationListeners(nameCategoryRoot);
 		}
 		return nameCategoryRoot;
 	}
-	
-	public JGum getContext() {
-		return context;
-	}
-	
-	public void addNodeCreationListener(CategoryCreationListener<NameCategory> creationListener) {
-		listenersManager.addNodeCreationListener(creationListener);
-	}
-	
-	void notifyCreationListeners(NameCategory node) {
-		listenersManager.notifyCreationListeners(node);
-	}
-	
-	/**
-	 * 
-	 * @return the bottom up package traversing strategy for this context.
-	 */
-	public BottomUpNameTraversalPolicy getBottomUpNameTraversalPolicy() {
-		return bottomUpNameTraversalPolicy;
-	}
 
-	/**
-	 * 
-	 * @return the top down package traversing strategy for this context.
-	 */
-	public TopDownNameTraversalPolicy getTopDownNameTraversalPolicy() {
-		return topDownNameTraversalPolicy;
+	@Override
+	protected void notifyCreationListeners(NameCategory newCategory) {
+		super.notifyCreationListeners(newCategory);
 	}
-
+	
 }

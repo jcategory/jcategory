@@ -5,47 +5,36 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jgum.JGum;
-import org.jgum.category.CategoryCreationListener;
-import org.jgum.category.CategoryCreationListenersManager;
+import org.jgum.category.CategoryHierarchy;
 
-public class TypeHierarchy {
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 
-	private final CategoryCreationListenersManager listenersManager;
+public class TypeHierarchy extends CategoryHierarchy<TypeCategory<?>> {
+
+	private final Map<Class<?>, TypeCategory<?>> categoryIndex;	
 	private TypeCategoryRoot typeCategoryRoot;
-	private final JGum context;
-	private final Map<Class<?>, TypeCategory<?>> nodeIndex;
 	
-	private final BottomUpTypeTraversalPolicy<TypeCategory<?>> bottomUpTypeTraversalPolicy; //bottom up class traversing strategy for this context.
-	private final TopDownTypeTraversalPolicy<TypeCategory<?>> topDownTypeTraversalPolicy; //top down class traversing strategy for this context.
-	
-	public TypeHierarchy(JGum context) {
-		this.context = context;
-		bottomUpTypeTraversalPolicy = context.getBottomUpTypeTraversalPolicy();
-		topDownTypeTraversalPolicy = context.getTopDownTypeTraversalPolicy();
-		nodeIndex = new HashMap<>();
-		listenersManager = new CategoryCreationListenersManager();
+	public TypeHierarchy(Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> bottomUpLinearization, Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> topDownLinearization) {
+		super((Function)bottomUpLinearization, (Function)topDownLinearization);
+		categoryIndex = new HashMap<>();
 	}
 	
 	public TypeCategoryRoot getRoot() {
 		if(typeCategoryRoot == null) {
 			typeCategoryRoot = new TypeCategoryRoot(this);
-			listenersManager.notifyCreationListeners(typeCategoryRoot);
+			notifyCreationListeners(typeCategoryRoot);
 		}
 		return typeCategoryRoot;
 	}
-	
-	public JGum getContext() {
-		return context;
-	}
-	
+
 	public <T> TypeCategory<T> getTypeCategory(Class<T> clazz) {
-		return (TypeCategory<T>) nodeIndex.get(clazz);
+		return (TypeCategory<T>) categoryIndex.get(clazz);
 	}
 	
 	private <T> void putTypeCategory(Class<T> clazz, TypeCategory<T> node) {
-		nodeIndex.put(clazz, node);
-		listenersManager.notifyCreationListeners(node);
+		categoryIndex.put(clazz, node);
+		notifyCreationListeners(node);
 	}
 
 	public <T> TypeCategory<T> getOrCreateTypeCategory(Class<T> clazz) {
@@ -62,7 +51,7 @@ public class TypeHierarchy {
 	private <T> ClassCategory<T> createClassCategory(Class<T> clazz) {
 		ClassCategory classCategory;
 		if(Object.class.equals(clazz)) {
-			classCategory = ClassCategory.root(this);
+			classCategory = new ClassCategory(this, getRoot());
 		} else {
 			ClassCategory parentClassNode = (ClassCategory) getOrCreateTypeCategory(clazz.getSuperclass());
 			List<InterfaceCategory> superInterfaceNodes = new ArrayList<>();
@@ -88,25 +77,10 @@ public class TypeHierarchy {
 		putTypeCategory(clazz, interfaceCategory);
 		return interfaceCategory;
 	}
-	
-	public void addNodeCreationListener(CategoryCreationListener<TypeCategory<?>> creationListener) {
-		listenersManager.addNodeCreationListener(creationListener);
-	}
 
-	/**
-	 * 
-	 * @return the bottom up class traversing strategy for this context.
-	 */
-	public BottomUpTypeTraversalPolicy<TypeCategory<?>> getBottomUpTypeTraversalPolicy() {
-		return bottomUpTypeTraversalPolicy;
-	}
-
-	/**
-	 * 
-	 * @return the top down class traversing strategy for this context.
-	 */
-	public TopDownTypeTraversalPolicy<TypeCategory<?>> getTopDownTypeTraversalPolicy() {
-		return topDownTypeTraversalPolicy;
+	@Override
+	protected void notifyCreationListeners(TypeCategory<?> newCategory) {
+		super.notifyCreationListeners(newCategory);
 	}
 	
 }

@@ -1,9 +1,14 @@
 package org.jgum.category.type;
 
+import static java.util.Arrays.asList;
+import static org.jgum.JGum.DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.Function;
+import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
 /**
@@ -13,36 +18,34 @@ import com.google.common.collect.Lists;
  * @param <T> the type of the wrapped class.
  */
 public class ClassCategory<T> extends TypeCategory<T> {
-	
-	static ClassCategory<Object> root(TypeHierarchy typeHierarchy) {
-		return new ClassCategory(typeHierarchy);
-	}
-	
-	private ClassCategory<? super T> superClassNode;
+
+	private TypeCategory<? super T> parentCategory;
 	private List<ClassCategory<? extends T>> knownSubClassNodes;
 	
-	private ClassCategory(TypeHierarchy typeHierarchy) {
-		this(typeHierarchy, (Class<T>) Object.class, null);
+	ClassCategory(TypeHierarchy typeHierarchy, TypeCategoryRoot parentCategory) {
+		this(typeHierarchy, (Class<T>) Object.class, parentCategory);
 	}
 	
-	ClassCategory(TypeHierarchy typeHierarchy, Class<T> wrappedClass, ClassCategory<? super T> parentClassNode) {
-		this(typeHierarchy, wrappedClass, parentClassNode, Collections.<InterfaceCategory<? super T>>emptyList());
+	ClassCategory(TypeHierarchy typeHierarchy, Class<T> wrappedClass, TypeCategory<? super T> parentCategory) {
+		this(typeHierarchy, wrappedClass, parentCategory, Collections.<InterfaceCategory<? super T>>emptyList());
 	}
 	
-	ClassCategory(TypeHierarchy typeHierarchy, Class<T> wrappedClass, ClassCategory<? super T> superClassNode, List<InterfaceCategory<? super T>> superInterfaceNodes) {
-		super(typeHierarchy, wrappedClass, superInterfaceNodes);
+	ClassCategory(TypeHierarchy typeHierarchy, Class<T> wrappedClass, TypeCategory<? super T> parentCategory, List<InterfaceCategory<? super T>> superInterfaceNodes) {
+		super(wrappedClass, typeHierarchy, superInterfaceNodes);
 		knownSubClassNodes = new ArrayList<>();
-		if(superClassNode != null)
-			setSuperClassNode(superClassNode);
+		this.parentCategory = parentCategory;
+		if(parentCategory instanceof ClassCategory)
+			((ClassCategory)parentCategory).addKnownSubClassNode((ClassCategory<? extends T>) this);
+	}
+	
+	public TypeCategory<? super T> getParentCategory() {
+		return parentCategory;
 	}
 	
 	public ClassCategory<? super T> getSuperClassNode() {
-		return superClassNode;
-	}
-	
-	private void setSuperClassNode(ClassCategory<? super T> superClassNode) {
-		this.superClassNode = superClassNode;
-		superClassNode.addKnownSubClassNode((ClassCategory<? extends T>) this);
+		if(parentCategory instanceof ClassCategory)
+			return (ClassCategory)parentCategory;
+		return null;
 	}
 	
 	private void addKnownSubClassNode(ClassCategory<? extends T> subClassNode) {
@@ -61,24 +64,31 @@ public class ClassCategory<T> extends TypeCategory<T> {
 		return new ArrayList<>(knownSubClassNodes);
 	}
 
+	public FluentIterable<ClassCategory<? super T>> getAncestorClasses() {
+		return linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION).skip(1).filter(ClassCategory.class);
+	}
+	
 	@Override
 	protected List<TypeCategory<? super T>> getParents(Priority priority, InterfaceOrder interfaceOrder) {
-		List<InterfaceCategory<? super T>> superInterfaceNodes = (List)getSuperInterfaceNodes();
-		if(interfaceOrder.equals(InterfaceOrder.REVERSE)) {
-			//the reversed list does not support addition of elements,
-			//then a new list is created.
-			superInterfaceNodes = new ArrayList<>(Lists.reverse(superInterfaceNodes)); 
-		}
-		List<TypeCategory<? super T>> parents = (List)superInterfaceNodes;
 		ClassCategory<? super T> superClassNode = getSuperClassNode();
 		if(superClassNode != null) {
+			List<InterfaceCategory<? super T>> superInterfaceNodes = (List)getSuperInterfaceNodes();
+			if(interfaceOrder.equals(InterfaceOrder.REVERSE)) {
+				//the reversed list does not support addition of elements,
+				//then a new list is created.
+				superInterfaceNodes = new ArrayList<>(Lists.reverse(superInterfaceNodes)); 
+			}
+			List<TypeCategory<? super T>> parents = (List)superInterfaceNodes;
 			if(priority.equals(Priority.CLASSES_FIRST)) {
 				parents.add(0, superClassNode);
 			} else {
 				parents.add(superClassNode);
 			}
+			return parents;
+		} else {
+			return (List)asList(getParentCategory());
 		}
-		return parents;
+		
 	}
 
 	@Override

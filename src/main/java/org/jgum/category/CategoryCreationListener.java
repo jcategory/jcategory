@@ -1,7 +1,7 @@
 package org.jgum.category;
 
 /**
- * A listener notified when a new node has been created in a context.
+ * A listener notified when a new category has been created in a hierarchy.
  * @author sergioc
  *
  * @param <T> the type of the node
@@ -9,9 +9,9 @@ package org.jgum.category;
 public interface CategoryCreationListener<T extends Category<?>> {
 
 	/**
-	 * callback method invoked when a node has been created in a context.
+	 * callback method invoked when a category has been created in a hierarchy.
 	 * @param node the created node.
 	 */
-	public void onNodeCreation(T node);
+	public void onCategoryCreation(T category);
 	
 }

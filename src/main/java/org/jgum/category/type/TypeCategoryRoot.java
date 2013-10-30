@@ -6,43 +6,26 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.jgum.category.Category;
-import org.jgum.category.TraversalPolicy;
-import org.jgum.category.type.TypeCategoryRoot.Any;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
-
 /**
  * The root node in a hierarchy of classes and interfaces.
  * @author sergioc
  *
  */
-public class TypeCategoryRoot extends TypeCategory<Any> {
+public class TypeCategoryRoot extends TypeCategory<Object> {
 
 	private ClassCategory<Object> objectClassNode;
 	private final List<InterfaceCategory<?>> rootInterfaceNodes;
 	
-	public static class Any {}
+	//public static class Any {}
 	
-	public TypeCategoryRoot(TypeHierarchy typeHierarchy) {
-		super(typeHierarchy, Any.class);
+	TypeCategoryRoot(TypeHierarchy typeHierarchy) {
+		super(null, typeHierarchy);
 		rootInterfaceNodes = new ArrayList<>();
 	}
 
 	void addRootInterfaceNode(InterfaceCategory<?> rootInterfaceNode) {
 		rootInterfaceNodes.add(rootInterfaceNode);
 	}
-	
-//	@Override
-//	public Object put(Object key, Object value) {
-//		throw new UnsupportedOperationException("The root of the class and interface hierarchy cannot hold properties");
-//	}
-//	
-//	@Override
-//	public void put(Object key, Object value, boolean canOverride) {
-//		throw new UnsupportedOperationException("The root of the class and interface hierarchy cannot hold properties");
-//	}
 	
 	public ClassCategory<Object> getRootClassNode() {
 		if(objectClassNode == null) {
@@ -71,17 +54,6 @@ public class TypeCategoryRoot extends TypeCategory<Any> {
 			children.add(getRootClassNode());
 		}
 		return children;
-	}
-
-	@Override
-	public <U extends Category<?>> FluentIterable<U> linearization(TraversalPolicy<U> traversalPolicy) {
-		FluentIterable<U> it = super.linearization(traversalPolicy);
-		return it.filter(new Predicate<U>() {
-			@Override
-			public boolean apply(Category category) {
-				return !(category instanceof TypeCategoryRoot);
-			}
-		});	
 	}
 
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A utility class for controlling node creation listeners.
+ * A utility class for managing category creation listeners.
  * @author sergioc
  *
  */
@@ -22,7 +22,7 @@ public class CategoryCreationListenersManager {
 	
 	public void notifyCreationListeners(Category<?> node) {
 		for(CategoryCreationListener<?> listener : categoryCreationListeners) {
-			((CategoryCreationListener)listener).onNodeCreation(node);
+			((CategoryCreationListener)listener).onCategoryCreation(node);
 		}
 	}
 }

@@ -7,7 +7,7 @@ import java.util.Set;
 import com.google.common.collect.AbstractIterator;
 
 /**
- * An iterator that remembers the visited nodes. It will stop if an already visited node is returned.
+ * An iterator that remembers the visited categories. It will exclude already visited categories in the iteration.
  * @author sergioc
  *
  * @param <T> the type of the iterator

@@ -4,7 +4,6 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 import java.io.Serializable;
 import java.util.AbstractCollection;
@@ -18,6 +17,7 @@ import java.util.RandomAccess;
 import org.jgum.JGum;
 import org.jgum.category.Category;
 import org.jgum.category.CategoryCreationListener;
+import org.jgum.category.CategoryProperty;
 import org.jgum.category.DuplicatesDetection;
 import org.jgum.category.SearchStrategy;
 import org.jgum.testutil.CounterCreationListener;
@@ -36,22 +36,18 @@ public class TypeCategoryTest {
 		assertNull(hierarchy.getTypeCategory(ArrayList.class));
 		ClassCategory<ArrayList> arrayListNode = (ClassCategory<ArrayList>)hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		assertNotNull(arrayListNode);
-		assertEquals(0, hierarchyRoot.getAncestorClasses().size());
+		assertEquals(0, ((ClassCategory)hierarchy.getTypeCategory(Object.class)).getAncestorClasses().size());
+		assertEquals(0, hierarchy.getTypeCategory(Object.class).getAncestorInterfaces().size());
 		assertEquals(0, hierarchyRoot.getAncestorInterfaces().size());
 	}
 	
 	@Test
-	public void noPropertyInTypeRootTest() {
+	public void propertyInTypeRootTest() {
 		JGum jgum = new JGum();
 		TypeCategoryRoot hierarchyRoot = jgum.getTypeHierarchy().getRoot();
-		try {
-			hierarchyRoot.put("x", "x");
-			fail();
-		} catch(UnsupportedOperationException e){}
-		try {
-			hierarchyRoot.put("x", "x", true);
-			fail();
-		} catch(UnsupportedOperationException e){}
+		hierarchyRoot.putProperty("x", "x");
+		CategoryProperty cp = new CategoryProperty(jgum.forClass(Object.class), "x");
+		assertEquals("x", cp.getOrThrow());
 	}
 	
 	@Test
@@ -62,39 +58,40 @@ public class TypeCategoryTest {
 		
 		FluentIterable<TypeCategory<?>> arrayListBottomUpPath;
 		
-		arrayListBottomUpPath = arrayListNode.linearization(
+		arrayListBottomUpPath = arrayListNode.linearize(
 				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, DuplicatesDetection.IGNORE));
 		assertNotNull(arrayListBottomUpPath);
 		//System.out.println(arrayListBottomUpPath);
 		List<Class<?>> classes;
-		classes = Category.<Class<?>>linearizationValues(arrayListBottomUpPath).toList();
+		System.out.println(arrayListBottomUpPath);
+		classes = Category.<Class<?>>linearizeValues(arrayListBottomUpPath).toList();
 		assertEquals(asList(ArrayList.class, Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
 				AbstractList.class, List.class, Collection.class, Iterable.class, 
 				AbstractCollection.class, Collection.class, Iterable.class, Object.class), classes);
 
-		arrayListBottomUpPath = arrayListNode.linearization(
+		arrayListBottomUpPath = arrayListNode.linearize(
 				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DIRECT, DuplicatesDetection.IGNORE));
 		assertNotNull(arrayListBottomUpPath);
 		//System.out.println(arrayListBottomUpPath);
-		classes = Category.<Class<?>>linearizationValues(arrayListBottomUpPath).toList();
+		classes = Category.<Class<?>>linearizeValues(arrayListBottomUpPath).toList();
 		assertEquals(asList(ArrayList.class, AbstractList.class, AbstractCollection.class, Object.class, 
 				Collection.class, Iterable.class, List.class, Collection.class, Iterable.class, 
 				List.class, Collection.class, Iterable.class, RandomAccess.class, Cloneable.class, Serializable.class
 				), classes);
 		
-		arrayListBottomUpPath = arrayListNode.linearization(
+		arrayListBottomUpPath = arrayListNode.linearize(
 				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, DuplicatesDetection.ENFORCE));
 		assertNotNull(arrayListBottomUpPath);
 		//System.out.println(arrayListBottomUpPath);
-		classes = Category.<Class<?>>linearizationValues(arrayListBottomUpPath).toList();
+		classes = Category.<Class<?>>linearizeValues(arrayListBottomUpPath).toList();
 		assertEquals(asList(ArrayList.class, Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
 				AbstractList.class, AbstractCollection.class, Object.class), classes);
 		
 		FluentIterable<ClassCategory<? super ArrayList>> ancestorsPath = arrayListNode.getAncestorClasses();
-		assertEquals(asList(AbstractList.class, AbstractCollection.class, Object.class), Category.<Class<?>>linearizationValues(ancestorsPath).toList());
+		assertEquals(asList(AbstractList.class, AbstractCollection.class, Object.class), Category.<Class<?>>linearizeValues(ancestorsPath).toList());
 		
 		FluentIterable<InterfaceCategory<? super ArrayList>> interfacesPath = arrayListNode.getAncestorInterfaces();
-		assertEquals(asList(Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class), Category.<Class<?>>linearizationValues(interfacesPath).toList());
+		assertEquals(asList(Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class), Category.<Class<?>>linearizeValues(interfacesPath).toList());
 	}
 	
 	@Test
@@ -106,7 +103,7 @@ public class TypeCategoryTest {
 		rootTopDownPath = hierarchy.getRoot().topDownLinearization();
 		assertEquals(asList(java.lang.Iterable.class, java.util.RandomAccess.class, java.lang.Cloneable.class, java.io.Serializable.class, 
 				java.lang.Object.class, java.util.Collection.class, java.util.ArrayList.class, java.util.AbstractCollection.class, 
-				java.util.List.class, java.util.AbstractList.class), Category.<Class<?>>linearizationValues(rootTopDownPath).toList());
+				java.util.List.class, java.util.AbstractList.class), Category.<Class<?>>linearizeValues(rootTopDownPath).toList());
 		//System.out.println(rootTopDownPath);
 	}
 
@@ -121,12 +118,12 @@ public class TypeCategoryTest {
 		String v4 = "v4";
 		TypeCategory<?> arrayListNode = hierarchy.getOrCreateTypeCategory(ArrayList.class);  //creates a node for the ArrayList class. Nodes for all super classes and interfaces of ArrayList are also created.
 		//Adding properties to different classes and interfaces in the hierarchy graph:
-		arrayListNode.put(key, v1);
-		hierarchy.getTypeCategory(List.class).put(key, v2);
-		hierarchy.getTypeCategory(AbstractCollection.class).put(key, v3);
-		hierarchy.getTypeCategory(Object.class).put(key, v4);
+		arrayListNode.putProperty(key, v1);
+		hierarchy.getTypeCategory(List.class).putProperty(key, v2);
+		hierarchy.getTypeCategory(AbstractCollection.class).putProperty(key, v3);
+		hierarchy.getTypeCategory(Object.class).putProperty(key, v4);
 		//Verifying the properties
-		Iterator<?> propertiesIt = arrayListNode.bottomUpLinearizationProperties(key).iterator();
+		Iterator<?> propertiesIt = CategoryProperty.<String>properties(arrayListNode.bottomUpLinearization(), key).iterator();
 		assertEquals(v1, propertiesIt.next());
 		assertEquals(v2, propertiesIt.next());
 		assertEquals(v3, propertiesIt.next());
@@ -137,12 +134,12 @@ public class TypeCategoryTest {
 		hierarchy = jgum.getTypeHierarchy();
 		arrayListNode = hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		//Properties added in an arbitrary order:
-		hierarchy.getTypeCategory(List.class).put(key, v2);
-		hierarchy.getTypeCategory(Object.class).put(key, v4);
-		arrayListNode.put(key, v1);
-		hierarchy.getTypeCategory(AbstractCollection.class).put(key, v3);
+		hierarchy.getTypeCategory(List.class).putProperty(key, v2);
+		hierarchy.getTypeCategory(Object.class).putProperty(key, v4);
+		arrayListNode.putProperty(key, v1);
+		hierarchy.getTypeCategory(AbstractCollection.class).putProperty(key, v3);
 		//but the result is the same:
-		propertiesIt = arrayListNode.bottomUpLinearizationProperties(key).iterator();
+		propertiesIt = CategoryProperty.<String>properties(arrayListNode.bottomUpLinearization(), key).iterator();
 		assertEquals(v1, propertiesIt.next());
 		assertEquals(v2, propertiesIt.next());
 		assertEquals(v3, propertiesIt.next());
