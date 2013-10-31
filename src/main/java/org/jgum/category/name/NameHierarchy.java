@@ -1,6 +1,6 @@
 package org.jgum.category.name;
 
-import org.jgum.category.CategoryHierarchy;
+import org.jgum.category.Categorization;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
@@ -10,7 +10,7 @@ import com.google.common.collect.FluentIterable;
  * @author sergioc
  *
  */
-public class NameHierarchy extends CategoryHierarchy<NameCategory> {
+public class NameHierarchy extends Categorization<NameCategory> {
 
 	private NameCategory nameCategoryRoot;
 	

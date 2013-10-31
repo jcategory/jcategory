@@ -16,20 +16,20 @@ public abstract class Category<T> {
 
 	private T id; //the identifier of this category.
 	private Map<Object, Object> properties; //properties associated with this category are backed up in this map.
-	private final CategoryHierarchy<?> categoryHierarchy; //the hierarchy where this category exists.
+	private final Categorization<?> categorization; //the hierarchy where this category exists.
 	
 	/**
 	 * @param id the id identifying this category.
-	 * @param categoryHierarchy the hierarchy where this category exists.
+	 * @param categorization the hierarchy where this category exists.
 	 */
-	public Category(T value, CategoryHierarchy<?> categoryHierarchy) {
+	public Category(T value, Categorization<?> categoryHierarchy) {
 		this.id = value;
-		this.categoryHierarchy = categoryHierarchy;
+		this.categorization = categoryHierarchy;
 		properties = new HashMap<>();
 	}
 
-	public CategoryHierarchy<?> getCategoryHierarchy() {
-		return categoryHierarchy;
+	public Categorization<?> getCategoryHierarchy() {
+		return categorization;
 	}
 	
 	/**
@@ -113,7 +113,7 @@ public abstract class Category<T> {
 	 * @return a linearization using the default bottom up linearization function.
 	 */
 	public <U extends Category<?>> FluentIterable<U> bottomUpLinearization() {
-		return (FluentIterable<U>)linearize(categoryHierarchy.getBottomUpLinearizationFunction());
+		return (FluentIterable<U>)linearize(categorization.getBottomUpLinearizationFunction());
 	}
 
 	public abstract <U extends Category<?>> List<U> getParents();
@@ -125,7 +125,7 @@ public abstract class Category<T> {
 	 * @return a linearization using the default top down linearization function.
 	 */
 	public <U extends Category<?>> FluentIterable<U> topDownLinearization() {
-		return (FluentIterable<U>)linearize(categoryHierarchy.getTopDownLinearizationFunction());
+		return (FluentIterable<U>)linearize(categorization.getTopDownLinearizationFunction());
 	}
 	
 	@Override

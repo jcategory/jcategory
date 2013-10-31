@@ -16,12 +16,11 @@ import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
 /**
- * Defines a context in which hierarchical meta-object artifacts (like Java classes, interfaces and packages) are associated with properties.
- * Such associations hold in the scope of this context only.
+ * Defines a register of categorizations that includes a named categorization and a type categorization.
  * @author sergioc
  *
  */
-public class JGum extends HierarchyRegister {
+public class JGum extends CategorizationRegister {
 
 	/**
 	 * Default linearization function for bottom up traversing (given a descendant class) of a graph denoting a class hierarchy.

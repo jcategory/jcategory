@@ -5,12 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jgum.category.CategoryHierarchy;
+import org.jgum.category.Categorization;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
-public class TypeHierarchy extends CategoryHierarchy<TypeCategory<?>> {
+public class TypeHierarchy extends Categorization<TypeCategory<?>> {
 
 	private final Map<Class<?>, TypeCategory<?>> categoryIndex;	
 	private TypeCategoryRoot typeCategoryRoot;
