@@ -19,6 +19,11 @@ import com.google.common.collect.FluentIterable;
  */
 public abstract class TypeCategory<T> extends Category<Class<T>> {
 
+	private static final Priority DEFAULT_BOTTOM_UP_PRIORITY = Priority.CLASSES_FIRST;
+	private static final InterfaceOrder DEFAULT_INTERFACE_ORDER = InterfaceOrder.DIRECT;
+	private static final Priority DEFAULT_TOP_DOWN_PRIORITY = Priority.INTERFACES_FIRST;
+	
+	
 	private List<InterfaceCategory<? super T>> superInterfaceNodes;
 	
 	TypeCategory(Class<T> wrappedClazz, TypeHierarchy typeHierarchy) {
@@ -51,6 +56,16 @@ public abstract class TypeCategory<T> extends Category<Class<T>> {
 		if(getId() == null)
 			return "null";
 		return getId().getName();
+	}
+	
+	@Override
+	public <U extends Category<?>> List<U> getParents() {
+		return (List)getParents(DEFAULT_BOTTOM_UP_PRIORITY, DEFAULT_INTERFACE_ORDER);
+	}
+
+	@Override
+	public <U extends Category<?>> List<U> getChildren() {
+		return (List)getChildren(DEFAULT_TOP_DOWN_PRIORITY);
 	}
 	
 	protected abstract <U extends TypeCategory<? super T>> List<U> getParents(Priority priority, InterfaceOrder interfaceOrder);

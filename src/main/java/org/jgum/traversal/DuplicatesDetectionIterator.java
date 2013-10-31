@@ -1,4 +1,4 @@
-package org.jgum.category;
+package org.jgum.traversal;
 
 import java.util.HashSet;
 import java.util.Iterator;

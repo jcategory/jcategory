@@ -1,6 +1,7 @@
 package org.jgum.category;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Function;
@@ -115,6 +116,10 @@ public abstract class Category<T> {
 		return (FluentIterable<U>)linearize(categoryHierarchy.getBottomUpLinearizationFunction());
 	}
 
+	public abstract <U extends Category<?>> List<U> getParents();
+
+	public abstract <U extends Category<?>> List<U> getChildren();
+	
 	/**
 	 * 
 	 * @return a linearization using the default top down linearization function.

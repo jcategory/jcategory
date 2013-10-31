@@ -3,13 +3,15 @@ package org.jgum.category.name;
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import org.jgum.category.Category;
-import org.jgum.category.SearchStrategy;
-import org.jgum.category.StopUntilConditionIterable;
+import org.jgum.traversal.SearchStrategy;
+import org.jgum.traversal.StopUntilConditionIterable;
+import org.jgum.traversal.TraversalPolicy;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.FluentIterable;
@@ -64,12 +66,21 @@ public class NameCategory extends Category<String> {
 		return isRoot() ? name : getId() + "." + name;
 	}
 	
-	public List<NameCategory> getChildren() {
-		return new ArrayList<>(children.values());
-	}
-	
 	public NameCategory getParent() {
 		return parent;
+	}
+	
+	@Override
+	public List<NameCategory> getParents() {
+		if(parent == null)
+			return Collections.emptyList();
+		else
+			return asList(parent);
+	}
+
+	@Override
+	public List<NameCategory> getChildren() {
+		return new ArrayList<>(children.values());
 	}
 	
 	public Object get(String relativeCategoryName, Object key) {
@@ -148,7 +159,7 @@ public class NameCategory extends Category<String> {
 	
 	
 	public FluentIterable<NameCategory> topDownPath(String relativePackageName) {
-		Iterable<NameCategory> bottomUpIterable = getOrCreateCategory(relativePackageName).linearize(new BottomUpNameTraversalPolicy(SearchStrategy.PRE_ORDER));
+		Iterable<NameCategory> bottomUpIterable = getOrCreateCategory(relativePackageName).<NameCategory>linearize(TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER));
 		Iterable<NameCategory> filteredBottomUpIterable = new StopUntilConditionIterable(bottomUpIterable, new Predicate<NameCategory>() {
 			@Override
 			public boolean apply(NameCategory node) {

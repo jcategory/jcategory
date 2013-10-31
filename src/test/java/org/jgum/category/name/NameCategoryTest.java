@@ -13,8 +13,9 @@ import java.util.List;
 import org.jgum.JGum;
 import org.jgum.category.CategoryCreationListener;
 import org.jgum.category.CategoryProperty;
-import org.jgum.category.SearchStrategy;
 import org.jgum.testutil.CounterCreationListener;
+import org.jgum.traversal.SearchStrategy;
+import org.jgum.traversal.TraversalPolicy;
 import org.junit.Test;
 
 import com.google.common.base.Optional;
@@ -89,6 +90,11 @@ public class NameCategoryTest {
 		NameCategory root = newPackagePropertiesRoot();
 		assertEquals(rootProperty, new CategoryProperty(root.getCategory(packageP1), rootProperty).get().get());
 		assertEquals(p1Property, new CategoryProperty(root.getCategory(packageP1), p1Property).get().get());
+		
+		CategoryProperty o = new CategoryProperty(root.getCategory(packageP1), p2Property);
+		Object s = o.get();
+		
+		
 		assertEquals(Optional.absent(), new CategoryProperty(root.getCategory(packageP1), p2Property).get());
 		assertEquals(p1Property, new CategoryProperty(root.getCategory(packageP2), p1Property).get().get());
 		assertEquals(p2Property, new CategoryProperty(root.getCategory(packageP2), p2Property).get().get());
@@ -133,7 +139,7 @@ public class NameCategoryTest {
 	@Test
 	public void testAllDescendantsPreOrder() {
 		NameCategory root = newPackagePropertiesRoot().getCategory(packageP1);
-		List<NameCategory> preOrderList = Lists.newArrayList(root.linearize(new TopDownNameTraversalPolicy(SearchStrategy.PRE_ORDER)));
+		List<NameCategory> preOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER)));
 		assertEquals(p1Property, preOrderList.get(0).getProperty(p1Property));
 		assertEquals(p2Property, preOrderList.get(1).getProperty(p2Property));
 		assertEquals(p3Property, preOrderList.get(2).getProperty(p3Property));
@@ -145,7 +151,7 @@ public class NameCategoryTest {
 	@Test
 	public void testAllDescendantsPostOrder() {
 		NameCategory root = newPackagePropertiesRoot().getCategory(packageP1);
-		List<NameCategory> postOrderList = Lists.newArrayList(root.linearize(new TopDownNameTraversalPolicy(SearchStrategy.POST_ORDER)));
+		List<NameCategory> postOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.POST_ORDER)));
 		assertEquals(p3Property, postOrderList.get(0).getProperty(p3Property));
 		assertEquals(p5Property, postOrderList.get(1).getProperty(p5Property));
 		assertEquals(p4Property, postOrderList.get(2).getProperty(p4Property));
@@ -157,7 +163,7 @@ public class NameCategoryTest {
 	@Test
 	public void testAllDescendantsBreadthFirst() {
 		NameCategory root = newPackagePropertiesRoot().getCategory(packageP1);
-		List<NameCategory> breadthFirstList = Lists.newArrayList(root.linearize(new TopDownNameTraversalPolicy(SearchStrategy.BREADTH_FIRST)));
+		List<NameCategory> breadthFirstList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST)));
 		assertEquals(p1Property, breadthFirstList.get(0).getProperty(p1Property));
 		assertEquals(p2Property, breadthFirstList.get(1).getProperty(p2Property));
 		assertEquals(p3Property, breadthFirstList.get(2).getProperty(p3Property));

@@ -1,4 +1,4 @@
-package org.jgum.category;
+package org.jgum.traversal;
 
 /**
  * Determines how the next nodes in a hierarchical graph of categories should be visited.

@@ -1,4 +1,4 @@
-package org.jgum.category;
+package org.jgum.traversal;
 
 /**
  * Determines if a list of categories in a given linearization should filter nodes that have already been visited.

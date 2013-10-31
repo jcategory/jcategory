@@ -1,17 +1,16 @@
 package org.jgum;
 
-import org.jgum.category.DuplicatesDetection;
-import org.jgum.category.SearchStrategy;
-import org.jgum.category.name.BottomUpNameTraversalPolicy;
 import org.jgum.category.name.NameCategory;
 import org.jgum.category.name.NameHierarchy;
-import org.jgum.category.name.TopDownNameTraversalPolicy;
 import org.jgum.category.type.BottomUpTypeTraversalPolicy;
 import org.jgum.category.type.InterfaceOrder;
 import org.jgum.category.type.Priority;
 import org.jgum.category.type.TopDownTypeTraversalPolicy;
 import org.jgum.category.type.TypeCategory;
 import org.jgum.category.type.TypeHierarchy;
+import org.jgum.traversal.DuplicatesDetection;
+import org.jgum.traversal.SearchStrategy;
+import org.jgum.traversal.TraversalPolicy;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
@@ -28,44 +27,39 @@ public class JGum extends HierarchyRegister {
 	 * Default linearization function for bottom up traversing (given a descendant class) of a graph denoting a class hierarchy.
 	 */
 	public static final Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION = 
-			(Function)new BottomUpTypeTraversalPolicy<TypeCategory<?>>(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, DuplicatesDetection.ENFORCE);
+			new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, DuplicatesDetection.ENFORCE);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor class) of a graph denoting a class hierarchy.
 	 */
 	public static final Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION = 
-			(Function)new TopDownTypeTraversalPolicy<TypeCategory<?>>(SearchStrategy.BREADTH_FIRST, Priority.INTERFACES_FIRST, DuplicatesDetection.ENFORCE);
+			new TopDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.INTERFACES_FIRST, DuplicatesDetection.ENFORCE);
 	
 	/**
 	 * Default linearization function for bottom up traversing (given a name) of a tree denoting a package hierarchy.
 	 */
 	public static final Function<? extends NameCategory, FluentIterable<? extends NameCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
-			(Function)new BottomUpNameTraversalPolicy(SearchStrategy.PRE_ORDER);
+			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor name) of a tree denoting a package hierarchy.
 	 */
 	public static final Function<? extends NameCategory, FluentIterable<? extends NameCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
-			(Function)new TopDownNameTraversalPolicy(SearchStrategy.PRE_ORDER);
+			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER);
 	
 	
 	private final TypeHierarchy typeHierarchy; //the class (and interface) hierarchy graph.
 	private final NameHierarchy nameHierarchy; //a name space.
-	
-	private final Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> bottomUpTypeLinearizationFunction; //bottom up class linearization function for this context.
-	private final Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> topDownTypeLinearizationFunction; //top down class linearization function for this context.
-	private final Function<? extends NameCategory, FluentIterable<? extends NameCategory>> bottomUpNameLinearizationFunction; //bottom up name linearization function for this context.
-	private final Function<? extends NameCategory, FluentIterable<? extends NameCategory>> topDownNameLinearizationFunction; //top down name linearization function for this context.
 
+	public static final Object JGUM_TYPE_HIERARCHY_ID = new Object(); //the id under which the type hierarchy is registered on the hierarchy register.
+	public static final Object JGUM_NAME_HIERARCHY_ID = new Object(); //the id under which the name hierarchy is registered on the hierarchy register.
+	
 	/**
 	 * Creates a new context with default linearization functions.
 	 */
 	public JGum() {
 		this(DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION, DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION, DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION, DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION);
 	}
-	
-	public static final Object JGUM_TYPE_HIERARCHY_ID = new Object(); //the id under which the type hierarchy is registered on the hierarchy register.
-	public static final Object JGUM_NAME_HIERARCHY_ID = new Object(); //the id under which the name hierarchy is registered on the hierarchy register.
 	
 	/**
 	 * Creates a new context with the given class and name linearization functions.
@@ -78,10 +72,7 @@ public class JGum extends HierarchyRegister {
 			Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> topDownTypeLinearizationFunction,
 			Function<? extends NameCategory, FluentIterable<? extends NameCategory>> bottomUpNameLinearizationFunction, 
 			Function<? extends NameCategory, FluentIterable<? extends NameCategory>> topDownNameLinearizationFunction) {
-		this.bottomUpTypeLinearizationFunction = bottomUpTypeLinearizationFunction;
-		this.topDownTypeLinearizationFunction = topDownTypeLinearizationFunction;
-		this.bottomUpNameLinearizationFunction = bottomUpNameLinearizationFunction;
-		this.topDownNameLinearizationFunction = topDownNameLinearizationFunction;
+		
 		nameHierarchy = new NameHierarchy(bottomUpNameLinearizationFunction, topDownNameLinearizationFunction);
 		register(JGUM_TYPE_HIERARCHY_ID, nameHierarchy);
 		typeHierarchy = new TypeHierarchy(bottomUpTypeLinearizationFunction, topDownTypeLinearizationFunction);

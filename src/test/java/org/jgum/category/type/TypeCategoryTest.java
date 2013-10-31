@@ -18,10 +18,10 @@ import org.jgum.JGum;
 import org.jgum.category.Category;
 import org.jgum.category.CategoryCreationListener;
 import org.jgum.category.CategoryProperty;
-import org.jgum.category.DuplicatesDetection;
-import org.jgum.category.SearchStrategy;
 import org.jgum.category.type.TypeCategoryRoot.Any;
 import org.jgum.testutil.CounterCreationListener;
+import org.jgum.traversal.DuplicatesDetection;
+import org.jgum.traversal.SearchStrategy;
 import org.junit.Test;
 
 import com.google.common.collect.FluentIterable;

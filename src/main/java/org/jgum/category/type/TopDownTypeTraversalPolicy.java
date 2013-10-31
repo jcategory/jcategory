@@ -2,9 +2,9 @@ package org.jgum.category.type;
 
 import java.util.List;
 
-import org.jgum.category.DuplicatesDetection;
-import org.jgum.category.SearchStrategy;
-import org.jgum.category.TraversalPolicy;
+import org.jgum.traversal.DuplicatesDetection;
+import org.jgum.traversal.SearchStrategy;
+import org.jgum.traversal.TraversalPolicy;
 
 import com.google.common.base.Function;
 
@@ -20,7 +20,7 @@ public class TopDownTypeTraversalPolicy<T extends TypeCategory<?>> extends Trave
 	 * @param priority if classes should be visited before interfaces.
 	 * @return a function mapping a TypeCategory to a top-down linearization.
 	 */
-	public static <U extends TypeCategory<?>> Function<U, List<U>> childrenTypeFunction(final Priority priority) {
+	public static <U extends TypeCategory<?>> Function<U, List<U>> childrenFunction(final Priority priority) {
 		return new Function<U, List<U>>() {
 			@Override
 			public List<U> apply(U typeNode) {
@@ -36,7 +36,7 @@ public class TopDownTypeTraversalPolicy<T extends TypeCategory<?>> extends Trave
 	 * @param duplicatesDetection if a node can be traversed only once in a given path.
 	 */
 	public TopDownTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, DuplicatesDetection duplicatesDetection) {
-		super(searchStrategy, TopDownTypeTraversalPolicy.<T>childrenTypeFunction(priority), duplicatesDetection);
+		super(searchStrategy, TopDownTypeTraversalPolicy.<T>childrenFunction(priority), duplicatesDetection);
 	}
 	
 }
