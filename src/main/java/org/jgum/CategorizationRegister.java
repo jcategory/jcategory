@@ -23,7 +23,7 @@ public class CategorizationRegister {
 	 * @param key the key under which the requested categorization is registered.
 	 * @return the categorization registered under the key sent as a parameter.
 	 */
-	public <T extends Category<?>> Categorization<T> getHierarchy(Object key) {
+	public <T extends Category<?>> Categorization<T> getCategorization(Object key) {
 		return (Categorization<T>)categorizationIndex.get(key);
 	}
 	

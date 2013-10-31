@@ -20,8 +20,8 @@ public class TypeCategoryRoot extends TypeCategory<Any> {
 	private ClassCategory<Object> objectClassNode;
 	private final List<InterfaceCategory<?>> rootInterfaceNodes;
 	
-	TypeCategoryRoot(TypeHierarchy typeHierarchy) {
-		super(Any.class, typeHierarchy);
+	TypeCategoryRoot(TypeCategorization typeCategorization) {
+		super(Any.class, typeCategorization);
 		rootInterfaceNodes = new ArrayList<>();
 	}
 

@@ -26,17 +26,17 @@ public abstract class TypeCategory<T> extends Category<Class<T>> {
 	
 	private List<InterfaceCategory<? super T>> superInterfaceNodes;
 	
-	TypeCategory(Class<T> wrappedClazz, TypeHierarchy typeHierarchy) {
-		this(wrappedClazz, typeHierarchy, Collections.<InterfaceCategory<? super T>>emptyList());
+	TypeCategory(Class<T> wrappedClazz, TypeCategorization typeCategorization) {
+		this(wrappedClazz, typeCategorization, Collections.<InterfaceCategory<? super T>>emptyList());
 	}
 	
-	TypeCategory(Class<T> wrappedClazz, TypeHierarchy typeHierarchy, List<InterfaceCategory<? super T>> superInterfaceNodes) {
-		super(wrappedClazz, typeHierarchy);
+	TypeCategory(Class<T> wrappedClazz, TypeCategorization typeCategorization, List<InterfaceCategory<? super T>> superInterfaceNodes) {
+		super(wrappedClazz, typeCategorization);
 		setSuperInterfaceNodes(superInterfaceNodes);
 	}
 
-	public TypeHierarchy getTypeHierarchy() {
-		return (TypeHierarchy)super.getCategoryHierarchy();
+	public TypeCategorization getTypeHierarchy() {
+		return (TypeCategorization)super.getCategoryHierarchy();
 	}
 	
 	public List<InterfaceCategory<? super T>> getSuperInterfaceNodes() {

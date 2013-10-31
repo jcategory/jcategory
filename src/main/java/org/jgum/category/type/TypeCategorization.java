@@ -10,12 +10,12 @@ import org.jgum.category.Categorization;
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
-public class TypeHierarchy extends Categorization<TypeCategory<?>> {
+public class TypeCategorization extends Categorization<TypeCategory<?>> {
 
 	private final Map<Class<?>, TypeCategory<?>> categoryIndex;	
 	private TypeCategoryRoot typeCategoryRoot;
 	
-	public TypeHierarchy(Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> bottomUpLinearization, Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> topDownLinearization) {
+	public TypeCategorization(Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> bottomUpLinearization, Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> topDownLinearization) {
 		super((Function)bottomUpLinearization, (Function)topDownLinearization);
 		categoryIndex = new HashMap<>();
 	}

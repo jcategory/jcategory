@@ -10,11 +10,11 @@ import com.google.common.collect.FluentIterable;
  * @author sergioc
  *
  */
-public class NameHierarchy extends Categorization<NameCategory> {
+public class NameCategorization extends Categorization<NameCategory> {
 
 	private NameCategory nameCategoryRoot;
 	
-	public NameHierarchy(Function<? extends NameCategory, FluentIterable<? extends NameCategory>> bottomUpLinearization, 
+	public NameCategorization(Function<? extends NameCategory, FluentIterable<? extends NameCategory>> bottomUpLinearization, 
 			Function<? extends NameCategory, FluentIterable<? extends NameCategory>> topDownLinearization) {
 		super((Function)bottomUpLinearization, (Function)topDownLinearization);
 	}

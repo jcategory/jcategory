@@ -20,13 +20,13 @@ public class InterfaceCategory<T> extends TypeCategory<T> {
 	private List<InterfaceCategory<? extends T>> knownSubInterfaceNodes;
 	private TypeCategoryRoot defaultParentCategory; //the parent category of this interface in case it does not have super interfaces.
 	
-	InterfaceCategory(TypeHierarchy typeHierarchy, Class<T> interfaze, TypeCategoryRoot parentCategory) {
-		this(typeHierarchy, interfaze, Collections.<InterfaceCategory<? super T>>emptyList());
+	InterfaceCategory(TypeCategorization typeCategorization, Class<T> interfaze, TypeCategoryRoot parentCategory) {
+		this(typeCategorization, interfaze, Collections.<InterfaceCategory<? super T>>emptyList());
 		this.defaultParentCategory = parentCategory;
 	}
 	
-	InterfaceCategory(TypeHierarchy typeHierarchy, Class<T> wrappedInterface, List<InterfaceCategory<? super T>> superInterfaceNodes) {
-		super(wrappedInterface, typeHierarchy, superInterfaceNodes);
+	InterfaceCategory(TypeCategorization typeCategorization, Class<T> wrappedInterface, List<InterfaceCategory<? super T>> superInterfaceNodes) {
+		super(wrappedInterface, typeCategorization, superInterfaceNodes);
 		knownImplementorNodes = new ArrayList<>();
 		knownSubInterfaceNodes = new ArrayList<>();
 	}	

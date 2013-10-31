@@ -1,13 +1,13 @@
 package org.jgum;
 
 import org.jgum.category.name.NameCategory;
-import org.jgum.category.name.NameHierarchy;
+import org.jgum.category.name.NameCategorization;
 import org.jgum.category.type.BottomUpTypeTraversalPolicy;
 import org.jgum.category.type.InterfaceOrder;
 import org.jgum.category.type.Priority;
 import org.jgum.category.type.TopDownTypeTraversalPolicy;
 import org.jgum.category.type.TypeCategory;
-import org.jgum.category.type.TypeHierarchy;
+import org.jgum.category.type.TypeCategorization;
 import org.jgum.traversal.DuplicatesDetection;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
@@ -47,8 +47,8 @@ public class JGum extends CategorizationRegister {
 			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER);
 	
 	
-	private final TypeHierarchy typeHierarchy; //the class (and interface) hierarchy graph.
-	private final NameHierarchy nameHierarchy; //a name space.
+	private final TypeCategorization typeCategorization; //the class (and interface) hierarchy graph.
+	private final NameCategorization nameCategorization; //a name space.
 
 	public static final Object JGUM_TYPE_HIERARCHY_ID = new Object(); //the id under which the type hierarchy is registered on the hierarchy register.
 	public static final Object JGUM_NAME_HIERARCHY_ID = new Object(); //the id under which the name hierarchy is registered on the hierarchy register.
@@ -72,18 +72,18 @@ public class JGum extends CategorizationRegister {
 			Function<? extends NameCategory, FluentIterable<? extends NameCategory>> bottomUpNameLinearizationFunction, 
 			Function<? extends NameCategory, FluentIterable<? extends NameCategory>> topDownNameLinearizationFunction) {
 		
-		nameHierarchy = new NameHierarchy(bottomUpNameLinearizationFunction, topDownNameLinearizationFunction);
-		register(JGUM_TYPE_HIERARCHY_ID, nameHierarchy);
-		typeHierarchy = new TypeHierarchy(bottomUpTypeLinearizationFunction, topDownTypeLinearizationFunction);
-		register(JGUM_NAME_HIERARCHY_ID, typeHierarchy);
+		nameCategorization = new NameCategorization(bottomUpNameLinearizationFunction, topDownNameLinearizationFunction);
+		register(JGUM_TYPE_HIERARCHY_ID, nameCategorization);
+		typeCategorization = new TypeCategorization(bottomUpTypeLinearizationFunction, topDownTypeLinearizationFunction);
+		register(JGUM_NAME_HIERARCHY_ID, typeCategorization);
 	}
 	
 	/**
 	 * 
 	 * @return the name hierarchy associated with this context.
 	 */
-	public NameHierarchy getNameHierarchy() {
-		return nameHierarchy;
+	public NameCategorization getNameHierarchy() {
+		return nameCategorization;
 	}
 	
 	/**
@@ -91,7 +91,7 @@ public class JGum extends CategorizationRegister {
 	 * @return the category corresponding to the root in the name hierarchy (the empty name).
 	 */
 	public NameCategory forNameRoot() {
-		return nameHierarchy.getRoot();
+		return nameCategorization.getRoot();
 	}
 
 	/**
@@ -116,8 +116,8 @@ public class JGum extends CategorizationRegister {
 	 * 
 	 * @return the class hierarchy graph associated with this context.
 	 */
-	public TypeHierarchy getTypeHierarchy() {
-		return typeHierarchy;
+	public TypeCategorization getTypeHierarchy() {
+		return typeCategorization;
 	}
 
 	/**
@@ -126,7 +126,7 @@ public class JGum extends CategorizationRegister {
 	 * @return a category corresponding to the given class.
 	 */
 	public <T> TypeCategory<T> forClass(Class<T> clazz) {
-		return typeHierarchy.getOrCreateTypeCategory(clazz);
+		return typeCategorization.getOrCreateTypeCategory(clazz);
 	}
 	
 }

@@ -42,8 +42,8 @@ public class NameCategory extends Category<String> {
 	/**
 	 * Creates a root NameCategory
 	 */
-	protected NameCategory(NameHierarchy nameHierarchy) {
-		this("", nameHierarchy, null);
+	protected NameCategory(NameCategorization nameCategorization) {
+		this("", nameCategorization, null);
 	}
 	
 	/**
@@ -51,8 +51,8 @@ public class NameCategory extends Category<String> {
 	 * @param packageFragment the name of this node package fragment.
 	 * @param parent the parent node 
 	 */
-	protected NameCategory(String simpleName, NameHierarchy nameHierarchy, NameCategory parent) {
-		super(parent != null ? parent.getName(simpleName) : simpleName, nameHierarchy);
+	protected NameCategory(String simpleName, NameCategorization nameCategorization, NameCategory parent) {
+		super(parent != null ? parent.getName(simpleName) : simpleName, nameCategorization);
 		this.simpleName = simpleName;
 		this.parent = parent;
 		children = new TreeMap<>(); //to preserve insertion order
@@ -138,8 +138,8 @@ public class NameCategory extends Category<String> {
 		return child;
 	}
 	
-	public NameHierarchy getCategoryHierarchy() {
-		return (NameHierarchy)super.getCategoryHierarchy();
+	public NameCategorization getCategoryHierarchy() {
+		return (NameCategorization)super.getCategoryHierarchy();
 	}
 	
 	/**

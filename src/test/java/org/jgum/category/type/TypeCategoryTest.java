@@ -31,7 +31,7 @@ public class TypeCategoryTest {
 	@Test
 	public void addingTypeCategories() {
 		JGum jgum = new JGum();
-		TypeHierarchy hierarchy = jgum.getTypeHierarchy();
+		TypeCategorization hierarchy = jgum.getTypeHierarchy();
 		TypeCategoryRoot hierarchyRoot = hierarchy.getRoot();
 		assertNull(hierarchy.getTypeCategory(Object.class));
 		assertNull(hierarchy.getTypeCategory(ArrayList.class));
@@ -54,7 +54,7 @@ public class TypeCategoryTest {
 	@Test
 	public void bottomUpLinearizationTest() {
 		JGum jgum = new JGum();
-		TypeHierarchy hierarchy = jgum.getTypeHierarchy();
+		TypeCategorization hierarchy = jgum.getTypeHierarchy();
 		ClassCategory<ArrayList> arrayListNode = (ClassCategory<ArrayList>)hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		
 		FluentIterable<TypeCategory<?>> arrayListBottomUpPath;
@@ -101,7 +101,7 @@ public class TypeCategoryTest {
 	@Test
 	public void topDownLinearizationTest() {
 		JGum jgum = new JGum();
-		TypeHierarchy hierarchy = jgum.getTypeHierarchy();
+		TypeCategorization hierarchy = jgum.getTypeHierarchy();
 		hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		FluentIterable<TypeCategory<?>> rootTopDownPath;
 		rootTopDownPath = hierarchy.getRoot().topDownLinearization();
@@ -114,7 +114,7 @@ public class TypeCategoryTest {
 	@Test
 	public void attachProperties() {
 		JGum jgum = new JGum();
-		TypeHierarchy hierarchy = jgum.getTypeHierarchy();
+		TypeCategorization hierarchy = jgum.getTypeHierarchy();
 		String key = "key"; //the property name
 		String v1 = "v1";
 		String v2 = "v2";
