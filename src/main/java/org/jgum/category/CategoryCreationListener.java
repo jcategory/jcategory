@@ -6,7 +6,7 @@ package org.jgum.category;
  *
  * @param <T> the type of the node
  */
-public interface CategoryCreationListener<T extends Category<?>> {
+public interface CategoryCreationListener<T extends Category> {
 
 	/**
 	 * callback method invoked when a category has been created in a hierarchy.

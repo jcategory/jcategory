@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.jgum.category.Category;
+import org.jgum.category.LabeledCategory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
@@ -17,7 +18,7 @@ import com.google.common.collect.FluentIterable;
  *
  * @param <T> the type of the wrapped class.
  */
-public abstract class TypeCategory<T> extends Category<Class<T>> {
+public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 
 	private static final Priority DEFAULT_BOTTOM_UP_PRIORITY = Priority.CLASSES_FIRST;
 	private static final InterfaceOrder DEFAULT_INTERFACE_ORDER = InterfaceOrder.DIRECT;
@@ -52,12 +53,12 @@ public abstract class TypeCategory<T> extends Category<Class<T>> {
 	}
 	
 	@Override
-	public <U extends Category<?>> List<U> getParents() {
+	public <U extends Category> List<U> getParents() {
 		return (List)getParents(DEFAULT_BOTTOM_UP_PRIORITY, DEFAULT_INTERFACE_ORDER);
 	}
 
 	@Override
-	public <U extends Category<?>> List<U> getChildren() {
+	public <U extends Category> List<U> getChildren() {
 		return (List)getChildren(DEFAULT_TOP_DOWN_PRIORITY);
 	}
 	

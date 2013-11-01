@@ -20,7 +20,7 @@ import com.google.common.collect.FluentIterable;
  * @author sergioc
  *
  */
-public class JGum extends CategorizationRegister {
+public class JGum extends CategorizationContext {
 
 	/**
 	 * Default linearization function for bottom up traversing (given a descendant class) of a graph denoting a class hierarchy.

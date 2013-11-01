@@ -16,11 +16,11 @@ public class CategoryCreationListenersManager {
 		categoryCreationListeners = new ArrayList<>();
 	}
 	
-	public void addNodeCreationListener(CategoryCreationListener<?> creationListener) {
+	public void addCreationListener(CategoryCreationListener<?> creationListener) {
 		categoryCreationListeners.add(creationListener);
 	}
 	
-	public void notifyCreationListeners(Category<?> node) {
+	public void notifyCreationListeners(Category node) {
 		for(CategoryCreationListener<?> listener : categoryCreationListeners) {
 			((CategoryCreationListener)listener).onCategoryCreation(node);
 		}

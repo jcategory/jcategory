@@ -7,15 +7,15 @@ import org.jgum.category.Categorization;
 import org.jgum.category.Category;
 
 /**
- * Defines a register of categorizations.
+ * Defines a context of categorizations.
  * @author sergioc
  *
  */
-public class CategorizationRegister {
+public class CategorizationContext {
 
 	private Map<Object, Categorization<?>> categorizationIndex; //categorizations are backed up in this map.
 	
-	public CategorizationRegister () {
+	public CategorizationContext () {
 		categorizationIndex = new HashMap<>();
 	}
 	
@@ -23,7 +23,7 @@ public class CategorizationRegister {
 	 * @param key the key under which the requested categorization is registered.
 	 * @return the categorization registered under the key sent as a parameter.
 	 */
-	public <T extends Category<?>> Categorization<T> getCategorization(Object key) {
+	public <T extends Category> Categorization<T> getCategorization(Object key) {
 		return (Categorization<T>)categorizationIndex.get(key);
 	}
 	

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.jgum.category.Category;
+import org.jgum.category.LabeledCategory;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.StopUntilConditionIterable;
 import org.jgum.traversal.TraversalPolicy;
@@ -22,7 +22,7 @@ import com.google.common.collect.Lists;
  * @author sergioc
  *
  */
-public class NamedCategory extends Category<String> {
+public class NamedCategory extends LabeledCategory<String> {
 
 	private Map<String, NamedCategory> children; //the children nodes
 	private NamedCategory parent; //the parent node

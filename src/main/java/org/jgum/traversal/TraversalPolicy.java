@@ -17,7 +17,7 @@ import com.google.common.collect.TreeTraverser;
  *
  * @param <T>
  */
-public class TraversalPolicy<T extends Category<?>> implements Function<T, FluentIterable<T>> {
+public class TraversalPolicy<T extends Category> implements Function<T, FluentIterable<T>> {
 
 	public final SearchStrategy searchStrategy;
 	public final DuplicatesDetection duplicatesDetection;
@@ -69,7 +69,7 @@ public class TraversalPolicy<T extends Category<?>> implements Function<T, Fluen
 	 *
 	 * @return a function mapping a category to its parents.
 	 */
-	public static <U extends Category<?>> Function<U, List<U>> parentsFunction() {
+	public static <U extends Category> Function<U, List<U>> parentsFunction() {
 		return new Function<U, List<U>>() {
 			@Override
 			public List<U> apply(U category) {
@@ -82,7 +82,7 @@ public class TraversalPolicy<T extends Category<?>> implements Function<T, Fluen
 	 * comparator determines how parents should be ordered.
 	 * @return a function mapping a category to its parents, ordering the parents according to the given comparator.
 	 */
-	public static <U extends Category<?>> Function<U, List<U>> parentsFunction(final Comparator<U> comparator) {
+	public static <U extends Category> Function<U, List<U>> parentsFunction(final Comparator<U> comparator) {
 		return new Function<U, List<U>>() {
 			@Override
 			public List<U> apply(U category) {
@@ -97,7 +97,7 @@ public class TraversalPolicy<T extends Category<?>> implements Function<T, Fluen
 	 * 
 	 * @return a function mapping a category to its children.
 	 */
-	public static <U extends Category<?>> Function<U, List<U>> childrenFunction() {
+	public static <U extends Category> Function<U, List<U>> childrenFunction() {
 		return new Function<U, List<U>>() {
 			@Override
 			public List<U> apply(U category) {
@@ -111,7 +111,7 @@ public class TraversalPolicy<T extends Category<?>> implements Function<T, Fluen
 	 * @param comparator determines how children should be ordered.
 	 * @return a function mapping a category to its children, ordering the children according to the given comparator.
 	 */
-	public static <U extends Category<?>> Function<U, List<U>> childrenFunction(final Comparator<U> comparator) {
+	public static <U extends Category> Function<U, List<U>> childrenFunction(final Comparator<U> comparator) {
 		return new Function<U, List<U>>() {
 			@Override
 			public List<U> apply(U category) {
@@ -122,9 +122,9 @@ public class TraversalPolicy<T extends Category<?>> implements Function<T, Fluen
 		};
 	}
 	
-	public static class CategoryTraverser<T extends Category<?>> extends TreeTraverser<T> {
+	public static class CategoryTraverser<T extends Category> extends TreeTraverser<T> {
 
-		public static <T extends Category<?>> FluentIterable<T> iterable(T node, SearchStrategy searchStrategy, Function<T, List<T>> nextNodesFunction) {
+		public static <T extends Category> FluentIterable<T> iterable(T node, SearchStrategy searchStrategy, Function<T, List<T>> nextNodesFunction) {
 			FluentIterable<T> nextNodeIterable;
 			CategoryTraverser<T> traverser = new CategoryTraverser<>(nextNodesFunction);
 			if(searchStrategy.equals(SearchStrategy.PRE_ORDER)) {

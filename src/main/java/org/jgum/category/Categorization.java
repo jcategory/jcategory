@@ -1,7 +1,5 @@
 package org.jgum.category;
 
-import org.jgum.category.type.TypeCategory;
-
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 
@@ -11,7 +9,7 @@ import com.google.common.collect.FluentIterable;
  *
  * @param <T>
  */
-public abstract class Categorization<T extends Category<?>> {
+public abstract class Categorization<T extends Category> {
 
 	private final Function<T, FluentIterable<T>> bottomUpLinearizationFunction; //bottom up type linearization function.
 	private final Function<T, FluentIterable<T>> topDownLinearizationFunction; //top down type linearization function.
@@ -33,8 +31,8 @@ public abstract class Categorization<T extends Category<?>> {
 		listenersManager.notifyCreationListeners(newCategory);
 	}
 
-	public void addNodeCreationListener(CategoryCreationListener<TypeCategory<?>> creationListener) {
-		listenersManager.addNodeCreationListener(creationListener);
+	public void addCreationListener(CategoryCreationListener<Category> creationListener) {
+		listenersManager.addCreationListener(creationListener);
 	}
 	
 	/**

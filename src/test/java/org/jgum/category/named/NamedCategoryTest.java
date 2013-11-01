@@ -177,7 +177,7 @@ public class NamedCategoryTest {
 	public void testListener() {
 		JGum jgum = new JGum();
 		CounterCreationListener listener = new CounterCreationListener();
-		jgum.getNameHierarchy().addNodeCreationListener((CategoryCreationListener)listener);
+		jgum.getNameHierarchy().addCreationListener((CategoryCreationListener)listener);
 		NamedCategory namedCategory = jgum.forName("x.y.z");
 		assertEquals(4, listener.getCounter()); //added 3 packages + the root (empty) package
 		namedCategory.getOrCreateCategory(""); //will return the sender node since the relative package is the empty package

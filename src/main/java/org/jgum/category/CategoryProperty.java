@@ -18,21 +18,21 @@ import com.google.common.collect.Iterators;
  */
 public class CategoryProperty<T> {
 
-	public static <U> FluentIterable<U> properties(Iterable<? extends Category<?>> categories, Object key) {
+	public static <U> FluentIterable<U> properties(Iterable<? extends Category> categories, Object key) {
 		return FluentIterable.<U>from(new PropertyIterable<U>(categories, key));
 	}
 	
-	private final Category<?> category;
+	private final Category category;
 	private final Object key;
 	private final PropertyIterable<T> propertyIterable;
 	
-	public CategoryProperty(Category<?> category, Object key) {
+	public CategoryProperty(Category category, Object key) {
 		this.category = category;
 		this.key = key;
 		propertyIterable = new PropertyIterable<T>(category.bottomUpLinearization(), key);
 	}
 
-	public Category<?> getCategory() {
+	public Category getCategory() {
 		return category;
 	}
 
@@ -72,16 +72,16 @@ public class CategoryProperty<T> {
 	
 	public static class PropertyIterator<T> extends AbstractIterator<T> {
 		
-		private final Iterator<? extends Category<?>> propertyNodes;
+		private final Iterator<? extends Category> propertyNodes;
 		private final Object key;
 		
-		public PropertyIterator(Category<?> category, final Object key) {
+		public PropertyIterator(Category category, final Object key) {
 			this((Iterator)category.bottomUpLinearization(), key);
 		}
 		
-		public PropertyIterator(Iterator<? extends Category<?>> propertyNodes, final Object key) {
+		public PropertyIterator(Iterator<? extends Category> propertyNodes, final Object key) {
 			this.key = key;
-			this.propertyNodes = Iterators.filter(propertyNodes, new Predicate<Category<?>>() {
+			this.propertyNodes = Iterators.filter(propertyNodes, new Predicate<Category>() {
 				@Override
 				public boolean apply(Category category) {
 					return category.containsProperty(key);
@@ -104,14 +104,14 @@ public class CategoryProperty<T> {
 	
 	public static class PropertyIterable<T> implements Iterable<T> {
 
-		private final Iterable<? extends Category<?>> propertyNodes;
+		private final Iterable<? extends Category> propertyNodes;
 		private final Object key;
 		
-		public PropertyIterable(Category<?> category, final Object key) {
+		public PropertyIterable(Category category, final Object key) {
 			this((Iterable)category.bottomUpLinearization(), key);
 		}
 		
-		public PropertyIterable(Iterable<? extends Category<?>> propertyNodes, Object key) {
+		public PropertyIterable(Iterable<? extends Category> propertyNodes, Object key) {
 			this.propertyNodes = propertyNodes;
 			this.key = key;
 		}
