@@ -1,4 +1,4 @@
-package org.jgum.category.name;
+package org.jgum.category.named;
 
 import static org.jgum.category.CategoryProperty.properties;
 import static org.junit.Assert.assertEquals;
@@ -13,6 +13,7 @@ import java.util.List;
 import org.jgum.JGum;
 import org.jgum.category.CategoryCreationListener;
 import org.jgum.category.CategoryProperty;
+import org.jgum.category.named.NamedCategory;
 import org.jgum.testutil.CounterCreationListener;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
@@ -22,7 +23,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
-public class NameCategoryTest {
+public class NamedCategoryTest {
 
 	//Modeling an arbitrary package hierarchy.
 	String packageP1 = "p1";
@@ -44,9 +45,9 @@ public class NameCategoryTest {
 	String p6Property = "p6Property";
 	String p8Property = "p8Property";
 	
-	private NameCategory newPackagePropertiesRoot() {
+	private NamedCategory newPackagePropertiesRoot() {
 		JGum jgum = new JGum();
-		NameCategory root = jgum.forNameRoot();
+		NamedCategory root = jgum.forNameRoot();
 		root.putProperty(rootProperty, rootProperty);
 		jgum.forName(packageP1).putProperty(rootProperty, rootProperty);
 		jgum.forName(packageP1).putProperty(p1Property, p1Property);
@@ -69,14 +70,14 @@ public class NameCategoryTest {
 	
 	@Test
 	public void testPathToDescendant() {
-		NameCategory root = newPackagePropertiesRoot();
+		NamedCategory root = newPackagePropertiesRoot();
 		
 		assertEquals("", root.topDownPath("").first().get().getId());
 		assertEquals(packageP3, root.getCategory(packageP3).topDownPath("").first().get().getId());
 		
-		FluentIterable<NameCategory> fit = root.topDownPath(packageP3);
+		FluentIterable<NamedCategory> fit = root.topDownPath(packageP3);
 		assertEquals(4, fit.size());
-		Iterator<NameCategory> it = fit.iterator();
+		Iterator<NamedCategory> it = fit.iterator();
 		assertEquals("", it.next().getId());
 		assertEquals("p1", it.next().getSimpleName());
 		assertEquals("p2", it.next().getSimpleName());
@@ -87,7 +88,7 @@ public class NameCategoryTest {
 	
 	@Test
 	public void testCategoryProperty() {
-		NameCategory root = newPackagePropertiesRoot();
+		NamedCategory root = newPackagePropertiesRoot();
 		assertEquals(rootProperty, new CategoryProperty(root.getCategory(packageP1), rootProperty).get().get());
 		assertEquals(p1Property, new CategoryProperty(root.getCategory(packageP1), p1Property).get().get());
 		
@@ -102,7 +103,7 @@ public class NameCategoryTest {
 	
 	@Test
 	public void testPropertiesInPath() {
-		NameCategory root = newPackagePropertiesRoot();
+		NamedCategory root = newPackagePropertiesRoot();
 
 		assertNull(root.getProperty("wrongProperty"));
 		assertNull(root.get(packageP1, "wrongProperty"));
@@ -138,8 +139,8 @@ public class NameCategoryTest {
 
 	@Test
 	public void testAllDescendantsPreOrder() {
-		NameCategory root = newPackagePropertiesRoot().getCategory(packageP1);
-		List<NameCategory> preOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER)));
+		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
+		List<NamedCategory> preOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER)));
 		assertEquals(p1Property, preOrderList.get(0).getProperty(p1Property));
 		assertEquals(p2Property, preOrderList.get(1).getProperty(p2Property));
 		assertEquals(p3Property, preOrderList.get(2).getProperty(p3Property));
@@ -150,8 +151,8 @@ public class NameCategoryTest {
 	
 	@Test
 	public void testAllDescendantsPostOrder() {
-		NameCategory root = newPackagePropertiesRoot().getCategory(packageP1);
-		List<NameCategory> postOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.POST_ORDER)));
+		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
+		List<NamedCategory> postOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.POST_ORDER)));
 		assertEquals(p3Property, postOrderList.get(0).getProperty(p3Property));
 		assertEquals(p5Property, postOrderList.get(1).getProperty(p5Property));
 		assertEquals(p4Property, postOrderList.get(2).getProperty(p4Property));
@@ -162,8 +163,8 @@ public class NameCategoryTest {
 	
 	@Test
 	public void testAllDescendantsBreadthFirst() {
-		NameCategory root = newPackagePropertiesRoot().getCategory(packageP1);
-		List<NameCategory> breadthFirstList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST)));
+		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
+		List<NamedCategory> breadthFirstList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST)));
 		assertEquals(p1Property, breadthFirstList.get(0).getProperty(p1Property));
 		assertEquals(p2Property, breadthFirstList.get(1).getProperty(p2Property));
 		assertEquals(p3Property, breadthFirstList.get(2).getProperty(p3Property));
@@ -177,9 +178,9 @@ public class NameCategoryTest {
 		JGum jgum = new JGum();
 		CounterCreationListener listener = new CounterCreationListener();
 		jgum.getNameHierarchy().addNodeCreationListener((CategoryCreationListener)listener);
-		NameCategory nameCategory = jgum.forName("x.y.z");
+		NamedCategory namedCategory = jgum.forName("x.y.z");
 		assertEquals(4, listener.getCounter()); //added 3 packages + the root (empty) package
-		nameCategory.getOrCreateCategory(""); //will return the sender node since the relative package is the empty package
+		namedCategory.getOrCreateCategory(""); //will return the sender node since the relative package is the empty package
 		assertEquals(4, listener.getCounter());
 		jgum.forName("x.y.a.b"); //will trigger the creation of two additional packages
 		assertEquals(6, listener.getCounter());

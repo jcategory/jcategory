@@ -1,4 +1,4 @@
-package org.jgum.category.name;
+package org.jgum.category.named;
 
 import static java.util.Arrays.asList;
 
@@ -22,10 +22,10 @@ import com.google.common.collect.Lists;
  * @author sergioc
  *
  */
-public class NameCategory extends Category<String> {
+public class NamedCategory extends Category<String> {
 
-	private Map<String, NameCategory> children; //the children nodes
-	private NameCategory parent; //the parent node
+	private Map<String, NamedCategory> children; //the children nodes
+	private NamedCategory parent; //the parent node
 	private final String simpleName; //the full name of the package, lazily initialized
 	
 	static List<String> asPackageFragmentsList(String simpleName) {
@@ -40,10 +40,10 @@ public class NameCategory extends Category<String> {
 	}
 	
 	/**
-	 * Creates a root NameCategory
+	 * Creates a root NamedCategory
 	 */
-	protected NameCategory(NameCategorization nameCategorization) {
-		this("", nameCategorization, null);
+	protected NamedCategory(NamedCategorization namedCategorization) {
+		this("", namedCategorization, null);
 	}
 	
 	/**
@@ -51,8 +51,8 @@ public class NameCategory extends Category<String> {
 	 * @param packageFragment the name of this node package fragment.
 	 * @param parent the parent node 
 	 */
-	protected NameCategory(String simpleName, NameCategorization nameCategorization, NameCategory parent) {
-		super(parent != null ? parent.getName(simpleName) : simpleName, nameCategorization);
+	protected NamedCategory(String simpleName, NamedCategorization namedCategorization, NamedCategory parent) {
+		super(parent != null ? parent.getName(simpleName) : simpleName, namedCategorization);
 		this.simpleName = simpleName;
 		this.parent = parent;
 		children = new TreeMap<>(); //to preserve insertion order
@@ -66,12 +66,12 @@ public class NameCategory extends Category<String> {
 		return isRoot() ? name : getId() + "." + name;
 	}
 	
-	public NameCategory getParent() {
+	public NamedCategory getParent() {
 		return parent;
 	}
 	
 	@Override
-	public List<NameCategory> getParents() {
+	public List<NamedCategory> getParents() {
 		if(parent == null)
 			return Collections.emptyList();
 		else
@@ -79,20 +79,20 @@ public class NameCategory extends Category<String> {
 	}
 
 	@Override
-	public List<NameCategory> getChildren() {
+	public List<NamedCategory> getChildren() {
 		return new ArrayList<>(children.values());
 	}
 	
 	public Object get(String relativeCategoryName, Object key) {
-		NameCategory nameCategory = getCategory(relativeCategoryName);
-		if(nameCategory == null)
+		NamedCategory namedCategory = getCategory(relativeCategoryName);
+		if(namedCategory == null)
 			return null;
 		else
-			return nameCategory.getProperty(key);
+			return namedCategory.getProperty(key);
 	}
 	
-	public NameCategory getCategory(String relativeCategoryName) {
-		NameCategory node = this;
+	public NamedCategory getCategory(String relativeCategoryName) {
+		NamedCategory node = this;
 		List<String> packageFragmentsList = asPackageFragmentsList(relativeCategoryName);
 		for(String packageFragment : packageFragmentsList) {
 			node = node.getChild(packageFragment);
@@ -102,12 +102,12 @@ public class NameCategory extends Category<String> {
 		return node;
 	}
 	
-	public NameCategory getCategory(Package pakkage) {
+	public NamedCategory getCategory(Package pakkage) {
 		return getCategory(pakkage.getName());
 	}
 	
-	public NameCategory getOrCreateCategory(String relativeName) {
-		NameCategory node = this;
+	public NamedCategory getOrCreateCategory(String relativeName) {
+		NamedCategory node = this;
 		List<String> packageFragmentsList = asPackageFragmentsList(relativeName);
 		for(String packageFragment : packageFragmentsList) {
 			node = node.getOrCreateChild(packageFragment);
@@ -115,31 +115,31 @@ public class NameCategory extends Category<String> {
 		return node;
 	}
 	
-	public NameCategory getOrCreateCategory(Package pakkage) {
+	public NamedCategory getOrCreateCategory(Package pakkage) {
 		return getOrCreateCategory(pakkage.getName());
 	}
 	
-	private NameCategory getChild(String simpleName) {
+	private NamedCategory getChild(String simpleName) {
 		return children.get(simpleName);
 	}
 
-	private NameCategory getOrCreateChild(String simpleName) {
-		NameCategory child = children.get(simpleName);
+	private NamedCategory getOrCreateChild(String simpleName) {
+		NamedCategory child = children.get(simpleName);
 		if(child == null) {
 			child = addChild(simpleName);
 		}
 		return child;
 	}
 	
-	private NameCategory addChild(String simpleName) {
-		NameCategory child = new NameCategory(simpleName, getCategoryHierarchy(), this);
+	private NamedCategory addChild(String simpleName) {
+		NamedCategory child = new NamedCategory(simpleName, getCategoryHierarchy(), this);
 		children.put(simpleName, child);
 		getCategoryHierarchy().notifyCreationListeners(child);
 		return child;
 	}
 	
-	public NameCategorization getCategoryHierarchy() {
-		return (NameCategorization)super.getCategoryHierarchy();
+	public NamedCategorization getCategoryHierarchy() {
+		return (NamedCategorization)super.getCategoryHierarchy();
 	}
 	
 	/**
@@ -150,27 +150,27 @@ public class NameCategory extends Category<String> {
 		return parent == null;
 	}
 	
-	public NameCategory getRoot() {
-		NameCategory root = this;
+	public NamedCategory getRoot() {
+		NamedCategory root = this;
 		while(!root.isRoot())
 			root = root.getParent();
 		return root;
 	}
 	
 	
-	public FluentIterable<NameCategory> topDownPath(String relativePackageName) {
-		Iterable<NameCategory> bottomUpIterable = getOrCreateCategory(relativePackageName).<NameCategory>linearize(TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER));
-		Iterable<NameCategory> filteredBottomUpIterable = new StopUntilConditionIterable(bottomUpIterable, new Predicate<NameCategory>() {
+	public FluentIterable<NamedCategory> topDownPath(String relativePackageName) {
+		Iterable<NamedCategory> bottomUpIterable = getOrCreateCategory(relativePackageName).<NamedCategory>linearize(TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER));
+		Iterable<NamedCategory> filteredBottomUpIterable = new StopUntilConditionIterable(bottomUpIterable, new Predicate<NamedCategory>() {
 			@Override
-			public boolean apply(NameCategory node) {
-				return NameCategory.this.equals(node);
+			public boolean apply(NamedCategory node) {
+				return NamedCategory.this.equals(node);
 			}
 		});
-		Iterable<NameCategory> topDownIterable = Lists.reverse(Lists.newArrayList(filteredBottomUpIterable));
+		Iterable<NamedCategory> topDownIterable = Lists.reverse(Lists.newArrayList(filteredBottomUpIterable));
 		return FluentIterable.from(topDownIterable);
 	}
 	
-	public FluentIterable<NameCategory> topDownPath(Package pakkage) {
+	public FluentIterable<NamedCategory> topDownPath(Package pakkage) {
 		return topDownPath(pakkage.getName());
 	}
 

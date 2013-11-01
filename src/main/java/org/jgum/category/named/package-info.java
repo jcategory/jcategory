@@ -3,4 +3,4 @@
  * @author sergioc
  *
  */
-package org.jgum.category.name;
+package org.jgum.category.named;

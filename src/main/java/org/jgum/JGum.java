@@ -1,7 +1,7 @@
 package org.jgum;
 
-import org.jgum.category.name.NameCategory;
-import org.jgum.category.name.NameCategorization;
+import org.jgum.category.named.NamedCategorization;
+import org.jgum.category.named.NamedCategory;
 import org.jgum.category.type.BottomUpTypeTraversalPolicy;
 import org.jgum.category.type.InterfaceOrder;
 import org.jgum.category.type.Priority;
@@ -37,18 +37,18 @@ public class JGum extends CategorizationRegister {
 	/**
 	 * Default linearization function for bottom up traversing (given a name) of a tree denoting a package hierarchy.
 	 */
-	public static final Function<? extends NameCategory, FluentIterable<? extends NameCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
+	public static final Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
 			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor name) of a tree denoting a package hierarchy.
 	 */
-	public static final Function<? extends NameCategory, FluentIterable<? extends NameCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
+	public static final Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
 			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER);
 	
 	
 	private final TypeCategorization typeCategorization; //the class (and interface) hierarchy graph.
-	private final NameCategorization nameCategorization; //a name space.
+	private final NamedCategorization namedCategorization; //a name space.
 
 	public static final Object JGUM_TYPE_HIERARCHY_ID = new Object(); //the id under which the type hierarchy is registered on the hierarchy register.
 	public static final Object JGUM_NAME_HIERARCHY_ID = new Object(); //the id under which the name hierarchy is registered on the hierarchy register.
@@ -69,11 +69,11 @@ public class JGum extends CategorizationRegister {
 	 */
 	public JGum(Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> bottomUpTypeLinearizationFunction, 
 			Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> topDownTypeLinearizationFunction,
-			Function<? extends NameCategory, FluentIterable<? extends NameCategory>> bottomUpNameLinearizationFunction, 
-			Function<? extends NameCategory, FluentIterable<? extends NameCategory>> topDownNameLinearizationFunction) {
+			Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> bottomUpNameLinearizationFunction, 
+			Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> topDownNameLinearizationFunction) {
 		
-		nameCategorization = new NameCategorization(bottomUpNameLinearizationFunction, topDownNameLinearizationFunction);
-		register(JGUM_TYPE_HIERARCHY_ID, nameCategorization);
+		namedCategorization = new NamedCategorization(bottomUpNameLinearizationFunction, topDownNameLinearizationFunction);
+		register(JGUM_TYPE_HIERARCHY_ID, namedCategorization);
 		typeCategorization = new TypeCategorization(bottomUpTypeLinearizationFunction, topDownTypeLinearizationFunction);
 		register(JGUM_NAME_HIERARCHY_ID, typeCategorization);
 	}
@@ -82,16 +82,16 @@ public class JGum extends CategorizationRegister {
 	 * 
 	 * @return the name hierarchy associated with this context.
 	 */
-	public NameCategorization getNameHierarchy() {
-		return nameCategorization;
+	public NamedCategorization getNameHierarchy() {
+		return namedCategorization;
 	}
 	
 	/**
 	 * 
 	 * @return the category corresponding to the root in the name hierarchy (the empty name).
 	 */
-	public NameCategory forNameRoot() {
-		return nameCategorization.getRoot();
+	public NamedCategory forNameRoot() {
+		return namedCategorization.getRoot();
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class JGum extends CategorizationRegister {
 	 * @param name the full name (e.g., "a.b.c") of a category.
 	 * @return a category corresponding to the given name.
 	 */
-	public NameCategory forName(String name) {
+	public NamedCategory forName(String name) {
 		return forNameRoot().getOrCreateCategory(name);
 	}
 	
@@ -108,7 +108,7 @@ public class JGum extends CategorizationRegister {
 	 * @param pakkage the package object for which a category is requested.
 	 * @return a name category corresponding to the name of the given Package object.
 	 */
-	public NameCategory forPackage(Package pakkage) {
+	public NamedCategory forPackage(Package pakkage) {
 		return forNameRoot().getOrCreateCategory(pakkage);
 	}
 	
