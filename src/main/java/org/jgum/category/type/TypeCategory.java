@@ -26,12 +26,12 @@ public abstract class TypeCategory<T> extends Category<Class<T>> {
 	
 	private List<InterfaceCategory<? super T>> superInterfaceNodes;
 	
-	TypeCategory(Class<T> wrappedClazz, TypeCategorization typeCategorization) {
-		this(wrappedClazz, typeCategorization, Collections.<InterfaceCategory<? super T>>emptyList());
+	TypeCategory(TypeCategorization typeCategorization, Class<T> wrappedClazz) {
+		this(typeCategorization, wrappedClazz, Collections.<InterfaceCategory<? super T>>emptyList());
 	}
 	
-	TypeCategory(Class<T> wrappedClazz, TypeCategorization typeCategorization, List<InterfaceCategory<? super T>> superInterfaceNodes) {
-		super(wrappedClazz, typeCategorization);
+	TypeCategory(TypeCategorization typeCategorization, Class<T> wrappedClazz, List<InterfaceCategory<? super T>> superInterfaceNodes) {
+		super(typeCategorization, wrappedClazz);
 		setSuperInterfaceNodes(superInterfaceNodes);
 	}
 
@@ -49,13 +49,6 @@ public abstract class TypeCategory<T> extends Category<Class<T>> {
 	
 	public FluentIterable<InterfaceCategory<? super T>> getAncestorInterfaces() {
 		return linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION).skip(1).filter(InterfaceCategory.class);
-	}
-	
-	@Override
-	protected String idToString() {
-		if(getId() == null)
-			return "null";
-		return getId().getName();
 	}
 	
 	@Override

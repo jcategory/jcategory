@@ -63,22 +63,22 @@ public class NamedCategoryTest {
 	@Test
 	public void testPackageName() {
 		JGum jGum = new JGum();
-		assertEquals("", jGum.forNameRoot().getId());
-		assertEquals("p1", jGum.forName("p1").getId());
-		assertEquals("p1.p2", jGum.forName("p1.p2").getId());
+		assertEquals("", jGum.forNameRoot().getLabel());
+		assertEquals("p1", jGum.forName("p1").getLabel());
+		assertEquals("p1.p2", jGum.forName("p1.p2").getLabel());
 	}
 	
 	@Test
 	public void testPathToDescendant() {
 		NamedCategory root = newPackagePropertiesRoot();
 		
-		assertEquals("", root.topDownPath("").first().get().getId());
-		assertEquals(packageP3, root.getCategory(packageP3).topDownPath("").first().get().getId());
+		assertEquals("", root.topDownPath("").first().get().getLabel());
+		assertEquals(packageP3, root.getCategory(packageP3).topDownPath("").first().get().getLabel());
 		
 		FluentIterable<NamedCategory> fit = root.topDownPath(packageP3);
 		assertEquals(4, fit.size());
 		Iterator<NamedCategory> it = fit.iterator();
-		assertEquals("", it.next().getId());
+		assertEquals("", it.next().getLabel());
 		assertEquals("p1", it.next().getSimpleName());
 		assertEquals("p2", it.next().getSimpleName());
 		assertEquals("p3", it.next().getSimpleName());

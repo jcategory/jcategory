@@ -9,7 +9,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 /**
- * A node wrapping an interface object.
+ * A category wrapping an interface.
  * @author sergioc
  *
  * @param <T> the type of the wrapped interface.
@@ -26,7 +26,7 @@ public class InterfaceCategory<T> extends TypeCategory<T> {
 	}
 	
 	InterfaceCategory(TypeCategorization typeCategorization, Class<T> wrappedInterface, List<InterfaceCategory<? super T>> superInterfaceNodes) {
-		super(wrappedInterface, typeCategorization, superInterfaceNodes);
+		super(typeCategorization, wrappedInterface, superInterfaceNodes);
 		knownImplementorNodes = new ArrayList<>();
 		knownSubInterfaceNodes = new ArrayList<>();
 	}	

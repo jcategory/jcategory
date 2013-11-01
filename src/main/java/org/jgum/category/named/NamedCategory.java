@@ -43,16 +43,16 @@ public class NamedCategory extends Category<String> {
 	 * Creates a root NamedCategory
 	 */
 	protected NamedCategory(NamedCategorization namedCategorization) {
-		this("", namedCategorization, null);
+		this(namedCategorization, "", null);
 	}
 	
 	/**
-	 * 
-	 * @param packageFragment the name of this node package fragment.
-	 * @param parent the parent node 
+	 * @parem namedCategorization the hierarchy where this category exists.
+	 * @param simpleName the simple name of this category.
+	 * @param parent the parent category 
 	 */
-	protected NamedCategory(String simpleName, NamedCategorization namedCategorization, NamedCategory parent) {
-		super(parent != null ? parent.getName(simpleName) : simpleName, namedCategorization);
+	protected NamedCategory(NamedCategorization namedCategorization, String simpleName, NamedCategory parent) {
+		super(namedCategorization, parent != null ? parent.getName(simpleName) : simpleName);
 		this.simpleName = simpleName;
 		this.parent = parent;
 		children = new TreeMap<>(); //to preserve insertion order
@@ -63,7 +63,7 @@ public class NamedCategory extends Category<String> {
 	}
 	
 	private String getName(String name) {
-		return isRoot() ? name : getId() + "." + name;
+		return isRoot() ? name : getLabel() + "." + name;
 	}
 	
 	public NamedCategory getParent() {
@@ -132,7 +132,7 @@ public class NamedCategory extends Category<String> {
 	}
 	
 	private NamedCategory addChild(String simpleName) {
-		NamedCategory child = new NamedCategory(simpleName, getCategoryHierarchy(), this);
+		NamedCategory child = new NamedCategory(getCategoryHierarchy(), simpleName, this);
 		children.put(simpleName, child);
 		getCategoryHierarchy().notifyCreationListeners(child);
 		return child;

@@ -3,6 +3,7 @@ package org.jgum.category;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
@@ -11,19 +12,29 @@ import com.google.common.collect.FluentIterable;
  * A hierarchical category associated with some arbitrary named properties.
  * @author sergioc
  *
+ * @param <T> the category label type.
  */
 public abstract class Category<T> {
 
-	private T id; //the identifier of this category.
+	private T label; //the identifier of this category.
 	private Map<Object, Object> properties; //properties associated with this category are backed up in this map.
 	private final Categorization<?> categorization; //the hierarchy where this category exists.
 	
+	
 	/**
-	 * @param id the id identifying this category.
+	 * Creates an unlabeled category
 	 * @param categorization the hierarchy where this category exists.
 	 */
-	public Category(T value, Categorization<?> categoryHierarchy) {
-		this.id = value;
+	public Category(Categorization<?> categoryHierarchy) {
+		this(categoryHierarchy, null);
+	}
+	
+	/**
+	 * @param categorization the hierarchy where this category exists.
+	 * @param label a label identifying this category.
+	 */
+	public Category(Categorization<?> categoryHierarchy, T label) {
+		this.label = label;
 		this.categorization = categoryHierarchy;
 		properties = new HashMap<>();
 	}
@@ -34,15 +45,15 @@ public abstract class Category<T> {
 	
 	/**
 	 * 
-	 * @return the identifier of this category.
+	 * @return the label of this category.
 	 */
-	public T getId() {
-		return id;
+	public T getLabel() {
+		return label;
 	}
 	
 	/**
 	 * @param key the property name.
-	 * @return the id of the property in the current node (if any).
+	 * @return the label of the property in the current node (if any).
 	 * @see Map#get(Object)
 	 */
 	public Object getProperty(Object key) {
@@ -68,14 +79,14 @@ public abstract class Category<T> {
 	/**
 	 * 
 	 * @param property the property.
-	 * @param propertyValue the id of the property.
+	 * @param propertyValue the label of the property.
 	 * @param canOverride a boolean indicating if the property can be overridden or not. 
 	 * @throws RuntimeException if the property exists and it cannot be overridden.
 	 */
 	public void putProperty(Object key, Object propertyValue, boolean canOverride) {
 		Object currentPropertyValue = getProperty(key);
 		if(currentPropertyValue!=null && !canOverride)
-			throw new RuntimeException("The node already has a id for the property \"" + key + "\":" + currentPropertyValue +
+			throw new RuntimeException("The node already has a label for the property \"" + key + "\":" + currentPropertyValue +
 				". Attempting to override this property with: " + propertyValue + ".");
 		else
 			putProperty(key, propertyValue);
@@ -103,7 +114,7 @@ public abstract class Category<T> {
 		return path.transform(new Function<Category<?>, U>() {
 			@Override
 			public U apply(Category<?> node) {
-				return (U)node.getId();
+				return (U)node.getLabel();
 			}
 		});
 	} 
@@ -130,11 +141,11 @@ public abstract class Category<T> {
 	
 	@Override
 	public String toString() {
-		return "["+idToString()+"]" + properties.toString();
+		return "["+labelToString()+"]" + properties.toString();
 	}
 	
-	protected String idToString() {
-		return id.toString();
+	protected String labelToString() {
+		return Objects.toString(label);
 	}
 
 }

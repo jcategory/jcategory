@@ -12,7 +12,7 @@ import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
 /**
- * A node wrapping a class (not an interface) object.
+ * A category wrapping a class (not an interface).
  * @author sergioc
  *
  * @param <T> the type of the wrapped class.
@@ -31,7 +31,7 @@ public class ClassCategory<T> extends TypeCategory<T> {
 	}
 	
 	ClassCategory(TypeCategorization typeCategorization, Class<T> wrappedClass, TypeCategory<?> parentCategory, List<InterfaceCategory<? super T>> superInterfaceNodes) {
-		super(wrappedClass, typeCategorization, superInterfaceNodes);
+		super(typeCategorization, wrappedClass, superInterfaceNodes);
 		knownSubClassNodes = new ArrayList<>();
 		this.parentCategory = parentCategory;
 		if(parentCategory instanceof ClassCategory)
