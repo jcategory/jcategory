@@ -58,6 +58,12 @@ public class TypeCategoryTest {
 		ClassCategory<ArrayList> arrayListNode = (ClassCategory<ArrayList>)hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		
 		List<Class<?>> classes;
+		
+		classes = arrayListNode.linearizeLabels(
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, DuplicatesDetection.ENFORCE)).toList();
+		assertEquals(asList(ArrayList.class, Serializable.class, Any.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
+				AbstractList.class, AbstractCollection.class, Object.class), classes);
+		
 		classes = arrayListNode.linearizeLabels(
 				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, DuplicatesDetection.IGNORE)).toList();
 		assertEquals(asList(ArrayList.class, Serializable.class, Any.class, Cloneable.class, Any.class, RandomAccess.class, Any.class,
@@ -74,11 +80,6 @@ public class TypeCategoryTest {
 				List.class, Collection.class, Iterable.class, Any.class, 
 				RandomAccess.class, Any.class, Cloneable.class, Any.class, Serializable.class, Any.class
 				), classes);
-
-		classes = arrayListNode.linearizeLabels(
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, DuplicatesDetection.ENFORCE)).toList();
-		assertEquals(asList(ArrayList.class, Serializable.class, Any.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
-				AbstractList.class, AbstractCollection.class, Object.class), classes);
 		
 		FluentIterable<ClassCategory<? super ArrayList>> ancestorsPath = arrayListNode.getAncestorClasses();
 		assertEquals(asList(AbstractList.class, AbstractCollection.class, Object.class), NamedCategory.<Class<?>>labels(ancestorsPath).toList());
