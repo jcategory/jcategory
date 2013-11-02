@@ -61,6 +61,14 @@ public class JGum extends CategorizationContext {
 	}
 	
 	/**
+	 * Creates a new context with the given bottom up class linearization function.
+	 * @param bottomUpTypeLinearizationFunction the bottom up class linearization function.
+	 */
+	public JGum(Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> bottomUpTypeLinearizationFunction) {
+		this(bottomUpTypeLinearizationFunction, DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION, DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION, DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION);
+	}
+	
+	/**
 	 * Creates a new context with the given class and name linearization functions.
 	 * @param bottomUpTypeLinearizationFunction the bottom up class linearization function.
 	 * @param topDownTypeLinearizationFunction the top down class linearization function.
