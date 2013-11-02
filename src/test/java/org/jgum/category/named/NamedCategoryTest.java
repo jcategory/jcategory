@@ -13,6 +13,7 @@ import org.jgum.JGum;
 import org.jgum.category.CategoryCreationListener;
 import org.jgum.category.CategoryProperty;
 import org.jgum.testutil.CounterCreationListener;
+import org.jgum.traversal.DuplicatesDetection;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
 import org.junit.Test;
@@ -133,7 +134,7 @@ public class NamedCategoryTest {
 	@Test
 	public void testAllDescendantsPreOrder() {
 		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
-		List<NamedCategory> preOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER)));
+		List<NamedCategory> preOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER, DuplicatesDetection.IGNORE)));
 		assertEquals(p1Property, preOrderList.get(0).getLocalProperty(p1Property).get());
 		assertEquals(p2Property, preOrderList.get(1).getLocalProperty(p2Property).get());
 		assertEquals(p3Property, preOrderList.get(2).getLocalProperty(p3Property).get());
@@ -145,7 +146,7 @@ public class NamedCategoryTest {
 	@Test
 	public void testAllDescendantsPostOrder() {
 		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
-		List<NamedCategory> postOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.POST_ORDER)));
+		List<NamedCategory> postOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.POST_ORDER, DuplicatesDetection.IGNORE)));
 		assertEquals(p3Property, postOrderList.get(0).getLocalProperty(p3Property).get());
 		assertEquals(p5Property, postOrderList.get(1).getLocalProperty(p5Property).get());
 		assertEquals(p4Property, postOrderList.get(2).getLocalProperty(p4Property).get());
@@ -157,7 +158,7 @@ public class NamedCategoryTest {
 	@Test
 	public void testAllDescendantsBreadthFirst() {
 		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
-		List<NamedCategory> breadthFirstList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST)));
+		List<NamedCategory> breadthFirstList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST, DuplicatesDetection.IGNORE)));
 		assertEquals(p1Property, breadthFirstList.get(0).getLocalProperty(p1Property).get());
 		assertEquals(p2Property, breadthFirstList.get(1).getLocalProperty(p2Property).get());
 		assertEquals(p3Property, breadthFirstList.get(2).getLocalProperty(p3Property).get());
