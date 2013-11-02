@@ -33,9 +33,19 @@ public class BottomUpTypeTraversalPolicy<T extends TypeCategory<?>> extends Trav
 	/**
 	 * 
 	 * @param searchStrategy how the nodes in the bottom-up path should be traversed.
-	 * @param duplicatesDetection if a node can be traversed only once in a given path.
 	 * @param priority if classes should be visited before interfaces.
 	 * @param interfaceOrder if the interfaces should be traversed in declaration order or inversing the order.
+	 */
+	public BottomUpTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, InterfaceOrder interfaceOrder) {
+		this(searchStrategy, priority, interfaceOrder, DuplicatesDetection.ENFORCE);
+	}
+	
+	/**
+	 * 
+	 * @param searchStrategy how the nodes in the bottom-up path should be traversed.
+	 * @param priority if classes should be visited before interfaces.
+	 * @param interfaceOrder if the interfaces should be traversed in declaration order or inversing the order.
+	 * @param duplicatesDetection if a node can be traversed only once in a given path.
 	 */
 	public BottomUpTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, InterfaceOrder interfaceOrder, DuplicatesDetection duplicatesDetection) {
 		super(searchStrategy, BottomUpTypeTraversalPolicy.<T>parentsFunction(priority, interfaceOrder), duplicatesDetection);

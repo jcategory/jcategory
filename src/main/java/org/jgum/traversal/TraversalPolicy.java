@@ -23,10 +23,6 @@ public class TraversalPolicy<T extends Category> implements Function<T, FluentIt
 	public final DuplicatesDetection duplicatesDetection;
 	public final Function<T, List<T>> nextNodesFunction;
 
-	public TraversalPolicy(SearchStrategy searchStrategy, Function<T, List<T>> nextNodesFunction) {
-		this(searchStrategy, nextNodesFunction, DuplicatesDetection.IGNORE);
-	}
-	
 	public TraversalPolicy(SearchStrategy searchStrategy, Function<T, List<T>> nextNodesFunction, DuplicatesDetection duplicatesDetection) {
 		this.searchStrategy = searchStrategy;
 		this.nextNodesFunction = nextNodesFunction;
@@ -49,16 +45,8 @@ public class TraversalPolicy<T extends Category> implements Function<T, FluentIt
 	}
 	
 
-	public static TraversalPolicy bottomUpTraversalPolicy(SearchStrategy searchStrategy) {
-		return new TraversalPolicy(searchStrategy, parentsFunction());
-	}
-	
 	public static TraversalPolicy bottomUpTraversalPolicy(SearchStrategy searchStrategy, DuplicatesDetection duplicatesDetection) {
 		return new TraversalPolicy(searchStrategy, parentsFunction(), duplicatesDetection);
-	}
-	
-	public static TraversalPolicy topDownTraversalPolicy(SearchStrategy searchStrategy) {
-		return new TraversalPolicy(searchStrategy, childrenFunction());
 	}
 	
 	public static TraversalPolicy topDownTraversalPolicy(SearchStrategy searchStrategy, DuplicatesDetection duplicatesDetection) {

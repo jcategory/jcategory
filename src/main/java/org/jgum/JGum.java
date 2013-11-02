@@ -38,13 +38,13 @@ public class JGum extends CategorizationContext {
 	 * Default linearization function for bottom up traversing (given a name) of a categorization denoting a named hierarchy.
 	 */
 	public static final Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
-			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER);
+			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, DuplicatesDetection.IGNORE);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor name) of a categorization denoting a named hierarchy.
 	 */
 	public static final Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
-			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER);
+			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER, DuplicatesDetection.IGNORE);
 	
 	
 	private final TypeCategorization typeCategorization; //a type categorization.

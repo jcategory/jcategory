@@ -33,6 +33,15 @@ public class TopDownTypeTraversalPolicy<T extends TypeCategory<?>> extends Trave
 	 * 
 	 * @param searchStrategy how the nodes in the bottom-up path should be traversed.
 	 * @param priority if classes should be visited before interfaces.
+	 */
+	public TopDownTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority) {
+		this(searchStrategy, priority, DuplicatesDetection.ENFORCE);
+	}
+	
+	/**
+	 * 
+	 * @param searchStrategy how the nodes in the bottom-up path should be traversed.
+	 * @param priority if classes should be visited before interfaces.
 	 * @param duplicatesDetection if a node can be traversed only once in a given path.
 	 */
 	public TopDownTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, DuplicatesDetection duplicatesDetection) {
