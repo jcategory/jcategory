@@ -56,10 +56,26 @@ public abstract class LabeledCategory<T> extends Category {
 	/**
 	 * 
 	 * @param linearizationFunction is a linearization function.
-	 * @return An iterable of nodes, according to the given linearization function.
+	 * @return An iterable of category labels, according to the given linearization function.
 	 */
 	public <U extends Category> FluentIterable<U> linearizeLabels(Function<U,FluentIterable<U>> linearizationFunction) {
 		return LabeledCategory.<U>labels((FluentIterable)linearize((Function)linearizationFunction));
+	}
+
+	/**
+	 * 
+	 * @return An iterable of category labels, according to the default bottom-up linearization function.
+	 */
+	public <U extends Category> FluentIterable<U> bottomUpLabelsLabels() {
+		return (FluentIterable<U>)linearizeLabels(getCategorization().getBottomUpLinearizationFunction());
+	}
+	
+	/**
+	 * 
+	 * @return An iterable of category labels, according to the default top-down linearization function.
+	 */
+	public <U extends Category> FluentIterable<U> topDownLabels() {
+		return (FluentIterable<U>)linearizeLabels(getCategorization().getTopDownLinearizationFunction());
 	}
 
 }
