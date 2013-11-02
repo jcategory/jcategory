@@ -33,44 +33,46 @@ public abstract class Category {
 
 	
 	/**
-	 * @param key the property name.
+	 * @param property a property name.
 	 * @return the label of the property in the current node (if any).
 	 * @see Map#get(Object)
 	 */
-	public Object getProperty(Object key) {
-		return properties.get(key);
+	public Object getProperty(Object property) {
+		return properties.get(property);
 	}
 	
 	/**
 	 * 
-	 * @see Map#containsKey(Object)
+	 * @param property a property.
+	 * @return true if the property exists. false otherwise.
 	 */
-	public boolean containsProperty(Object key) {
-		return properties.containsKey(key);
+	public boolean containsProperty(Object property) {
+		return properties.containsKey(property);
 	}
 	
 	/**
-	 * 
-	 * @see Map#put(Object,Object)
+	 * Set a property to a given value.
+	 * @param property the property to set.
+	 * @param value the label of the property.
 	 */
-	public Object putProperty(Object key, Object value) {
-		return properties.put(key, value);
+	public void setProperty(Object property, Object value) {
+		properties.put(property, value);
 	}
 	
 	/**
-	 * 
-	 * @param property the property.
-	 * @param propertyValue the label of the property.
+	 * Set a property to a given value. Rises an exception if the property is already set and the canOverride parameter is false.
+	 * @param property the property to set.
+	 * @param value the label of the property.
 	 * @param canOverride a boolean indicating if the property can be overridden or not. 
 	 * @throws RuntimeException if the property exists and it cannot be overridden.
 	 */
-	public void putProperty(Object key, Object propertyValue, boolean canOverride) {
-		Object currentPropertyValue = getProperty(key);
+	public void setProperty(Object property, Object value, boolean canOverride) {
+		Object currentPropertyValue = getProperty(property);
 		if(currentPropertyValue!=null && !canOverride)
-			throw new RuntimeException("The node already has a label for the property \"" + key + "\":" + currentPropertyValue +
-				". Attempting to override this property with: " + propertyValue + ".");
+			throw new RuntimeException("The node already has a label for the property \"" + property + "\":" + currentPropertyValue +
+				". Attempting to override this property with: " + value + ".");
 		else
-			putProperty(key, propertyValue);
+			setProperty(property, value);
 	}
 	
 	/**

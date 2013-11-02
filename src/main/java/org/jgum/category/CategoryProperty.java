@@ -65,7 +65,7 @@ public class CategoryProperty<T> {
 	 * @param value the value of the property.
 	 */
 	public void set(T value) {
-		category.putProperty(key, value);
+		category.setProperty(key, value);
 	}
 	
 	

@@ -46,7 +46,7 @@ public class TypeCategoryTest {
 	public void propertyInTypeRootTest() {
 		JGum jgum = new JGum();
 		TypeCategoryRoot hierarchyRoot = jgum.getTypeHierarchy().getRoot();
-		hierarchyRoot.putProperty("x", "x");
+		hierarchyRoot.setProperty("x", "x");
 		CategoryProperty cp = new CategoryProperty(jgum.forClass(Object.class), "x");
 		assertEquals("x", cp.getOrThrow());
 	}
@@ -111,10 +111,10 @@ public class TypeCategoryTest {
 		String v4 = "v4";
 		TypeCategory<?> arrayListNode = hierarchy.getOrCreateTypeCategory(ArrayList.class);  //creates a node for the ArrayList class. Nodes for all super classes and interfaces of ArrayList are also created.
 		//Adding properties to different classes and interfaces in the hierarchy graph:
-		arrayListNode.putProperty(key, v1);
-		hierarchy.getTypeCategory(List.class).putProperty(key, v2);
-		hierarchy.getTypeCategory(AbstractCollection.class).putProperty(key, v3);
-		hierarchy.getTypeCategory(Object.class).putProperty(key, v4);
+		arrayListNode.setProperty(key, v1);
+		hierarchy.getTypeCategory(List.class).setProperty(key, v2);
+		hierarchy.getTypeCategory(AbstractCollection.class).setProperty(key, v3);
+		hierarchy.getTypeCategory(Object.class).setProperty(key, v4);
 		//Verifying the properties
 		Iterator<?> propertiesIt = CategoryProperty.<String>properties(arrayListNode.bottomUpLinearization(), key).iterator();
 		assertEquals(v1, propertiesIt.next());
@@ -127,10 +127,10 @@ public class TypeCategoryTest {
 		hierarchy = jgum.getTypeHierarchy();
 		arrayListNode = hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		//Properties added in an arbitrary order:
-		hierarchy.getTypeCategory(List.class).putProperty(key, v2);
-		hierarchy.getTypeCategory(Object.class).putProperty(key, v4);
-		arrayListNode.putProperty(key, v1);
-		hierarchy.getTypeCategory(AbstractCollection.class).putProperty(key, v3);
+		hierarchy.getTypeCategory(List.class).setProperty(key, v2);
+		hierarchy.getTypeCategory(Object.class).setProperty(key, v4);
+		arrayListNode.setProperty(key, v1);
+		hierarchy.getTypeCategory(AbstractCollection.class).setProperty(key, v3);
 		//but the result is the same:
 		propertiesIt = CategoryProperty.<String>properties(arrayListNode.bottomUpLinearization(), key).iterator();
 		assertEquals(v1, propertiesIt.next());

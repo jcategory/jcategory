@@ -48,15 +48,15 @@ public class NamedCategoryTest {
 	private NamedCategory newPackagePropertiesRoot() {
 		JGum jgum = new JGum();
 		NamedCategory root = jgum.forNameRoot();
-		root.putProperty(rootProperty, rootProperty);
-		jgum.forName(packageP1).putProperty(rootProperty, rootProperty);
-		jgum.forName(packageP1).putProperty(p1Property, p1Property);
-		jgum.forName(packageP2).putProperty(p2Property, p2Property);
-		jgum.forName(packageP3).putProperty(p3Property, p3Property);
-		jgum.forName(packageP4).putProperty(p4Property, p4Property);
-		jgum.forName(packageP5).putProperty(p5Property, p5Property);
-		jgum.forName(packageP6).putProperty(p6Property, p6Property);
-		jgum.forName(packageP8).putProperty(p8Property, p8Property);
+		root.setProperty(rootProperty, rootProperty);
+		jgum.forName(packageP1).setProperty(rootProperty, rootProperty);
+		jgum.forName(packageP1).setProperty(p1Property, p1Property);
+		jgum.forName(packageP2).setProperty(p2Property, p2Property);
+		jgum.forName(packageP3).setProperty(p3Property, p3Property);
+		jgum.forName(packageP4).setProperty(p4Property, p4Property);
+		jgum.forName(packageP5).setProperty(p5Property, p5Property);
+		jgum.forName(packageP6).setProperty(p6Property, p6Property);
+		jgum.forName(packageP8).setProperty(p8Property, p8Property);
 		return root;
 	}
 	
@@ -106,8 +106,8 @@ public class NamedCategoryTest {
 		NamedCategory root = newPackagePropertiesRoot();
 
 		assertNull(root.getProperty("wrongProperty"));
-		assertNull(root.get(packageP1, "wrongProperty"));
-		assertNull(root.get(packageP2, "wrongProperty"));
+		assertNull(root.getProperty(packageP1, "wrongProperty"));
+		assertNull(root.getProperty(packageP2, "wrongProperty"));
 
 		Iterator<String> propertiesIt = CategoryProperty.<String>properties(root.topDownLinearization(), p6Property).iterator();
 		assertTrue(propertiesIt.hasNext());
@@ -122,15 +122,15 @@ public class NamedCategoryTest {
 		
 
 		//now let's override one property in one subpackage
-		root.getCategory(packageP2).putProperty(p1Property, p2Property);
+		root.getCategory(packageP2).setProperty(p1Property, p2Property);
 		assertEquals(p2Property, properties(root.getCategory(packageP2).bottomUpLinearization(), p1Property).first().get());
 		
 		//overriding the same property
-		root.getCategory(packageP2).putProperty(p1Property, p2Property);
+		root.getCategory(packageP2).setProperty(p1Property, p2Property);
 		
 		try {
 			//attempting to override the same property without allowing overrides
-			root.getCategory(packageP2).putProperty(p1Property, p2Property, false);
+			root.getCategory(packageP2).setProperty(p1Property, p2Property, false);
 			fail("Expected exception not thrown when overridding package property");
 		} catch(Exception e) {
 			//expected
