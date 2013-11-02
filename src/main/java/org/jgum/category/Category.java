@@ -28,7 +28,7 @@ public abstract class Category {
 		properties = new HashMap<>();
 	}
 
-	public Categorization<?> getCategoryHierarchy() {
+	public Categorization<?> getCategorization() {
 		return categorization;
 	}
 
@@ -109,10 +109,6 @@ public abstract class Category {
 		return (FluentIterable<U>)linearize(categorization.getBottomUpLinearizationFunction());
 	}
 
-	public abstract <U extends Category> List<U> getParents();
-
-	public abstract <U extends Category> List<U> getChildren();
-	
 	/**
 	 * 
 	 * @return a linearization using the default top down linearization function.
@@ -120,6 +116,11 @@ public abstract class Category {
 	public <U extends Category> FluentIterable<U> topDownLinearization() {
 		return (FluentIterable<U>)linearize(categorization.getTopDownLinearizationFunction());
 	}
+	
+	public abstract <U extends Category> List<U> getParents();
+
+	public abstract <U extends Category> List<U> getChildren();
+
 	
 	@Override
 	public String toString() {
