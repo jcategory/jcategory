@@ -3,7 +3,6 @@ package org.jgum.category.named;
 import org.jgum.category.Categorization;
 
 import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 
 /**
  * A package tree.
@@ -14,8 +13,8 @@ public class NamedCategorization extends Categorization<NamedCategory> {
 
 	private NamedCategory nameCategoryRoot;
 	
-	public NamedCategorization(Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> bottomUpLinearization, 
-			Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> topDownLinearization) {
+	public NamedCategorization(Function<? extends NamedCategory, Iterable<? extends NamedCategory>> bottomUpLinearization, 
+			Function<? extends NamedCategory, Iterable<? extends NamedCategory>> topDownLinearization) {
 		super((Function)bottomUpLinearization, (Function)topDownLinearization);
 	}
 	

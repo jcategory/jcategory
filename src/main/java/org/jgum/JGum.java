@@ -13,7 +13,6 @@ import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
 
 import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 
 /**
  * Defines a register of categorizations that includes a named categorization and a type categorization.
@@ -25,25 +24,25 @@ public class JGum extends CategorizationContext {
 	/**
 	 * Default linearization function for bottom up traversing (given a descendant category) of a categorization denoting a type hierarchy.
 	 */
-	public static final Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION = 
+	public static final Function<? extends TypeCategory<?>, Iterable<? extends TypeCategory<?>>> DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION = 
 			new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, DuplicatesDetection.ENFORCE);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor category) of a categorization denoting a type hierarchy.
 	 */
-	public static final Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION = 
+	public static final Function<? extends TypeCategory<?>, Iterable<? extends TypeCategory<?>>> DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION = 
 			new TopDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.INTERFACES_FIRST, DuplicatesDetection.ENFORCE);
 	
 	/**
 	 * Default linearization function for bottom up traversing (given a name) of a categorization denoting a named hierarchy.
 	 */
-	public static final Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
+	public static final Function<? extends NamedCategory, Iterable<? extends NamedCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
 			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, DuplicatesDetection.IGNORE);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor name) of a categorization denoting a named hierarchy.
 	 */
-	public static final Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
+	public static final Function<? extends NamedCategory, Iterable<? extends NamedCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
 			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER, DuplicatesDetection.IGNORE);
 	
 	
@@ -64,7 +63,7 @@ public class JGum extends CategorizationContext {
 	 * Creates a new context with the given bottom up class linearization function.
 	 * @param bottomUpTypeLinearizationFunction the bottom up class linearization function.
 	 */
-	public JGum(Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> bottomUpTypeLinearizationFunction) {
+	public JGum(Function<? extends TypeCategory<?>, Iterable<? extends TypeCategory<?>>> bottomUpTypeLinearizationFunction) {
 		this(bottomUpTypeLinearizationFunction, DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION, DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION, DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION);
 	}
 	
@@ -75,10 +74,10 @@ public class JGum extends CategorizationContext {
 	 * @param bottomUpNameLinearizationFunction the bottom up package linearization function.
 	 * @param topDownNameLinearizationFunction the top down package linearization function.
 	 */
-	public JGum(Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> bottomUpTypeLinearizationFunction, 
-			Function<? extends TypeCategory<?>, FluentIterable<? extends TypeCategory<?>>> topDownTypeLinearizationFunction,
-			Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> bottomUpNameLinearizationFunction, 
-			Function<? extends NamedCategory, FluentIterable<? extends NamedCategory>> topDownNameLinearizationFunction) {
+	public JGum(Function<? extends TypeCategory<?>, Iterable<? extends TypeCategory<?>>> bottomUpTypeLinearizationFunction, 
+			Function<? extends TypeCategory<?>, Iterable<? extends TypeCategory<?>>> topDownTypeLinearizationFunction,
+			Function<? extends NamedCategory, Iterable<? extends NamedCategory>> bottomUpNameLinearizationFunction, 
+			Function<? extends NamedCategory, Iterable<? extends NamedCategory>> topDownNameLinearizationFunction) {
 		
 		namedCategorization = new NamedCategorization(bottomUpNameLinearizationFunction, topDownNameLinearizationFunction);
 		register(JGUM_TYPE_HIERARCHY_ID, namedCategorization);
