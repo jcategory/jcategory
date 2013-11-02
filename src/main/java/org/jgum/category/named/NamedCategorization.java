@@ -13,8 +13,8 @@ public class NamedCategorization extends Categorization<NamedCategory> {
 
 	private NamedCategory nameCategoryRoot;
 	
-	public NamedCategorization(Function<? extends NamedCategory, Iterable<? extends NamedCategory>> bottomUpLinearization, 
-			Function<? extends NamedCategory, Iterable<? extends NamedCategory>> topDownLinearization) {
+	public NamedCategorization(Function<NamedCategory, Iterable<NamedCategory>> bottomUpLinearization, 
+			Function<NamedCategory, Iterable<NamedCategory>> topDownLinearization) {
 		super((Function)bottomUpLinearization, (Function)topDownLinearization);
 	}
 	
