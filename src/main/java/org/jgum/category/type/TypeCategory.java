@@ -48,6 +48,10 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 		this.superInterfaceNodes = superInterfaceNodes;
 	}
 	
+	public FluentIterable<ClassCategory<? super T>> getAncestorClasses() {
+		return linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION).skip(1).filter(ClassCategory.class);
+	}
+	
 	public FluentIterable<InterfaceCategory<? super T>> getAncestorInterfaces() {
 		return linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION).skip(1).filter(InterfaceCategory.class);
 	}

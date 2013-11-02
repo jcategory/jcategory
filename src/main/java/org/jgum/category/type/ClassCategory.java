@@ -1,14 +1,11 @@
 package org.jgum.category.type;
 
 import static java.util.Arrays.asList;
-import static org.jgum.JGum.DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
 /**
@@ -62,10 +59,6 @@ public class ClassCategory<T> extends TypeCategory<T> {
 
 	public List<ClassCategory<? extends T>> getKnownSubClassNodes() {
 		return new ArrayList<>(knownSubClassNodes);
-	}
-
-	public FluentIterable<ClassCategory<? super T>> getAncestorClasses() {
-		return linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION).skip(1).filter(ClassCategory.class);
 	}
 	
 	@Override
