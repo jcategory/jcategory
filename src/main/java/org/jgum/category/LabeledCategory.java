@@ -66,7 +66,7 @@ public abstract class LabeledCategory<T> extends Category {
 	 * 
 	 * @return An iterable of category labels, according to the default bottom-up linearization function.
 	 */
-	public <U extends Category> FluentIterable<U> bottomUpLabelsLabels() {
+	public <U extends Category> FluentIterable<U> bottomUpLabels() {
 		return (FluentIterable<U>)linearizeLabels(getCategorization().getBottomUpLinearizationFunction());
 	}
 	
