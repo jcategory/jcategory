@@ -37,7 +37,7 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	}
 
 	public TypeCategorization getTypeHierarchy() {
-		return (TypeCategorization)super.getCategoryHierarchy();
+		return (TypeCategorization)super.getCategorization();
 	}
 	
 	public List<InterfaceCategory<? super T>> getSuperInterfaceNodes() {

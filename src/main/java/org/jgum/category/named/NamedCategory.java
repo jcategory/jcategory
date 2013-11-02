@@ -125,14 +125,14 @@ public class NamedCategory extends LabeledCategory<String> {
 	}
 	
 	private NamedCategory addChild(String simpleName) {
-		NamedCategory child = new NamedCategory(getCategoryHierarchy(), simpleName, this);
+		NamedCategory child = new NamedCategory(getCategorization(), simpleName, this);
 		children.put(simpleName, child);
-		getCategoryHierarchy().notifyCreationListeners(child);
+		getCategorization().notifyCreationListeners(child);
 		return child;
 	}
 	
-	public NamedCategorization getCategoryHierarchy() {
-		return (NamedCategorization)super.getCategoryHierarchy();
+	public NamedCategorization getCategorization() {
+		return (NamedCategorization)super.getCategorization();
 	}
 	
 	/**
