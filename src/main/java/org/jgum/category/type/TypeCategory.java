@@ -21,7 +21,7 @@ import com.google.common.collect.FluentIterable;
 public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 
 	private static final Priority DEFAULT_BOTTOM_UP_PRIORITY = Priority.CLASSES_FIRST;
-	private static final InterfaceOrder DEFAULT_INTERFACE_ORDER = InterfaceOrder.DIRECT;
+	private static final InterfaceOrder DEFAULT_INTERFACE_ORDER = InterfaceOrder.DECLARATION;
 	private static final Priority DEFAULT_TOP_DOWN_PRIORITY = Priority.INTERFACES_FIRST;
 	
 	

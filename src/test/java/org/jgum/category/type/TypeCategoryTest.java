@@ -67,7 +67,7 @@ public class TypeCategoryTest {
 				Object.class, Any.class), classes);
 
 		classes = arrayListNode.linearizeLabels(
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DIRECT, DuplicatesDetection.IGNORE)).toList();
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, DuplicatesDetection.IGNORE)).toList();
 		assertEquals(asList(ArrayList.class, AbstractList.class, AbstractCollection.class, Object.class, Any.class,
 				Collection.class, Iterable.class, Any.class, 
 				List.class, Collection.class, Iterable.class, Any.class,

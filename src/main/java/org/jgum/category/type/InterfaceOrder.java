@@ -1,10 +1,10 @@
 package org.jgum.category.type;
 
 /**
- * Determines if the declaration order of interfaces should be reversed.
+ * Determines the order in which interfaces are going to be considered in a bottom up type linearization.
  * @author sergioc
  *
  */
 public enum InterfaceOrder {
-	DIRECT, REVERSE;
+	DECLARATION, REVERSE;
 }
