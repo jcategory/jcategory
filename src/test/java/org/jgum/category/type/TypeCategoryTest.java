@@ -48,7 +48,7 @@ public class TypeCategoryTest {
 		TypeCategoryRoot hierarchyRoot = jgum.getTypeHierarchy().getRoot();
 		hierarchyRoot.setProperty("x", "x");
 		CategoryProperty cp = new CategoryProperty(jgum.forClass(Object.class), "x");
-		assertEquals("x", cp.getOrThrow());
+		assertEquals("x", cp.get());
 	}
 	
 	@Test

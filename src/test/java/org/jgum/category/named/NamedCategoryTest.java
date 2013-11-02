@@ -3,7 +3,6 @@ package org.jgum.category.named;
 import static org.jgum.category.CategoryProperty.properties;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -13,7 +12,6 @@ import java.util.List;
 import org.jgum.JGum;
 import org.jgum.category.CategoryCreationListener;
 import org.jgum.category.CategoryProperty;
-import org.jgum.category.named.NamedCategory;
 import org.jgum.testutil.CounterCreationListener;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
@@ -89,25 +87,20 @@ public class NamedCategoryTest {
 	@Test
 	public void testCategoryProperty() {
 		NamedCategory root = newPackagePropertiesRoot();
-		assertEquals(rootProperty, new CategoryProperty(root.getCategory(packageP1), rootProperty).get().get());
-		assertEquals(p1Property, new CategoryProperty(root.getCategory(packageP1), p1Property).get().get());
+		assertEquals(rootProperty, new CategoryProperty(root.getCategory(packageP1), rootProperty).get());
+		assertEquals(p1Property, new CategoryProperty(root.getCategory(packageP1), p1Property).get());
 		
-		CategoryProperty o = new CategoryProperty(root.getCategory(packageP1), p2Property);
-		Object s = o.get();
-		
-		
-		assertEquals(Optional.absent(), new CategoryProperty(root.getCategory(packageP1), p2Property).get());
-		assertEquals(p1Property, new CategoryProperty(root.getCategory(packageP2), p1Property).get().get());
-		assertEquals(p2Property, new CategoryProperty(root.getCategory(packageP2), p2Property).get().get());
+		assertFalse(new CategoryProperty(root.getCategory(packageP1), p2Property).isPresent());
+		assertEquals(p1Property, new CategoryProperty(root.getCategory(packageP2), p1Property).get());
+		assertEquals(p2Property, new CategoryProperty(root.getCategory(packageP2), p2Property).get());
 	}
 	
 	@Test
 	public void testPropertiesInPath() {
 		NamedCategory root = newPackagePropertiesRoot();
-
-		assertNull(root.getProperty("wrongProperty"));
-		assertNull(root.getProperty(packageP1, "wrongProperty"));
-		assertNull(root.getProperty(packageP2, "wrongProperty"));
+		assertEquals(Optional.absent(), root.getLocalProperty("wrongProperty"));
+		assertEquals(Optional.absent(), root.getCategory(packageP1).getLocalProperty("wrongProperty"));
+		assertEquals(Optional.absent(), root.getCategory(packageP2).getLocalProperty("wrongProperty"));
 
 		Iterator<String> propertiesIt = CategoryProperty.<String>properties(root.topDownLinearization(), p6Property).iterator();
 		assertTrue(propertiesIt.hasNext());
@@ -141,36 +134,36 @@ public class NamedCategoryTest {
 	public void testAllDescendantsPreOrder() {
 		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
 		List<NamedCategory> preOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER)));
-		assertEquals(p1Property, preOrderList.get(0).getProperty(p1Property));
-		assertEquals(p2Property, preOrderList.get(1).getProperty(p2Property));
-		assertEquals(p3Property, preOrderList.get(2).getProperty(p3Property));
-		assertEquals(p4Property, preOrderList.get(3).getProperty(p4Property));
-		assertEquals(p5Property, preOrderList.get(4).getProperty(p5Property));
-		assertEquals(p6Property, preOrderList.get(5).getProperty(p6Property));
+		assertEquals(p1Property, preOrderList.get(0).getLocalProperty(p1Property).get());
+		assertEquals(p2Property, preOrderList.get(1).getLocalProperty(p2Property).get());
+		assertEquals(p3Property, preOrderList.get(2).getLocalProperty(p3Property).get());
+		assertEquals(p4Property, preOrderList.get(3).getLocalProperty(p4Property).get());
+		assertEquals(p5Property, preOrderList.get(4).getLocalProperty(p5Property).get());
+		assertEquals(p6Property, preOrderList.get(5).getLocalProperty(p6Property).get());
 	}
 	
 	@Test
 	public void testAllDescendantsPostOrder() {
 		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
 		List<NamedCategory> postOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.POST_ORDER)));
-		assertEquals(p3Property, postOrderList.get(0).getProperty(p3Property));
-		assertEquals(p5Property, postOrderList.get(1).getProperty(p5Property));
-		assertEquals(p4Property, postOrderList.get(2).getProperty(p4Property));
-		assertEquals(p6Property, postOrderList.get(3).getProperty(p6Property));
-		assertEquals(p2Property, postOrderList.get(4).getProperty(p2Property));
-		assertEquals(p1Property, postOrderList.get(5).getProperty(p1Property));
+		assertEquals(p3Property, postOrderList.get(0).getLocalProperty(p3Property).get());
+		assertEquals(p5Property, postOrderList.get(1).getLocalProperty(p5Property).get());
+		assertEquals(p4Property, postOrderList.get(2).getLocalProperty(p4Property).get());
+		assertEquals(p6Property, postOrderList.get(3).getLocalProperty(p6Property).get());
+		assertEquals(p2Property, postOrderList.get(4).getLocalProperty(p2Property).get());
+		assertEquals(p1Property, postOrderList.get(5).getLocalProperty(p1Property).get());
 	}
 	
 	@Test
 	public void testAllDescendantsBreadthFirst() {
 		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
 		List<NamedCategory> breadthFirstList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST)));
-		assertEquals(p1Property, breadthFirstList.get(0).getProperty(p1Property));
-		assertEquals(p2Property, breadthFirstList.get(1).getProperty(p2Property));
-		assertEquals(p3Property, breadthFirstList.get(2).getProperty(p3Property));
-		assertEquals(p4Property, breadthFirstList.get(3).getProperty(p4Property));
-		assertEquals(p6Property, breadthFirstList.get(4).getProperty(p6Property));
-		assertEquals(p5Property, breadthFirstList.get(5).getProperty(p5Property));
+		assertEquals(p1Property, breadthFirstList.get(0).getLocalProperty(p1Property).get());
+		assertEquals(p2Property, breadthFirstList.get(1).getLocalProperty(p2Property).get());
+		assertEquals(p3Property, breadthFirstList.get(2).getLocalProperty(p3Property).get());
+		assertEquals(p4Property, breadthFirstList.get(3).getLocalProperty(p4Property).get());
+		assertEquals(p6Property, breadthFirstList.get(4).getLocalProperty(p6Property).get());
+		assertEquals(p5Property, breadthFirstList.get(5).getLocalProperty(p5Property).get());
 	}
 
 	@Test

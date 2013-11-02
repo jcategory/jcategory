@@ -83,20 +83,6 @@ public class NamedCategory extends LabeledCategory<String> {
 		return new ArrayList<>(children.values());
 	}
 	
-	/**
-	 * 
-	 * @param relativeCategoryName the name (relative to the current category name) of the category to query.
-	 * @param property a property name.
-	 * @return the property value of a descendant named category.
-	 */
-	public Object getProperty(String relativeCategoryName, Object property) {
-		NamedCategory namedCategory = getCategory(relativeCategoryName);
-		if(namedCategory == null)
-			return null;
-		else
-			return namedCategory.getProperty(property);
-	}
-	
 	public NamedCategory getCategory(String relativeCategoryName) {
 		NamedCategory node = this;
 		List<String> packageFragmentsList = asPackageFragmentsList(relativeCategoryName);

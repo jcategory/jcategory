@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.base.Function;
+import com.google.common.base.Optional;
 import com.google.common.collect.FluentIterable;
 
 /**
@@ -34,19 +35,35 @@ public abstract class Category {
 	
 	/**
 	 * @param property a property name.
-	 * @return the label of the property in the current node (if any).
-	 * @see Map#get(Object)
+	 * @return an optional with the property value of the category. It attempts to find it in ancestor categories if the property is not locally present.
 	 */
-	public Object getProperty(Object property) {
-		return properties.get(property);
+	public CategoryProperty<?> getProperty(Object property) {
+		return new CategoryProperty<>(this, property);
 	}
 	
 	/**
 	 * 
 	 * @param property a property.
-	 * @return true if the property exists. false otherwise.
+	 * @return true if the property exists in the category. false otherwise. It attempts to find it in ancestor categories if the property is not locally present.
 	 */
 	public boolean containsProperty(Object property) {
+		return getProperty(property).isPresent();
+	}
+	
+	/**
+	 * @param property a property name.
+	 * @return an optional with the property value in the current category (if any). It does not query ancestor categories if the property is not locally present.
+	 */
+	public Optional<?> getLocalProperty(Object property) {
+		return Optional.fromNullable(properties.get(property));
+	}
+	
+	/**
+	 * 
+	 * @param property a property.
+	 * @return true if the property exists in the current category. false otherwise. It does not query ancestor categories if the property is not locally present.
+	 */
+	public boolean containsLocalProperty(Object property) {
 		return properties.containsKey(property);
 	}
 	
@@ -67,7 +84,7 @@ public abstract class Category {
 	 * @throws RuntimeException if the property exists and it cannot be overridden.
 	 */
 	public void setProperty(Object property, Object value, boolean canOverride) {
-		Object currentPropertyValue = getProperty(property);
+		Object currentPropertyValue = getLocalProperty(property);
 		if(currentPropertyValue!=null && !canOverride)
 			throw new RuntimeException("The node already has a label for the property \"" + property + "\":" + currentPropertyValue +
 				". Attempting to override this property with: " + value + ".");

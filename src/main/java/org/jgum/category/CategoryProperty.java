@@ -1,9 +1,7 @@
 package org.jgum.category;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.FluentIterable;
@@ -23,40 +21,40 @@ public class CategoryProperty<T> {
 	}
 	
 	private final Category category;
-	private final Object key;
+	private final Object property;
 	private final PropertyIterable<T> propertyIterable;
 	
-	public CategoryProperty(Category category, Object key) {
+	public CategoryProperty(Category category, Object property) {
 		this.category = category;
-		this.key = key;
-		propertyIterable = new PropertyIterable<T>(category.bottomUpLinearization(), key);
+		this.property = property;
+		propertyIterable = new PropertyIterable<T>(category.bottomUpLinearization(), property);
 	}
 
 	public Category getCategory() {
 		return category;
 	}
 
-	public Object getKey() {
-		return key;
+	/**
+	 * 
+	 * @return the name of the property.
+	 */
+	public Object getName() {
+		return property;
 	}
 	
 	/**
 	 * 
-	 * @return an optional wrapping the value of a property in a category.
+	 * @return true if the property is present. false otherwise.
 	 */
-	public Optional<T> get() {
-		try {
-			return Optional.of(propertyIterable.iterator().next());
-		} catch(NoSuchElementException e) {
-			return Optional.absent();
-		}
+	public boolean isPresent() {
+		return propertyIterable.iterator().hasNext();
 	}
 	
 	/**
 	 * 
-	 * @return the value of the property in a category. If the value is not set, it will throw an exception.
+	 * @return the value of a property in a category. If the property is not set it will throw an exception.
 	 */
-	public T getOrThrow() {
+	public T get() {
 		return propertyIterable.iterator().next();
 	}
 	
@@ -65,7 +63,7 @@ public class CategoryProperty<T> {
 	 * @param value the value of the property.
 	 */
 	public void set(T value) {
-		category.setProperty(key, value);
+		category.setProperty(property, value);
 	}
 	
 	
@@ -84,7 +82,7 @@ public class CategoryProperty<T> {
 			this.propertyNodes = Iterators.filter(propertyNodes, new Predicate<Category>() {
 				@Override
 				public boolean apply(Category category) {
-					return category.containsProperty(key);
+					return category.containsLocalProperty(key);
 				}
 			});
 		}
@@ -93,11 +91,10 @@ public class CategoryProperty<T> {
 		protected T computeNext() {
 			if(propertyNodes.hasNext()) {
 				Category nextPropertiesNode = propertyNodes.next();
-				return (T) nextPropertiesNode.getProperty(key);
+				return (T) nextPropertiesNode.getLocalProperty(key).get();
 			} else
 				return endOfData();
 		}
-
 	}
 
 	
