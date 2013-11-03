@@ -8,12 +8,12 @@
       <version>7</version>
     </parent>
   
-	<groupId>jgum</groupId>
+	<groupId>com.github.jgum</groupId>
 	<artifactId>jgum</artifactId>
 	<version>0.0.1-alpha-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>jgum</name>
-	<description>A library for attaching and manipulating properties to Java meta-level artifacts</description>
+	<description>A lightweight categorization framework for Java</description>
 	<url>https://github.com/jgum/jgum</url>
 	
 	<licenses>
