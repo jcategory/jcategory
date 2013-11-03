@@ -20,7 +20,7 @@ import org.jgum.category.CategoryProperty;
 import org.jgum.category.named.NamedCategory;
 import org.jgum.category.type.TypeCategoryRoot.Any;
 import org.jgum.testutil.CounterCreationListener;
-import org.jgum.traversal.DuplicatesDetection;
+import org.jgum.traversal.RedundancyDetection;
 import org.jgum.traversal.SearchStrategy;
 import org.junit.Test;
 
@@ -31,7 +31,7 @@ public class TypeCategoryTest {
 	@Test
 	public void addingTypeCategories() {
 		JGum jgum = new JGum();
-		TypeCategorization hierarchy = jgum.getTypeHierarchy();
+		TypeCategorization hierarchy = jgum.getTypeCategorization();
 		TypeCategoryRoot hierarchyRoot = hierarchy.getRoot();
 		assertNull(hierarchy.getTypeCategory(Object.class));
 		assertNull(hierarchy.getTypeCategory(ArrayList.class));
@@ -45,7 +45,7 @@ public class TypeCategoryTest {
 	@Test
 	public void propertyInTypeRootTest() {
 		JGum jgum = new JGum();
-		TypeCategoryRoot hierarchyRoot = jgum.getTypeHierarchy().getRoot();
+		TypeCategoryRoot hierarchyRoot = jgum.getTypeCategorization().getRoot();
 		hierarchyRoot.setProperty("x", "x");
 		CategoryProperty cp = new CategoryProperty(jgum.forClass(Object.class), "x");
 		assertEquals("x", cp.get());
@@ -54,18 +54,18 @@ public class TypeCategoryTest {
 	@Test
 	public void bottomUpLinearizationTest() {
 		JGum jgum = new JGum();
-		TypeCategorization hierarchy = jgum.getTypeHierarchy();
+		TypeCategorization hierarchy = jgum.getTypeCategorization();
 		ClassCategory<ArrayList> arrayListNode = (ClassCategory<ArrayList>)hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		
 		List<Class<?>> classes;
 		
 		classes = arrayListNode.linearizeLabels(
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, DuplicatesDetection.ENFORCE)).toList();
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyDetection.KEEP_FIRST)).toList();
 		assertEquals(asList(ArrayList.class, Serializable.class, Any.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
 				AbstractList.class, AbstractCollection.class, Object.class), classes);
 		
 		classes = arrayListNode.linearizeLabels(
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, DuplicatesDetection.IGNORE)).toList();
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyDetection.IGNORE)).toList();
 		assertEquals(asList(ArrayList.class, Serializable.class, Any.class, Cloneable.class, Any.class, RandomAccess.class, Any.class,
 				List.class, Collection.class, Iterable.class, Any.class,
 				AbstractList.class, List.class, Collection.class, Iterable.class, Any.class,
@@ -73,7 +73,7 @@ public class TypeCategoryTest {
 				Object.class, Any.class), classes);
 
 		classes = arrayListNode.linearizeLabels(
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, DuplicatesDetection.IGNORE)).toList();
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, RedundancyDetection.IGNORE)).toList();
 		assertEquals(asList(ArrayList.class, AbstractList.class, AbstractCollection.class, Object.class, Any.class,
 				Collection.class, Iterable.class, Any.class, 
 				List.class, Collection.class, Iterable.class, Any.class,
@@ -91,7 +91,7 @@ public class TypeCategoryTest {
 	@Test
 	public void topDownLinearizationTest() {
 		JGum jgum = new JGum();
-		TypeCategorization hierarchy = jgum.getTypeHierarchy();
+		TypeCategorization hierarchy = jgum.getTypeCategorization();
 		hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		FluentIterable<TypeCategory<?>> rootTopDownPath;
 		rootTopDownPath = hierarchy.getRoot().topDownLinearization();
@@ -104,7 +104,7 @@ public class TypeCategoryTest {
 	@Test
 	public void attachProperties() {
 		JGum jgum = new JGum();
-		TypeCategorization hierarchy = jgum.getTypeHierarchy();
+		TypeCategorization hierarchy = jgum.getTypeCategorization();
 		String key = "key"; //the property name
 		String v1 = "v1";
 		String v2 = "v2";
@@ -125,7 +125,7 @@ public class TypeCategoryTest {
 		
 		//Repeating the same example as above, but inserting the properties in a different order
 		jgum = new JGum();
-		hierarchy = jgum.getTypeHierarchy();
+		hierarchy = jgum.getTypeCategorization();
 		arrayListNode = hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		//Properties added in an arbitrary order:
 		hierarchy.getTypeCategory(List.class).setProperty(key, v2);
@@ -144,7 +144,7 @@ public class TypeCategoryTest {
 	public void testListener() {
 		JGum jgum = new JGum();
 		CounterCreationListener listener = new CounterCreationListener();
-		jgum.getTypeHierarchy().addCreationListener((CategoryCreationListener)listener);
+		jgum.getTypeCategorization().addCreationListener((CategoryCreationListener)listener);
 		jgum.forClass(ArrayList.class);
 		//there are 10 classes and interfaces in the class hierarchy of ArrayList + the Any class located at the root of the class and interface hierarchy.
 		assertEquals(11, listener.getCounter()); 

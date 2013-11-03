@@ -2,7 +2,7 @@ package org.jgum.category.type;
 
 import java.util.List;
 
-import org.jgum.traversal.DuplicatesDetection;
+import org.jgum.traversal.RedundancyDetection;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
 
@@ -37,7 +37,7 @@ public class BottomUpTypeTraversalPolicy<T extends TypeCategory<?>> extends Trav
 	 * @param interfaceOrder if the interfaces should be traversed in declaration order or inversing the order.
 	 */
 	public BottomUpTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, InterfaceOrder interfaceOrder) {
-		this(searchStrategy, priority, interfaceOrder, DuplicatesDetection.ENFORCE);
+		this(searchStrategy, priority, interfaceOrder, RedundancyDetection.KEEP_FIRST);
 	}
 	
 	/**
@@ -45,10 +45,10 @@ public class BottomUpTypeTraversalPolicy<T extends TypeCategory<?>> extends Trav
 	 * @param searchStrategy how the nodes in the bottom-up path should be traversed.
 	 * @param priority if classes should be visited before interfaces.
 	 * @param interfaceOrder if the interfaces should be traversed in declaration order or inversing the order.
-	 * @param duplicatesDetection if a node can be traversed only once in a given path.
+	 * @param redundancyDetection if a node can be traversed only once in a given path.
 	 */
-	public BottomUpTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, InterfaceOrder interfaceOrder, DuplicatesDetection duplicatesDetection) {
-		super(searchStrategy, BottomUpTypeTraversalPolicy.<T>parentsFunction(priority, interfaceOrder), duplicatesDetection);
+	public BottomUpTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, InterfaceOrder interfaceOrder, RedundancyDetection redundancyDetection) {
+		super(searchStrategy, BottomUpTypeTraversalPolicy.<T>parentsFunction(priority, interfaceOrder), redundancyDetection);
 	}
 	
 }

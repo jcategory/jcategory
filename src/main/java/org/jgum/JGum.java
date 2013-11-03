@@ -8,7 +8,7 @@ import org.jgum.category.type.Priority;
 import org.jgum.category.type.TopDownTypeTraversalPolicy;
 import org.jgum.category.type.TypeCategorization;
 import org.jgum.category.type.TypeCategory;
-import org.jgum.traversal.DuplicatesDetection;
+import org.jgum.traversal.RedundancyDetection;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
 
@@ -25,25 +25,25 @@ public class JGum extends CategorizationContext {
 	 * Default linearization function for bottom up traversing (given a descendant category) of a categorization denoting a type hierarchy.
 	 */
 	public static final Function<TypeCategory<?>, Iterable<TypeCategory<?>>> DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION = 
-			new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, DuplicatesDetection.ENFORCE);
+			new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyDetection.KEEP_FIRST);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor category) of a categorization denoting a type hierarchy.
 	 */
 	public static final Function<TypeCategory<?>, Iterable<TypeCategory<?>>> DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION = 
-			new TopDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.INTERFACES_FIRST, DuplicatesDetection.ENFORCE);
+			new TopDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.INTERFACES_FIRST, RedundancyDetection.KEEP_FIRST);
 	
 	/**
 	 * Default linearization function for bottom up traversing (given a name) of a categorization denoting a named hierarchy.
 	 */
 	public static final Function<NamedCategory, Iterable<NamedCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
-			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, DuplicatesDetection.IGNORE);
+			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyDetection.IGNORE);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor name) of a categorization denoting a named hierarchy.
 	 */
 	public static final Function<NamedCategory, Iterable<NamedCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
-			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER, DuplicatesDetection.IGNORE);
+			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyDetection.IGNORE);
 	
 	
 	private final TypeCategorization typeCategorization; //a type categorization.
@@ -87,9 +87,9 @@ public class JGum extends CategorizationContext {
 	
 	/**
 	 * 
-	 * @return the name hierarchy associated with this context.
+	 * @return the named categorization associated with this context.
 	 */
-	public NamedCategorization getNameHierarchy() {
+	public NamedCategorization getNamedCategorization() {
 		return namedCategorization;
 	}
 	
@@ -121,9 +121,9 @@ public class JGum extends CategorizationContext {
 	
 	/**
 	 * 
-	 * @return the class hierarchy graph associated with this context.
+	 * @return the type categorization associated with this context.
 	 */
-	public TypeCategorization getTypeHierarchy() {
+	public TypeCategorization getTypeCategorization() {
 		return typeCategorization;
 	}
 
