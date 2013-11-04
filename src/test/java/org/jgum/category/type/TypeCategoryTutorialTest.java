@@ -65,9 +65,17 @@ public class TypeCategoryTutorialTest {
 	}
 	
 	@Test
-	public void testLabels() {
+	public void testLabelsInterfacesFirst() {
 		JGum jgum = new JGum();
 		assertEquals(asList(Cat.class, FourLegged.class, HasLegs.class, Furry.class, Animal.class, Object.class, Any.class), jgum.forClass(Cat.class).bottomUpLabels());
+	}
+	
+	@Test
+	public void testLabelsClassesFirst() {
+		Function<TypeCategory<?>, List<TypeCategory<?>>> linearizationFunction = 
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, RedundancyCheck.KEEP_LAST);
+		JGum jgum = new JGum(linearizationFunction);
+		assertEquals(asList(Cat.class, Animal.class, Object.class, Furry.class, FourLegged.class, HasLegs.class, Any.class), jgum.forClass(Cat.class).bottomUpLabels());
 	}
 	
 	@Test
