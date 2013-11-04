@@ -1,7 +1,5 @@
 package org.jgum.category.type;
 
-import static java.util.Arrays.asList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +47,8 @@ public class TypeCategoryRoot extends TypeCategory<Any> {
 	protected List<TypeCategory<?>> getChildren(Priority priority) {
 		List<TypeCategory<?>> children;
 		if(priority.equals(Priority.CLASSES_FIRST)) {
-			children = (List)asList(getRootClassNode());
+			children = new ArrayList();
+			children.add(getRootClassNode());
 			children.addAll(getRootInterfaceNodes());
 		} else {
 			children = (List)getRootInterfaceNodes();

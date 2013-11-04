@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jgum.JGum;
-import org.jgum.category.CategoryCreationListener;
+import org.jgum.category.CategorizationListener;
 import org.jgum.category.CategoryProperty;
 import org.jgum.testutil.CounterCreationListener;
 import org.jgum.traversal.RedundancyCheck;
@@ -21,7 +21,7 @@ import org.junit.Test;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
-public class NamedCategoryTest {
+public class NamedCategorizationTest {
 
 	//Modeling an arbitrary package hierarchy.
 	String packageP1 = "p1";
@@ -170,7 +170,7 @@ public class NamedCategoryTest {
 	public void testListener() {
 		JGum jgum = new JGum();
 		CounterCreationListener listener = new CounterCreationListener();
-		jgum.getNamedCategorization().addCreationListener((CategoryCreationListener)listener);
+		jgum.getNamedCategorization().addCategorizationListener((CategorizationListener)listener);
 		NamedCategory namedCategory = jgum.forName("x.y.z");
 		assertEquals(4, listener.getCounter()); //added 3 packages + the root (empty) package
 		namedCategory.getOrCreateCategory(""); //will return the sender node since the relative package is the empty package

@@ -2,6 +2,10 @@ package org.jgum.category;
 
 import java.util.List;
 
+import org.jgum.traversal.RedundancyCheck;
+import org.jgum.traversal.SearchStrategy;
+import org.jgum.traversal.TraversalPolicy;
+
 import com.google.common.base.Function;
 
 /**
@@ -10,30 +14,24 @@ import com.google.common.base.Function;
  *
  * @param <T>
  */
-public abstract class Categorization<T extends Category> {
+public class Categorization<T extends Category> {
 
 	private final Function<T, List<T>> bottomUpLinearizationFunction; //bottom up type linearization function.
 	private final Function<T, List<T>> topDownLinearizationFunction; //top down type linearization function.
-	private final CategoryCreationListenersManager listenersManager; //category listeners notified when a new category is created.
+	private T root;
 	
-	public Categorization(Function<T, List<T>> bottomUpLinearizationFunction, Function<T, List<T>> topDownLinearizationFunction) {
-		this.bottomUpLinearizationFunction = bottomUpLinearizationFunction;
-		this.topDownLinearizationFunction = topDownLinearizationFunction;
-		listenersManager = new CategoryCreationListenersManager();
+	public Categorization() {
+		this(TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.KEEP_LAST));
 	}
 	
-	/**
-	 * 
-	 * @return the root category in this hierarchy.
-	 */
-	public abstract T getRoot();
-	
-	protected void notifyCreationListeners(T newCategory) {
-		listenersManager.notifyCreationListeners(newCategory);
+	public Categorization(Function<T, List<T>> bottomUpLinearizationFunction) {
+		this(bottomUpLinearizationFunction, TraversalPolicy.topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST, RedundancyCheck.KEEP_FIRST));
 	}
 
-	public void addCreationListener(CategoryCreationListener<Category> creationListener) {
-		listenersManager.addCreationListener(creationListener);
+	public Categorization(Function<T, List<T>> bottomUpLinearizationFunction, 
+			Function<T, List<T>> topDownLinearizationFunction) {
+		this.bottomUpLinearizationFunction = bottomUpLinearizationFunction;
+		this.topDownLinearizationFunction = topDownLinearizationFunction;
 	}
 	
 	/**
@@ -51,5 +49,14 @@ public abstract class Categorization<T extends Category> {
 	protected Function<T, List<T>> getTopDownLinearizationFunction() {
 		return topDownLinearizationFunction;
 	}
+
+	public T getRoot() {
+		return root;
+	}
+
+	void setRoot(T root) {
+		this.root = root;
+	}
+
 	
 }

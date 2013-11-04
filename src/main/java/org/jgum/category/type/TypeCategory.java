@@ -28,12 +28,13 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	
 	private List<InterfaceCategory<? super T>> superInterfaceNodes;
 	
-	TypeCategory(TypeCategorization typeCategorization, Class<T> wrappedClazz) {
-		this(typeCategorization, wrappedClazz, Collections.<InterfaceCategory<? super T>>emptyList());
+	protected TypeCategory(TypeCategorization typeCategorization, Class<T> wrappedClazz) {
+		super(typeCategorization, wrappedClazz);
+		setSuperInterfaceNodes(Collections.<InterfaceCategory<? super T>>emptyList());
 	}
 	
-	TypeCategory(TypeCategorization typeCategorization, Class<T> wrappedClazz, List<InterfaceCategory<? super T>> superInterfaceNodes) {
-		super(typeCategorization, wrappedClazz);
+	protected TypeCategory(Class<T> wrappedClazz, List<InterfaceCategory<? super T>> superInterfaceNodes) {
+		super(wrappedClazz, null);
 		setSuperInterfaceNodes(superInterfaceNodes);
 	}
 

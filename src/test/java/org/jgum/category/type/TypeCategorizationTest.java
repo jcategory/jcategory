@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.RandomAccess;
 
 import org.jgum.JGum;
-import org.jgum.category.CategoryCreationListener;
+import org.jgum.category.CategorizationListener;
 import org.jgum.category.CategoryProperty;
 import org.jgum.category.named.NamedCategory;
 import org.jgum.category.type.TypeCategoryRoot.Any;
@@ -24,7 +24,7 @@ import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.junit.Test;
 
-public class TypeCategoryTest {
+public class TypeCategorizationTest {
 
 	@Test
 	public void addingTypeCategories() {
@@ -99,9 +99,9 @@ public class TypeCategoryTest {
 		List<TypeCategory<?>> rootTopDownPath;
 		rootTopDownPath = hierarchy.getRoot().topDownLinearization();
 		//System.out.println(rootTopDownPath);
-		assertEquals(asList(Any.class, java.lang.Iterable.class, java.util.RandomAccess.class, java.lang.Cloneable.class, java.io.Serializable.class, java.lang.Object.class, 
-				java.util.Collection.class, java.util.ArrayList.class, java.util.AbstractCollection.class, java.util.List.class, 
-				java.util.AbstractList.class), NamedCategory.<Class<?>>labels(rootTopDownPath));
+		assertEquals(asList(Any.class, java.lang.Object.class, java.lang.Iterable.class, java.util.RandomAccess.class, java.lang.Cloneable.class, java.io.Serializable.class, 
+				java.util.AbstractCollection.class, java.util.Collection.class, java.util.ArrayList.class,
+				java.util.AbstractList.class, java.util.List.class), NamedCategory.<Class<?>>labels(rootTopDownPath));
 	}
 
 	@Test
@@ -147,7 +147,7 @@ public class TypeCategoryTest {
 	public void testListener() {
 		JGum jgum = new JGum();
 		CounterCreationListener listener = new CounterCreationListener();
-		jgum.getTypeCategorization().addCreationListener((CategoryCreationListener)listener);
+		jgum.getTypeCategorization().addCategorizationListener((CategorizationListener)listener);
 		jgum.forClass(ArrayList.class);
 		//there are 10 classes and interfaces in the class hierarchy of ArrayList + the Any class located at the root of the class and interface hierarchy.
 		assertEquals(11, listener.getCounter()); 

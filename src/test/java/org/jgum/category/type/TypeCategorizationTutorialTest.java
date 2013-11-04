@@ -15,7 +15,7 @@ import org.junit.Test;
 
 import com.google.common.base.Function;
 
-public class TypeCategoryTutorialTest {
+public class TypeCategorizationTutorialTest {
 
 	public class Fruit  {}
 	public class Orange extends Fruit{}

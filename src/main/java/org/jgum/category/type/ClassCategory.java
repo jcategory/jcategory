@@ -19,16 +19,16 @@ public class ClassCategory<T> extends TypeCategory<T> {
 	private TypeCategory<?> parentCategory;
 	private List<ClassCategory<? extends T>> knownSubClassNodes;
 	
-	ClassCategory(TypeCategorization typeCategorization, TypeCategoryRoot parentCategory) {
-		this(typeCategorization, (Class<T>) Object.class, parentCategory);
+	ClassCategory(TypeCategoryRoot parentCategory) {
+		this((Class<T>) Object.class, parentCategory);
 	}
 	
-	ClassCategory(TypeCategorization typeCategorization, Class<T> wrappedClass, TypeCategory<?> parentCategory) {
-		this(typeCategorization, wrappedClass, parentCategory, Collections.<InterfaceCategory<? super T>>emptyList());
+	ClassCategory(Class<T> wrappedClass, TypeCategory<?> parentCategory) {
+		this(wrappedClass, parentCategory, Collections.<InterfaceCategory<? super T>>emptyList());
 	}
 	
-	ClassCategory(TypeCategorization typeCategorization, Class<T> wrappedClass, TypeCategory<?> parentCategory, List<InterfaceCategory<? super T>> superInterfaceNodes) {
-		super(typeCategorization, wrappedClass, superInterfaceNodes);
+	ClassCategory(Class<T> wrappedClass, TypeCategory<?> parentCategory, List<InterfaceCategory<? super T>> superInterfaceNodes) {
+		super(wrappedClass, superInterfaceNodes);
 		knownSubClassNodes = new ArrayList<>();
 		this.parentCategory = parentCategory;
 		if(parentCategory instanceof ClassCategory)

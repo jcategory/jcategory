@@ -13,7 +13,7 @@ import com.google.common.collect.Lists;
  *
  * @param <T> the category label type.
  */
-public abstract class LabeledCategory<T> extends Category {
+public class LabeledCategory<T> extends Category {
 	
 	public static <U> List<U> labels(List<? extends LabeledCategory<?>> path) {
 		return Lists.transform(path, new Function<LabeledCategory<?>, U>() {
@@ -31,8 +31,17 @@ public abstract class LabeledCategory<T> extends Category {
 	 * @param categorization the hierarchy where this category exists.
 	 * @param label a label identifying this category.
 	 */
-	public LabeledCategory(Categorization<?> categoryHierarchy, T label) {
-		super(categoryHierarchy);
+	public LabeledCategory(Categorization<?> categorization, T label) {
+		super(categorization);
+		this.label = label;
+	}
+	
+	/**
+	 * @param label a label identifying this category.
+	 * @parem parents the parents of this category.
+	 */
+	public LabeledCategory(T label, List<? extends Category> parents) {
+		super(parents);
 		this.label = label;
 	}
 	

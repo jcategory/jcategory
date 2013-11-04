@@ -1,5 +1,6 @@
 package org.jgum.category;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,26 +13,45 @@ import com.google.common.base.Optional;
  * @author sergioc
  *
  */
-public abstract class Category {
+public class Category {
 
 	private final Map<Object, Object> properties; //properties associated with this category are backed up in this map.
-	private final Categorization<?> categorization; //the hierarchy where this category exists.
-	
+	private Categorization categorization; //the categorization where this category exists.
+	private final List<? extends Category> parents; //default placeholder for the parents of this category. Subclasses may choose to store parents in a different structure.
+	private final List<? extends Category> children; //default placeholder for the children of this category. Subclasses may choose to store children in a different structure.
 	
 	/**
 	 * @param categorization the hierarchy where this category exists.
-	 * @param label a label identifying this category.
 	 */
 	public Category(Categorization<?> categorization) {
-		this.categorization = categorization;
+		this(new ArrayList());
+		setCategorization(categorization);
+	}
+	
+	/**
+	 * @param categorization the hierarchy where this category exists.
+	 * @parem parents the parents of this category.
+	 * @param children the children of this category.
+	 */
+	public Category(List<? extends Category> parents) {
+		this.parents = parents;
+		children = new ArrayList<>();
 		properties = new HashMap<>();
+	}
+	
+	
+	
+	public void setCategorization(Categorization categorization) {
+		this.categorization = categorization;
+		categorization.setRoot(this);
 	}
 
 	public Categorization<?> getCategorization() {
+		if(categorization == null) //implies that this is not the root category
+			categorization = getParents().get(0).getCategorization(); //there is at least one parent 
 		return categorization;
 	}
 
-	
 	/**
 	 * @param property a property name.
 	 * @return an optional with the property value of the category. It attempts to find it in ancestor categories if the property is not locally present.
@@ -105,7 +125,7 @@ public abstract class Category {
 	 * @return a linearization using the default bottom up linearization function.
 	 */
 	public <U extends Category> List<U> bottomUpLinearization() {
-		return (List<U>)linearize(categorization.getBottomUpLinearizationFunction());
+		return (List<U>)linearize(getCategorization().getBottomUpLinearizationFunction());
 	}
 
 	/**
@@ -113,13 +133,36 @@ public abstract class Category {
 	 * @return a linearization using the default top down linearization function.
 	 */
 	public <U extends Category> List<U> topDownLinearization() {
-		return (List<U>)linearize(categorization.getTopDownLinearizationFunction());
+		return (List<U>)linearize(getCategorization().getTopDownLinearizationFunction());
 	}
 	
-	public abstract <U extends Category> List<U> getParents();
+	/**
+	 * 
+	 * @return the parents of this category. The ordering in which parents are returned is determined by subclasses.
+	 */
+	public <U extends Category> List<U> getParents() {
+		return (List)parents;
+	}
 
-	public abstract <U extends Category> List<U> getChildren();
+	/**
+	 * 
+	 * @return the children of this category. The ordering in which children are returned is determined by subclasses.
+	 */
+	public <U extends Category> List<U> getChildren() {
+		return (List)children;
+	}
 
+//	protected void onAddChild(Category category) {
+//		categorization.notifyCategorizationListeners(category);
+//	}
+	
+	/**
+	 * 
+	 * @return if the current category corresponds to the root category.
+	 */
+	public boolean isRoot() {
+		return getParents().isEmpty();
+	}
 	
 	@Override
 	public String toString() {

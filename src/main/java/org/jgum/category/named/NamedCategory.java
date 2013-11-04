@@ -3,7 +3,6 @@ package org.jgum.category.named;
 import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,9 +23,9 @@ import com.google.common.collect.Lists;
  */
 public class NamedCategory extends LabeledCategory<String> {
 
-	private Map<String, NamedCategory> children; //the children nodes
-	private NamedCategory parent; //the parent node
-	private final String simpleName; //the full name of the package, lazily initialized
+	private Map<String, NamedCategory> children; //the children categories
+	private List<NamedCategory> parents; //the parent category
+	private final String simpleName; //the simple name of the category
 	
 	static List<String> asPackageFragmentsList(String simpleName) {
 		List<String> packageFragmentsList;
@@ -42,19 +41,19 @@ public class NamedCategory extends LabeledCategory<String> {
 	/**
 	 * Creates a root NamedCategory
 	 */
-	protected NamedCategory(NamedCategorization namedCategorization) {
-		this(namedCategorization, "", null);
+	NamedCategory(NamedCategorization namedCategorization) {
+		super(namedCategorization, "");
+		this.simpleName = "";
+		children = new TreeMap<>(); //to preserve insertion order
 	}
 	
 	/**
-	 * @parem namedCategorization the hierarchy where this category exists.
 	 * @param simpleName the simple name of this category.
 	 * @param parent the parent category 
 	 */
-	protected NamedCategory(NamedCategorization namedCategorization, String simpleName, NamedCategory parent) {
-		super(namedCategorization, parent != null ? parent.getName(simpleName) : simpleName);
+	NamedCategory(String simpleName, NamedCategory parent) {
+		super(parent.getName(simpleName), asList(parent));
 		this.simpleName = simpleName;
-		this.parent = parent;
 		children = new TreeMap<>(); //to preserve insertion order
 	}
 
@@ -67,15 +66,10 @@ public class NamedCategory extends LabeledCategory<String> {
 	}
 	
 	public NamedCategory getParent() {
-		return parent;
-	}
-	
-	@Override
-	public List<NamedCategory> getParents() {
-		if(parent == null)
-			return Collections.emptyList();
+		if(getParents().isEmpty())
+			return null;
 		else
-			return asList(parent);
+			return (NamedCategory) getParents().get(0);
 	}
 
 	@Override
@@ -124,31 +118,15 @@ public class NamedCategory extends LabeledCategory<String> {
 	}
 	
 	private NamedCategory addChild(String simpleName) {
-		NamedCategory child = new NamedCategory(getCategorization(), simpleName, this);
+		NamedCategory child = new NamedCategory(simpleName, this);
 		children.put(simpleName, child);
-		getCategorization().notifyCreationListeners(child);
+		getCategorization().notifyCategorizationListeners(child);
 		return child;
 	}
 	
 	public NamedCategorization getCategorization() {
 		return (NamedCategorization)super.getCategorization();
 	}
-	
-	/**
-	 * 
-	 * @return if the current category corresponds to the root category.
-	 */
-	public boolean isRoot() {
-		return parent == null;
-	}
-	
-	public NamedCategory getRoot() {
-		NamedCategory root = this;
-		while(!root.isRoot())
-			root = root.getParent();
-		return root;
-	}
-	
 	
 	public List<NamedCategory> topDownPath(String relativePackageName) {
 		Iterable<NamedCategory> bottomUpIterable = getOrCreateCategory(relativePackageName).<NamedCategory>linearize(

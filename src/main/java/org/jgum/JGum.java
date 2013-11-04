@@ -33,7 +33,7 @@ public class JGum extends CategorizationContext {
 	 * Default linearization function for top down traversing (given an ancestor category) of a categorization denoting a type hierarchy.
 	 */
 	public static final Function<TypeCategory<?>, List<TypeCategory<?>>> DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION = 
-			new TopDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.INTERFACES_FIRST, RedundancyCheck.KEEP_FIRST);
+			new TopDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.CLASSES_FIRST, RedundancyCheck.KEEP_FIRST);
 	
 	/**
 	 * Default linearization function for bottom up traversing (given a name) of a categorization denoting a named hierarchy.

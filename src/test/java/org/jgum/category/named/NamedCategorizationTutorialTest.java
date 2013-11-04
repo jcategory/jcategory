@@ -6,7 +6,7 @@ import static org.junit.Assert.assertFalse;
 import org.jgum.JGum;
 import org.junit.Test;
 
-public class NamedCategoryTutorialTest {
+public class NamedCategorizationTutorialTest {
 
 	@Test
 	public void testNamedCategoryInheritance() {

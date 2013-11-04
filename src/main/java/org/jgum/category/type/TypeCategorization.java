@@ -1,11 +1,14 @@
 package org.jgum.category.type;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.jgum.category.Categorization;
+import org.jgum.category.CategorizationListener;
+import org.jgum.category.CategorizationListenersManager;
 
 import com.google.common.base.Function;
 
@@ -13,17 +16,25 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 
 	private final Map<Class<?>, TypeCategory<?>> categoryIndex;	
 	private TypeCategoryRoot typeCategoryRoot;
+	private final CategorizationListenersManager listenersManager; //category listeners notified when a new category is created.
 	
-	public TypeCategorization(Function<TypeCategory<?>, List<TypeCategory<?>>> bottomUpLinearization, Function<TypeCategory<?>, List<TypeCategory<?>>> topDownLinearization) {
-		super((Function)bottomUpLinearization, (Function)topDownLinearization);
-		categoryIndex = new HashMap<>();
+	public TypeCategorization(Function<TypeCategory<?>, List<TypeCategory<?>>> bottomUpLinearizationFunction, 
+			Function<TypeCategory<?>, List<TypeCategory<?>>> topDownLinearizationFunction) {
+		this(bottomUpLinearizationFunction, topDownLinearizationFunction, (List)Collections.emptyList());
 	}
 	
-	@Override
+	public TypeCategorization(Function<TypeCategory<?>, List<TypeCategory<?>>> bottomUpLinearization, 
+			Function<TypeCategory<?>, List<TypeCategory<?>>> topDownLinearization,
+			List<? extends CategorizationListener<TypeCategory<?>>> categorizationListeners) {
+		super((Function)bottomUpLinearization, (Function)topDownLinearization);
+		categoryIndex = new HashMap<>();
+		listenersManager = new CategorizationListenersManager((List)categorizationListeners);
+	}
+	
 	public TypeCategoryRoot getRoot() {
 		if(typeCategoryRoot == null) {
 			typeCategoryRoot = new TypeCategoryRoot(this);
-			notifyCreationListeners(typeCategoryRoot);
+			notifyCategorizationListeners(typeCategoryRoot);
 		}
 		return typeCategoryRoot;
 	}
@@ -34,7 +45,7 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 	
 	private <T> void putTypeCategory(Class<T> clazz, TypeCategory<T> node) {
 		categoryIndex.put(clazz, node);
-		notifyCreationListeners(node);
+		notifyCategorizationListeners(node);
 	}
 
 	public <T> TypeCategory<T> getOrCreateTypeCategory(Class<T> clazz) {
@@ -51,7 +62,7 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 	private <T> ClassCategory<T> createClassCategory(Class<T> clazz) {
 		ClassCategory classCategory;
 		if(Object.class.equals(clazz)) {
-			classCategory = new ClassCategory(this, getRoot());
+			classCategory = new ClassCategory(getRoot());
 		} else {
 			ClassCategory parentClassNode = (ClassCategory) getOrCreateTypeCategory(clazz.getSuperclass());
 			List<InterfaceCategory> superInterfaceNodes = new ArrayList<>();
@@ -59,7 +70,7 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 				InterfaceCategory superInterfaceNode = (InterfaceCategory) getOrCreateTypeCategory(superInterface);
 				superInterfaceNodes.add(superInterfaceNode);
 			}
-			classCategory = new ClassCategory(this, clazz, parentClassNode, superInterfaceNodes);
+			classCategory = new ClassCategory(clazz, parentClassNode, superInterfaceNodes);
 		}
 		putTypeCategory(clazz, classCategory);
 		return classCategory;
@@ -73,18 +84,21 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 		}
 		InterfaceCategory interfaceCategory;
 		if(superInterfaceNodes.isEmpty()) {
-			interfaceCategory = new InterfaceCategory(this, clazz, getRoot());
+			interfaceCategory = new InterfaceCategory(clazz, getRoot());
 			getRoot().addRootInterfaceNode(interfaceCategory);
 		} else {
-			interfaceCategory = new InterfaceCategory(this, clazz, superInterfaceNodes);
+			interfaceCategory = new InterfaceCategory(clazz, superInterfaceNodes);
 		}
 		putTypeCategory(clazz, interfaceCategory);
 		return interfaceCategory;
 	}
 
-	@Override
-	protected void notifyCreationListeners(TypeCategory<?> newCategory) {
-		super.notifyCreationListeners(newCategory);
+	protected void notifyCategorizationListeners(TypeCategory<?> newCategory) {
+		listenersManager.notifyCategorizationListeners(newCategory);
+	}
+
+	public void addCategorizationListener(CategorizationListener<TypeCategory<?>> creationListener) {
+		listenersManager.addCategorizationListener(creationListener);
 	}
 	
 }
