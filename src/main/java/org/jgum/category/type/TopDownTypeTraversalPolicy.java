@@ -2,7 +2,7 @@ package org.jgum.category.type;
 
 import java.util.List;
 
-import org.jgum.traversal.RedundancyDetection;
+import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
 
@@ -29,23 +29,15 @@ public class TopDownTypeTraversalPolicy<T extends TypeCategory<?>> extends Trave
 		};
 	}
 	
-	/**
-	 * 
-	 * @param searchStrategy how the nodes in the bottom-up path should be traversed.
-	 * @param priority if classes should be visited before interfaces.
-	 */
-	public TopDownTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority) {
-		this(searchStrategy, priority, RedundancyDetection.KEEP_FIRST);
-	}
 	
 	/**
 	 * 
 	 * @param searchStrategy how the nodes in the bottom-up path should be traversed.
 	 * @param priority if classes should be visited before interfaces.
-	 * @param redundancyDetection if a node can be traversed only once in a given path.
+	 * @param redundancyCheck if a node can be traversed only once in a given path.
 	 */
-	public TopDownTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, RedundancyDetection redundancyDetection) {
-		super(searchStrategy, TopDownTypeTraversalPolicy.<T>childrenFunction(priority), redundancyDetection);
+	public TopDownTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, RedundancyCheck redundancyCheck) {
+		super(searchStrategy, TopDownTypeTraversalPolicy.<T>childrenFunction(priority), redundancyCheck);
 	}
 	
 }

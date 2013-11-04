@@ -20,7 +20,7 @@ import org.jgum.category.CategoryProperty;
 import org.jgum.category.named.NamedCategory;
 import org.jgum.category.type.TypeCategoryRoot.Any;
 import org.jgum.testutil.CounterCreationListener;
-import org.jgum.traversal.RedundancyDetection;
+import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.junit.Test;
 
@@ -58,12 +58,17 @@ public class TypeCategoryTest {
 		List<Class<?>> classes;
 		
 		classes = arrayListNode.linearizeLabels(
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyDetection.KEEP_FIRST));
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyCheck.KEEP_LAST));
+		assertEquals(asList(ArrayList.class, Serializable.class, Cloneable.class, RandomAccess.class,
+				AbstractList.class, List.class, AbstractCollection.class, Collection.class, Iterable.class, Object.class, Any.class), classes);
+		
+		classes = arrayListNode.linearizeLabels(
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyCheck.KEEP_FIRST));
 		assertEquals(asList(ArrayList.class, Serializable.class, Any.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
 				AbstractList.class, AbstractCollection.class, Object.class), classes);
 		
 		classes = arrayListNode.linearizeLabels(
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyDetection.IGNORE));
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyCheck.IGNORE));
 		assertEquals(asList(ArrayList.class, Serializable.class, Any.class, Cloneable.class, Any.class, RandomAccess.class, Any.class,
 				List.class, Collection.class, Iterable.class, Any.class,
 				AbstractList.class, List.class, Collection.class, Iterable.class, Any.class,
@@ -71,7 +76,7 @@ public class TypeCategoryTest {
 				Object.class, Any.class), classes);
 
 		classes = arrayListNode.linearizeLabels(
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, RedundancyDetection.IGNORE));
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, RedundancyCheck.IGNORE));
 		assertEquals(asList(ArrayList.class, AbstractList.class, AbstractCollection.class, Object.class, Any.class,
 				Collection.class, Iterable.class, Any.class, 
 				List.class, Collection.class, Iterable.class, Any.class,
@@ -94,9 +99,9 @@ public class TypeCategoryTest {
 		List<TypeCategory<?>> rootTopDownPath;
 		rootTopDownPath = hierarchy.getRoot().topDownLinearization();
 		//System.out.println(rootTopDownPath);
-		assertEquals(asList(Any.class, java.lang.Iterable.class, java.util.RandomAccess.class, java.lang.Cloneable.class, java.io.Serializable.class, 
-				java.lang.Object.class, java.util.Collection.class, java.util.ArrayList.class, java.util.AbstractCollection.class, 
-				java.util.List.class, java.util.AbstractList.class), NamedCategory.<Class<?>>labels(rootTopDownPath));
+		assertEquals(asList(Any.class, java.lang.Iterable.class, java.util.RandomAccess.class, java.lang.Cloneable.class, java.io.Serializable.class, java.lang.Object.class, 
+				java.util.Collection.class, java.util.ArrayList.class, java.util.AbstractCollection.class, java.util.List.class, 
+				java.util.AbstractList.class), NamedCategory.<Class<?>>labels(rootTopDownPath));
 	}
 
 	@Test

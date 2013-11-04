@@ -22,34 +22,33 @@ import com.google.common.collect.TreeTraverser;
 public class TraversalPolicy<T extends Category> implements Function<T, List<T>> {
 
 	public final SearchStrategy searchStrategy;
-	public final RedundancyDetection redundancyDetection;
+	public final RedundancyCheck redundancyCheck;
 	public final Function<T, List<T>> nextNodesFunction;
 
-	public TraversalPolicy(SearchStrategy searchStrategy, Function<T, List<T>> nextNodesFunction, RedundancyDetection redundancyDetection) {
+	public TraversalPolicy(SearchStrategy searchStrategy, Function<T, List<T>> nextNodesFunction, RedundancyCheck redundancyCheck) {
 		this.searchStrategy = searchStrategy;
 		this.nextNodesFunction = nextNodesFunction;
-		this.redundancyDetection = redundancyDetection;
+		this.redundancyCheck = redundancyCheck;
 	}
 	
 	@Override
 	public List<T> apply(T category) {
 		FluentIterable<T> it = CategoryTraverser.<T>iterable(category, searchStrategy, nextNodesFunction);
-		if(redundancyDetection.equals(RedundancyDetection.KEEP_FIRST)) {
+		if(redundancyCheck.equals(RedundancyCheck.KEEP_FIRST)) {
 			return new ArrayList<>(new LinkedHashSet<T>(it.toList()));
-		} else if(redundancyDetection.equals(RedundancyDetection.KEEP_LAST)) {
+		} else if(redundancyCheck.equals(RedundancyCheck.KEEP_LAST)) {
 			return Lists.reverse(new ArrayList<>(new LinkedHashSet<T>(it.toList().reverse())));
 		} else { //ignore redundancy check
 			return it.toList();
 		}
 	}
-	
 
-	public static TraversalPolicy bottomUpTraversalPolicy(SearchStrategy searchStrategy, RedundancyDetection redundancyDetection) {
-		return new TraversalPolicy(searchStrategy, parentsFunction(), redundancyDetection);
+	public static TraversalPolicy bottomUpTraversalPolicy(SearchStrategy searchStrategy, RedundancyCheck redundancyCheck) {
+		return new TraversalPolicy(searchStrategy, parentsFunction(), redundancyCheck);
 	}
 	
-	public static TraversalPolicy topDownTraversalPolicy(SearchStrategy searchStrategy, RedundancyDetection redundancyDetection) {
-		return new TraversalPolicy(searchStrategy, childrenFunction(), redundancyDetection);
+	public static TraversalPolicy topDownTraversalPolicy(SearchStrategy searchStrategy, RedundancyCheck redundancyCheck) {
+		return new TraversalPolicy(searchStrategy, childrenFunction(), redundancyCheck);
 	}
 	
 	/**

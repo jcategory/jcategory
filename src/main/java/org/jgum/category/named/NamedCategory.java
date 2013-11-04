@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.jgum.category.LabeledCategory;
-import org.jgum.traversal.RedundancyDetection;
+import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.StopUntilConditionIterable;
 import org.jgum.traversal.TraversalPolicy;
@@ -152,7 +152,7 @@ public class NamedCategory extends LabeledCategory<String> {
 	
 	public List<NamedCategory> topDownPath(String relativePackageName) {
 		Iterable<NamedCategory> bottomUpIterable = getOrCreateCategory(relativePackageName).<NamedCategory>linearize(
-				TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyDetection.IGNORE));
+				TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.IGNORE));
 		Iterable<NamedCategory> filteredBottomUpIterable = new StopUntilConditionIterable(bottomUpIterable, new Predicate<NamedCategory>() {
 			@Override
 			public boolean apply(NamedCategory node) {

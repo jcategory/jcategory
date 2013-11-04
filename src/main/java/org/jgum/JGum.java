@@ -10,7 +10,7 @@ import org.jgum.category.type.Priority;
 import org.jgum.category.type.TopDownTypeTraversalPolicy;
 import org.jgum.category.type.TypeCategorization;
 import org.jgum.category.type.TypeCategory;
-import org.jgum.traversal.RedundancyDetection;
+import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
 
@@ -27,25 +27,25 @@ public class JGum extends CategorizationContext {
 	 * Default linearization function for bottom up traversing (given a descendant category) of a categorization denoting a type hierarchy.
 	 */
 	public static final Function<TypeCategory<?>, List<TypeCategory<?>>> DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION = 
-			new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyDetection.KEEP_FIRST);
+			new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyCheck.KEEP_LAST);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor category) of a categorization denoting a type hierarchy.
 	 */
 	public static final Function<TypeCategory<?>, List<TypeCategory<?>>> DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION = 
-			new TopDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.INTERFACES_FIRST, RedundancyDetection.KEEP_FIRST);
+			new TopDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.INTERFACES_FIRST, RedundancyCheck.KEEP_FIRST);
 	
 	/**
 	 * Default linearization function for bottom up traversing (given a name) of a categorization denoting a named hierarchy.
 	 */
 	public static final Function<NamedCategory, List<NamedCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
-			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyDetection.IGNORE);
+			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.IGNORE);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor name) of a categorization denoting a named hierarchy.
 	 */
 	public static final Function<NamedCategory, List<NamedCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
-			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyDetection.IGNORE);
+			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.IGNORE);
 	
 	
 	private final TypeCategorization typeCategorization; //a type categorization.

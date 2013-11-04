@@ -6,7 +6,7 @@ package org.jgum.traversal;
  * @author sergioc
  *
  */
-public enum RedundancyDetection {
+public enum RedundancyCheck {
 	/**
 	 * keep the first redundant category, redundant categories coming afterwards are ignored.
 	 */

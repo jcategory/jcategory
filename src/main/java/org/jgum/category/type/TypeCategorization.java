@@ -73,8 +73,8 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 		}
 		InterfaceCategory interfaceCategory;
 		if(superInterfaceNodes.isEmpty()) {
-			interfaceCategory = new InterfaceCategory(this, clazz, typeCategoryRoot);
-			typeCategoryRoot.addRootInterfaceNode(interfaceCategory);
+			interfaceCategory = new InterfaceCategory(this, clazz, getRoot());
+			getRoot().addRootInterfaceNode(interfaceCategory);
 		} else {
 			interfaceCategory = new InterfaceCategory(this, clazz, superInterfaceNodes);
 		}

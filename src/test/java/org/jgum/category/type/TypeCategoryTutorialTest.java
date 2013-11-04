@@ -9,6 +9,7 @@ import java.util.List;
 import org.apache.log4j.or.ObjectRenderer;
 import org.jgum.JGum;
 import org.jgum.category.type.TypeCategoryRoot.Any;
+import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.junit.Test;
 
@@ -66,7 +67,7 @@ public class TypeCategoryTutorialTest {
 	@Test
 	public void testLabels() {
 		JGum jgum = new JGum();
-		assertEquals(asList(Cat.class, FourLegged.class, HasLegs.class, Any.class, Furry.class, Animal.class, Object.class), jgum.forClass(Cat.class).bottomUpLabels());
+		assertEquals(asList(Cat.class, FourLegged.class, HasLegs.class, Furry.class, Animal.class, Object.class, Any.class), jgum.forClass(Cat.class).bottomUpLabels());
 	}
 	
 	@Test
@@ -85,7 +86,7 @@ public class TypeCategoryTutorialTest {
 	@Test
 	public void testMultiInheritanceClassesFirst() {
 		Function<TypeCategory<?>, List<TypeCategory<?>>> linearizationFunction = 
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION);
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, RedundancyCheck.KEEP_LAST);
 		JGum jgum = new JGum(linearizationFunction);
 		TypeCategory<?> animalCategory = jgum.forClass(Animal.class);
 		animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class);
@@ -97,14 +98,14 @@ public class TypeCategoryTutorialTest {
 	
 	
 	public interface A {}
-	public class B implements A {}
+	public interface B extends A {}
 	public interface C extends A {}
-	public class D extends B implements C {}
+	public interface D extends B, C {}
 	
 	@Test
 	public void testDiamondInheritance() {
 		JGum jgum = new JGum();
-		assertEquals(asList(D.class, C.class, A.class, Any.class, B.class, Object.class), jgum.forClass(D.class).bottomUpLabels());
+		assertEquals(asList(D.class, C.class, B.class, A.class, Any.class), jgum.forClass(D.class).bottomUpLabels());
 	}
 	
 }
