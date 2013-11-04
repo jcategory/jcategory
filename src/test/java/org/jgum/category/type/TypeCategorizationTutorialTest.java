@@ -31,12 +31,12 @@ public class TypeCategorizationTutorialTest {
 	@Test
 	public void testTypeCategoryInheritance() {
 		JGum jgum = new JGum();
-		TypeCategory<?> fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit.class
-		TypeCategory<?> orangeCategory = jgum.forClass(Orange.class); //type category for Orange.class
-		fruitCategory.setProperty(ObjectRenderer.class, FruitRenderer.class); //ObjectRenderer.class property set to FruitRenderer.class for Fruit.class
-		assertEquals(FruitRenderer.class, fruitCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer.class property is FruitRenderer.class for Fruit.class
-		assertEquals(FruitRenderer.class, orangeCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer.class property is also FruitRenderer.class for Orange.class
-		assertFalse(jgum.forClass(Object.class).getProperty(ObjectRenderer.class).isPresent()); //ObjectRenderer.class property has not been set for Object.class
+		TypeCategory<?> fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit
+		TypeCategory<?> orangeCategory = jgum.forClass(Orange.class); //type category for Orange
+		fruitCategory.setProperty(ObjectRenderer.class, FruitRenderer.class); //ObjectRenderer property set to FruitRenderer for Fruit
+		assertEquals(FruitRenderer.class, fruitCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is FruitRenderer for Fruit
+		assertEquals(FruitRenderer.class, orangeCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is also FruitRenderer for Orange
+		assertFalse(jgum.forClass(Object.class).getProperty(ObjectRenderer.class).isPresent()); //ObjectRenderer property has not been set for Object
 	}
 	
 	
@@ -80,28 +80,53 @@ public class TypeCategorizationTutorialTest {
 	
 	@Test
 	public void testMultiInheritanceInterfacesFirst() {
-		JGum jgum = new JGum();
-		TypeCategory<?> animalCategory = jgum.forClass(Animal.class); //type category for Animal.class
-		animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //ObjectRenderer.class property is AnimalRenderer.class for Animal.class
-		TypeCategory<?> hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs.class
-		hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //ObjectRenderer.class property is HasLegsRenderer.class for HasLegs.class
-		TypeCategory<?> catCategory = jgum.forClass(Cat.class); //type category for Cat.class
-		assertEquals(HasLegsRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer.class property is HasLegsRenderer.class for Cat.class
-		TypeCategory<?> fishCategory = jgum.forClass(Fish.class); //type category for Fish.class
-		assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer.class property is AnimalRenderer.class for Fish.class
+		//configuring the JGum context
+		Function<TypeCategory<?>, List<TypeCategory<?>>> linearizationFunction = 
+				new BottomUpTypeTraversalPolicy( 
+						SearchStrategy.PRE_ORDER, //pre-order search
+						Priority.INTERFACES_FIRST, //look first at interfaces, then classes
+						InterfaceOrder.REVERSE, //traverse the interfaces from right to left (reverse declaration order)
+						RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
+		JGum jgum = new JGum(linearizationFunction);
+		//JGum jgum = new JGum();
+		
+		//instantiating categories
+		TypeCategory<?> animalCategory = jgum.forClass(Animal.class); //type category for Animal
+		TypeCategory<?> hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs
+		TypeCategory<?> catCategory = jgum.forClass(Cat.class); //type category for Cat
+		TypeCategory<?> fishCategory = jgum.forClass(Fish.class); //type category for Fish
+		
+		//setting properties
+		animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //ObjectRenderer property is AnimalRenderer for Animal
+		hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //ObjectRenderer property is HasLegsRenderer for HasLegs
+		
+		//testing
+		assertEquals(HasLegsRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is HasLegsRenderer for Cat
+		assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is AnimalRenderer for Fish
 	}
 	
 	@Test
 	public void testMultiInheritanceClassesFirst() {
+		//configuring the JGum context
 		Function<TypeCategory<?>, List<TypeCategory<?>>> linearizationFunction = 
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, RedundancyCheck.KEEP_LAST);
+				new BottomUpTypeTraversalPolicy(
+						SearchStrategy.PRE_ORDER, //pre-order search
+						Priority.CLASSES_FIRST, //look first at classes, then interfaces
+						InterfaceOrder.DECLARATION, //traverse the interfaces from left to right (declaration order)
+						RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
 		JGum jgum = new JGum(linearizationFunction);
+		
+		//instantiating categories
 		TypeCategory<?> animalCategory = jgum.forClass(Animal.class);
-		animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class);
 		TypeCategory<?> hasLegsCategory = jgum.forClass(HasLegs.class);
-		hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class);
 		TypeCategory<?> catCategory = jgum.forClass(Cat.class);
-		assertEquals(AnimalRenderer.class, catCategory.getProperty(ObjectRenderer.class).get());
+		
+		//setting properties
+		animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class);
+		hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class);
+		
+		//testing
+		assertEquals(AnimalRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is AnimalRenderer for Cat
 	}
 	
 	
