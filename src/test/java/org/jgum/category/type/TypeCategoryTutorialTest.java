@@ -4,6 +4,8 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.util.List;
+
 import org.apache.log4j.or.ObjectRenderer;
 import org.jgum.JGum;
 import org.jgum.category.type.TypeCategoryRoot.Any;
@@ -64,7 +66,7 @@ public class TypeCategoryTutorialTest {
 	@Test
 	public void testLabels() {
 		JGum jgum = new JGum();
-		assertEquals(asList(Cat.class, FourLegged.class, HasLegs.class, Any.class, Furry.class, Animal.class, Object.class), jgum.forClass(Cat.class).bottomUpLabels().toList());
+		assertEquals(asList(Cat.class, FourLegged.class, HasLegs.class, Any.class, Furry.class, Animal.class, Object.class), jgum.forClass(Cat.class).bottomUpLabels());
 	}
 	
 	@Test
@@ -82,7 +84,7 @@ public class TypeCategoryTutorialTest {
 	
 	@Test
 	public void testMultiInheritanceClassesFirst() {
-		Function<TypeCategory<?>, Iterable<TypeCategory<?>>> linearizationFunction = 
+		Function<TypeCategory<?>, List<TypeCategory<?>>> linearizationFunction = 
 				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION);
 		JGum jgum = new JGum(linearizationFunction);
 		TypeCategory<?> animalCategory = jgum.forClass(Animal.class);
@@ -102,7 +104,7 @@ public class TypeCategoryTutorialTest {
 	@Test
 	public void testDiamondInheritance() {
 		JGum jgum = new JGum();
-		assertEquals(asList(D.class, C.class, A.class, Any.class, B.class, Object.class), jgum.forClass(D.class).bottomUpLabels().toList());
+		assertEquals(asList(D.class, C.class, A.class, Any.class, B.class, Object.class), jgum.forClass(D.class).bottomUpLabels());
 	}
 	
 }

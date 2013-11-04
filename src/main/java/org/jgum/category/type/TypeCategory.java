@@ -10,7 +10,8 @@ import org.jgum.category.Category;
 import org.jgum.category.LabeledCategory;
 
 import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 /**
  * A category wrapping a class or interface object.
@@ -48,12 +49,26 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 		this.superInterfaceNodes = superInterfaceNodes;
 	}
 	
-	public FluentIterable<ClassCategory<? super T>> getAncestorClasses() {
-		return linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION).skip(1).filter(ClassCategory.class);
+	public List<ClassCategory<? super T>> getAncestorClasses() {
+		List<TypeCategory<?>> ancestors = linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION);
+		ancestors = ancestors.subList(1, ancestors.size());
+		return new ArrayList(Collections2.filter(ancestors, new Predicate<TypeCategory<?>>() {
+			@Override
+			public boolean apply(TypeCategory<?> typeCategory) {
+				return typeCategory instanceof ClassCategory;
+			}
+		}));
 	}
 	
-	public FluentIterable<InterfaceCategory<? super T>> getAncestorInterfaces() {
-		return linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION).skip(1).filter(InterfaceCategory.class);
+	public List<InterfaceCategory<? super T>> getAncestorInterfaces() {
+		List<TypeCategory<?>> ancestors = linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION);
+		ancestors = ancestors.subList(1, ancestors.size());
+		return new ArrayList(Collections2.filter(ancestors, new Predicate<TypeCategory<?>>() {
+			@Override
+			public boolean apply(TypeCategory<?> typeCategory) {
+				return typeCategory instanceof InterfaceCategory;
+			}
+		}));
 	}
 	
 	@Override

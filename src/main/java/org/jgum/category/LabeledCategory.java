@@ -1,9 +1,10 @@
 package org.jgum.category;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.google.common.base.Function;
-import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 
 
 /**
@@ -14,8 +15,8 @@ import com.google.common.collect.FluentIterable;
  */
 public abstract class LabeledCategory<T> extends Category {
 	
-	public static <U> FluentIterable<U> labels(FluentIterable<? extends LabeledCategory<?>> path) {
-		return path.transform(new Function<LabeledCategory<?>, U>() {
+	public static <U> List<U> labels(List<? extends LabeledCategory<?>> path) {
+		return Lists.transform(path, new Function<LabeledCategory<?>, U>() {
 			@Override
 			public U apply(LabeledCategory<?> category) {
 				return (U)category.getLabel();
@@ -58,24 +59,24 @@ public abstract class LabeledCategory<T> extends Category {
 	 * @param linearizationFunction is a linearization function.
 	 * @return An iterable of category labels, according to the given linearization function.
 	 */
-	public <U extends Category> FluentIterable<U> linearizeLabels(Function<U,FluentIterable<U>> linearizationFunction) {
-		return LabeledCategory.<U>labels((FluentIterable)linearize((Function)linearizationFunction));
+	public <U extends Category> List<U> linearizeLabels(Function<U,List<U>> linearizationFunction) {
+		return LabeledCategory.<U>labels((List)linearize((Function)linearizationFunction));
 	}
 
 	/**
 	 * 
 	 * @return An iterable of category labels, according to the default bottom-up linearization function.
 	 */
-	public <U extends Category> FluentIterable<U> bottomUpLabels() {
-		return (FluentIterable<U>)linearizeLabels(getCategorization().getBottomUpLinearizationFunction());
+	public <U extends Category> List<U> bottomUpLabels() {
+		return (List<U>)linearizeLabels(getCategorization().getBottomUpLinearizationFunction());
 	}
 	
 	/**
 	 * 
 	 * @return An iterable of category labels, according to the default top-down linearization function.
 	 */
-	public <U extends Category> FluentIterable<U> topDownLabels() {
-		return (FluentIterable<U>)linearizeLabels(getCategorization().getTopDownLinearizationFunction());
+	public <U extends Category> List<U> topDownLabels() {
+		return (List<U>)linearizeLabels(getCategorization().getTopDownLinearizationFunction());
 	}
 
 }

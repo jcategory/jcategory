@@ -1,5 +1,7 @@
 package org.jgum;
 
+import java.util.List;
+
 import org.jgum.category.named.NamedCategorization;
 import org.jgum.category.named.NamedCategory;
 import org.jgum.category.type.BottomUpTypeTraversalPolicy;
@@ -24,25 +26,25 @@ public class JGum extends CategorizationContext {
 	/**
 	 * Default linearization function for bottom up traversing (given a descendant category) of a categorization denoting a type hierarchy.
 	 */
-	public static final Function<TypeCategory<?>, Iterable<TypeCategory<?>>> DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION = 
+	public static final Function<TypeCategory<?>, List<TypeCategory<?>>> DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION = 
 			new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyDetection.KEEP_FIRST);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor category) of a categorization denoting a type hierarchy.
 	 */
-	public static final Function<TypeCategory<?>, Iterable<TypeCategory<?>>> DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION = 
+	public static final Function<TypeCategory<?>, List<TypeCategory<?>>> DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION = 
 			new TopDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.INTERFACES_FIRST, RedundancyDetection.KEEP_FIRST);
 	
 	/**
 	 * Default linearization function for bottom up traversing (given a name) of a categorization denoting a named hierarchy.
 	 */
-	public static final Function<NamedCategory, Iterable<NamedCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
+	public static final Function<NamedCategory, List<NamedCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
 			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyDetection.IGNORE);
 	
 	/**
 	 * Default linearization function for top down traversing (given an ancestor name) of a categorization denoting a named hierarchy.
 	 */
-	public static final Function<NamedCategory, Iterable<NamedCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
+	public static final Function<NamedCategory, List<NamedCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
 			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyDetection.IGNORE);
 	
 	
@@ -63,7 +65,7 @@ public class JGum extends CategorizationContext {
 	 * Creates a new context with the given bottom up class linearization function.
 	 * @param bottomUpTypeLinearizationFunction the bottom up class linearization function.
 	 */
-	public JGum(Function<TypeCategory<?>, Iterable<TypeCategory<?>>> bottomUpTypeLinearizationFunction) {
+	public JGum(Function<TypeCategory<?>, List<TypeCategory<?>>> bottomUpTypeLinearizationFunction) {
 		this(bottomUpTypeLinearizationFunction, DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION, DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION, DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION);
 	}
 	
@@ -74,10 +76,10 @@ public class JGum extends CategorizationContext {
 	 * @param bottomUpNameLinearizationFunction the bottom up package linearization function.
 	 * @param topDownNameLinearizationFunction the top down package linearization function.
 	 */
-	public JGum(Function<TypeCategory<?>, Iterable<TypeCategory<?>>> bottomUpTypeLinearizationFunction, 
-			Function<TypeCategory<?>, Iterable<TypeCategory<?>>> topDownTypeLinearizationFunction,
-			Function<NamedCategory, Iterable<NamedCategory>> bottomUpNameLinearizationFunction, 
-			Function<NamedCategory, Iterable<NamedCategory>> topDownNameLinearizationFunction) {
+	public JGum(Function<TypeCategory<?>, List<TypeCategory<?>>> bottomUpTypeLinearizationFunction, 
+			Function<TypeCategory<?>, List<TypeCategory<?>>> topDownTypeLinearizationFunction,
+			Function<NamedCategory, List<NamedCategory>> bottomUpNameLinearizationFunction, 
+			Function<NamedCategory, List<NamedCategory>> topDownNameLinearizationFunction) {
 		
 		namedCategorization = new NamedCategorization(bottomUpNameLinearizationFunction, topDownNameLinearizationFunction);
 		register(JGUM_TYPE_HIERARCHY_ID, namedCategorization);

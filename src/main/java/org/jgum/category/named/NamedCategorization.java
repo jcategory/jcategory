@@ -1,5 +1,7 @@
 package org.jgum.category.named;
 
+import java.util.List;
+
 import org.jgum.category.Categorization;
 
 import com.google.common.base.Function;
@@ -13,8 +15,8 @@ public class NamedCategorization extends Categorization<NamedCategory> {
 
 	private NamedCategory nameCategoryRoot;
 	
-	public NamedCategorization(Function<NamedCategory, Iterable<NamedCategory>> bottomUpLinearization, 
-			Function<NamedCategory, Iterable<NamedCategory>> topDownLinearization) {
+	public NamedCategorization(Function<NamedCategory, List<NamedCategory>> bottomUpLinearization, 
+			Function<NamedCategory, List<NamedCategory>> topDownLinearization) {
 		super((Function)bottomUpLinearization, (Function)topDownLinearization);
 	}
 	

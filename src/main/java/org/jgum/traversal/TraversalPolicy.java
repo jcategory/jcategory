@@ -1,23 +1,25 @@
 package org.jgum.traversal;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import org.jgum.category.Category;
 
 import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
+import com.google.common.collect.Lists;
 import com.google.common.collect.TreeTraverser;
 
 /**
- * A class facilitating the definition of typical linearization functions in terms of few parameters.
+ * A class facilitating the definition of common linearization functions in terms of few intuitive parameters.
  * @author sergioc
  *
  * @param <T>
  */
-public class TraversalPolicy<T extends Category> implements Function<T, FluentIterable<T>> {
+public class TraversalPolicy<T extends Category> implements Function<T, List<T>> {
 
 	public final SearchStrategy searchStrategy;
 	public final RedundancyDetection redundancyDetection;
@@ -30,18 +32,15 @@ public class TraversalPolicy<T extends Category> implements Function<T, FluentIt
 	}
 	
 	@Override
-	public FluentIterable<T> apply(T category) {
+	public List<T> apply(T category) {
 		FluentIterable<T> it = CategoryTraverser.<T>iterable(category, searchStrategy, nextNodesFunction);
 		if(redundancyDetection.equals(RedundancyDetection.KEEP_FIRST)) {
-			final Iterable<T> itAux = it;
-			it = FluentIterable.from(new Iterable<T>() {
-				@Override
-				public Iterator<T> iterator() {
-					return new DuplicatesDetectionIterator<T>(itAux.iterator());
-				}
-			});
+			return new ArrayList<>(new LinkedHashSet<T>(it.toList()));
+		} else if(redundancyDetection.equals(RedundancyDetection.KEEP_LAST)) {
+			return Lists.reverse(new ArrayList<>(new LinkedHashSet<T>(it.toList().reverse())));
+		} else { //ignore redundancy check
+			return it.toList();
 		}
-		return it;
 	}
 	
 

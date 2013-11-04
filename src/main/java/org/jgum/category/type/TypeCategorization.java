@@ -14,7 +14,7 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 	private final Map<Class<?>, TypeCategory<?>> categoryIndex;	
 	private TypeCategoryRoot typeCategoryRoot;
 	
-	public TypeCategorization(Function<TypeCategory<?>, Iterable<TypeCategory<?>>> bottomUpLinearization, Function<TypeCategory<?>, Iterable<TypeCategory<?>>> topDownLinearization) {
+	public TypeCategorization(Function<TypeCategory<?>, List<TypeCategory<?>>> bottomUpLinearization, Function<TypeCategory<?>, List<TypeCategory<?>>> topDownLinearization) {
 		super((Function)bottomUpLinearization, (Function)topDownLinearization);
 		categoryIndex = new HashMap<>();
 	}

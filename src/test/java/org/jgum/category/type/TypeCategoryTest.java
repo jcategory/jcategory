@@ -24,8 +24,6 @@ import org.jgum.traversal.RedundancyDetection;
 import org.jgum.traversal.SearchStrategy;
 import org.junit.Test;
 
-import com.google.common.collect.FluentIterable;
-
 public class TypeCategoryTest {
 
 	@Test
@@ -37,7 +35,7 @@ public class TypeCategoryTest {
 		assertNull(hierarchy.getTypeCategory(ArrayList.class));
 		ClassCategory<ArrayList> arrayListNode = (ClassCategory<ArrayList>)hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		assertNotNull(arrayListNode);
-		assertEquals(0, ((ClassCategory)hierarchy.getTypeCategory(Object.class)).getAncestorClasses().size());
+		assertEquals(0, hierarchy.getTypeCategory(Object.class).getAncestorClasses().size());
 		assertEquals(0, hierarchy.getTypeCategory(Object.class).getAncestorInterfaces().size());
 		assertEquals(0, hierarchyRoot.getAncestorInterfaces().size());
 	}
@@ -60,12 +58,12 @@ public class TypeCategoryTest {
 		List<Class<?>> classes;
 		
 		classes = arrayListNode.linearizeLabels(
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyDetection.KEEP_FIRST)).toList();
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyDetection.KEEP_FIRST));
 		assertEquals(asList(ArrayList.class, Serializable.class, Any.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class, 
 				AbstractList.class, AbstractCollection.class, Object.class), classes);
 		
 		classes = arrayListNode.linearizeLabels(
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyDetection.IGNORE)).toList();
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyDetection.IGNORE));
 		assertEquals(asList(ArrayList.class, Serializable.class, Any.class, Cloneable.class, Any.class, RandomAccess.class, Any.class,
 				List.class, Collection.class, Iterable.class, Any.class,
 				AbstractList.class, List.class, Collection.class, Iterable.class, Any.class,
@@ -73,7 +71,7 @@ public class TypeCategoryTest {
 				Object.class, Any.class), classes);
 
 		classes = arrayListNode.linearizeLabels(
-				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, RedundancyDetection.IGNORE)).toList();
+				new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, RedundancyDetection.IGNORE));
 		assertEquals(asList(ArrayList.class, AbstractList.class, AbstractCollection.class, Object.class, Any.class,
 				Collection.class, Iterable.class, Any.class, 
 				List.class, Collection.class, Iterable.class, Any.class,
@@ -81,11 +79,11 @@ public class TypeCategoryTest {
 				RandomAccess.class, Any.class, Cloneable.class, Any.class, Serializable.class, Any.class
 				), classes);
 		
-		FluentIterable<ClassCategory<? super ArrayList>> ancestorsPath = arrayListNode.getAncestorClasses();
-		assertEquals(asList(AbstractList.class, AbstractCollection.class, Object.class), NamedCategory.<Class<?>>labels(ancestorsPath).toList());
+		List<ClassCategory<? super ArrayList>> ancestorsPath = arrayListNode.getAncestorClasses();
+		assertEquals(asList(AbstractList.class, AbstractCollection.class, Object.class), NamedCategory.<Class<?>>labels(ancestorsPath));
 		
-		FluentIterable<InterfaceCategory<? super ArrayList>> interfacesPath = arrayListNode.getAncestorInterfaces();
-		assertEquals(asList(Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class), NamedCategory.<Class<?>>labels(interfacesPath).toList());
+		List<InterfaceCategory<? super ArrayList>> interfacesPath = arrayListNode.getAncestorInterfaces();
+		assertEquals(asList(Serializable.class, Cloneable.class, RandomAccess.class, List.class, Collection.class, Iterable.class), NamedCategory.<Class<?>>labels(interfacesPath));
 	}
 	
 	@Test
@@ -93,12 +91,12 @@ public class TypeCategoryTest {
 		JGum jgum = new JGum();
 		TypeCategorization hierarchy = jgum.getTypeCategorization();
 		hierarchy.getOrCreateTypeCategory(ArrayList.class);
-		FluentIterable<TypeCategory<?>> rootTopDownPath;
+		List<TypeCategory<?>> rootTopDownPath;
 		rootTopDownPath = hierarchy.getRoot().topDownLinearization();
 		//System.out.println(rootTopDownPath);
 		assertEquals(asList(Any.class, java.lang.Iterable.class, java.util.RandomAccess.class, java.lang.Cloneable.class, java.io.Serializable.class, 
 				java.lang.Object.class, java.util.Collection.class, java.util.ArrayList.class, java.util.AbstractCollection.class, 
-				java.util.List.class, java.util.AbstractList.class), NamedCategory.<Class<?>>labels(rootTopDownPath).toList());
+				java.util.List.class, java.util.AbstractList.class), NamedCategory.<Class<?>>labels(rootTopDownPath));
 	}
 
 	@Test

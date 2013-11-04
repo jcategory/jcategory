@@ -6,7 +6,6 @@ import java.util.Map;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
-import com.google.common.collect.FluentIterable;
 
 /**
  * A hierarchical category associated with some arbitrary named properties.
@@ -97,7 +96,7 @@ public abstract class Category {
 	 * @param linearizationFunction is a linearization function.
 	 * @return An iterable of nodes, according to the given linearization function.
 	 */
-	public <U extends Category> FluentIterable<U> linearize(Function<U,FluentIterable<U>> linearizationFunction) {
+	public <U extends Category> List<U> linearize(Function<U,List<U>> linearizationFunction) {
 		return linearizationFunction.apply((U)this);
 	}
 	
@@ -105,16 +104,16 @@ public abstract class Category {
 	 * 
 	 * @return a linearization using the default bottom up linearization function.
 	 */
-	public <U extends Category> FluentIterable<U> bottomUpLinearization() {
-		return (FluentIterable<U>)linearize(categorization.getBottomUpLinearizationFunction());
+	public <U extends Category> List<U> bottomUpLinearization() {
+		return (List<U>)linearize(categorization.getBottomUpLinearizationFunction());
 	}
 
 	/**
 	 * 
 	 * @return a linearization using the default top down linearization function.
 	 */
-	public <U extends Category> FluentIterable<U> topDownLinearization() {
-		return (FluentIterable<U>)linearize(categorization.getTopDownLinearizationFunction());
+	public <U extends Category> List<U> topDownLinearization() {
+		return (List<U>)linearize(categorization.getTopDownLinearizationFunction());
 	}
 	
 	public abstract <U extends Category> List<U> getParents();

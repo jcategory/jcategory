@@ -19,7 +19,6 @@ import org.jgum.traversal.TraversalPolicy;
 import org.junit.Test;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
 public class NamedCategoryTest {
@@ -71,12 +70,12 @@ public class NamedCategoryTest {
 	public void testPathToDescendant() {
 		NamedCategory root = newPackagePropertiesRoot();
 		
-		assertEquals("", root.topDownPath("").first().get().getLabel());
-		assertEquals(packageP3, root.getCategory(packageP3).topDownPath("").first().get().getLabel());
+		assertEquals("", root.topDownPath("").get(0).getLabel());
+		assertEquals(packageP3, root.getCategory(packageP3).topDownPath("").get(0).getLabel());
 		
-		FluentIterable<NamedCategory> fit = root.topDownPath(packageP3);
-		assertEquals(4, fit.size());
-		Iterator<NamedCategory> it = fit.iterator();
+		List<NamedCategory> topDownPathp3 = root.topDownPath(packageP3);
+		assertEquals(4, topDownPathp3.size());
+		Iterator<NamedCategory> it = topDownPathp3.iterator();
 		assertEquals("", it.next().getLabel());
 		assertEquals("p1", it.next().getSimpleName());
 		assertEquals("p2", it.next().getSimpleName());

@@ -15,7 +15,6 @@ import org.jgum.traversal.StopUntilConditionIterable;
 import org.jgum.traversal.TraversalPolicy;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 
 /**
@@ -151,7 +150,7 @@ public class NamedCategory extends LabeledCategory<String> {
 	}
 	
 	
-	public FluentIterable<NamedCategory> topDownPath(String relativePackageName) {
+	public List<NamedCategory> topDownPath(String relativePackageName) {
 		Iterable<NamedCategory> bottomUpIterable = getOrCreateCategory(relativePackageName).<NamedCategory>linearize(
 				TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyDetection.IGNORE));
 		Iterable<NamedCategory> filteredBottomUpIterable = new StopUntilConditionIterable(bottomUpIterable, new Predicate<NamedCategory>() {
@@ -160,11 +159,11 @@ public class NamedCategory extends LabeledCategory<String> {
 				return NamedCategory.this.equals(node);
 			}
 		});
-		Iterable<NamedCategory> topDownIterable = Lists.reverse(Lists.newArrayList(filteredBottomUpIterable));
-		return FluentIterable.from(topDownIterable);
+		List<NamedCategory> topDownIterable = Lists.reverse(Lists.newArrayList(filteredBottomUpIterable));
+		return topDownIterable;
 	}
 	
-	public FluentIterable<NamedCategory> topDownPath(Package pakkage) {
+	public List<NamedCategory> topDownPath(Package pakkage) {
 		return topDownPath(pakkage.getName());
 	}
 
