@@ -7,7 +7,7 @@ import org.jgum.category.Categorization;
 import org.jgum.category.Category;
 
 /**
- * Defines a context of categorizations.
+ * Defines a register of categorizations.
  * @author sergioc
  *
  */

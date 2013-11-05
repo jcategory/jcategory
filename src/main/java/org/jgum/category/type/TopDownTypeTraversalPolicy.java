@@ -9,7 +9,7 @@ import org.jgum.traversal.TraversalPolicy;
 import com.google.common.base.Function;
 
 /**
- * A class facilitating the definition of top-down linearization functions in a graph of type nodes.
+ * A class facilitating the definition of top-down linearization functions in a type categorization.
  * @author sergioc
  *
  */
@@ -17,7 +17,7 @@ public class TopDownTypeTraversalPolicy<T extends TypeCategory<?>> extends Trave
 
 	/**
 	 * 
-	 * @param priority if classes should be visited before interfaces.
+	 * @param priority if classes should be visited before interfaces or vice versa.
 	 * @return a function mapping a TypeCategory to a top-down linearization.
 	 */
 	public static <U extends TypeCategory<?>> Function<U, List<U>> childrenFunction(final Priority priority) {
@@ -32,9 +32,9 @@ public class TopDownTypeTraversalPolicy<T extends TypeCategory<?>> extends Trave
 	
 	/**
 	 * 
-	 * @param searchStrategy how the nodes in the bottom-up path should be traversed.
-	 * @param priority if classes should be visited before interfaces.
-	 * @param redundancyCheck if a node can be traversed only once in a given path.
+	 * @param searchStrategy how the categories in the top-down path should be traversed.
+	 * @param priority if classes should be visited before interfaces or vice versa.
+	 * @param redundancyCheck determines how to deal with redundancy.
 	 */
 	public TopDownTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, RedundancyCheck redundancyCheck) {
 		super(searchStrategy, TopDownTypeTraversalPolicy.<T>childrenFunction(priority), redundancyCheck);

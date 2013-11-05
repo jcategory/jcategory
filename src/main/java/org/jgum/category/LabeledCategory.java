@@ -28,8 +28,8 @@ public class LabeledCategory<T> extends Category {
 	private final T label; //the identifier of this category.
 	
 	/**
-	 * @param categorization the hierarchy where this category exists.
-	 * @param label a label identifying this category.
+	 * @param categorization the categorization where this category exists.
+	 * @param label a label identifying this category in the categorization.
 	 */
 	public LabeledCategory(Categorization<?> categorization, T label) {
 		super(categorization);
@@ -66,7 +66,7 @@ public class LabeledCategory<T> extends Category {
 	/**
 	 * 
 	 * @param linearizationFunction is a linearization function.
-	 * @return An iterable of category labels, according to the given linearization function.
+	 * @return A list of category labels, according to the given linearization function.
 	 */
 	public <U extends Category> List<U> linearizeLabels(Function<U,List<U>> linearizationFunction) {
 		return LabeledCategory.<U>labels((List)linearize((Function)linearizationFunction));
@@ -74,7 +74,7 @@ public class LabeledCategory<T> extends Category {
 
 	/**
 	 * 
-	 * @return An iterable of category labels, according to the default bottom-up linearization function.
+	 * @return A list of category labels, according to the default bottom-up linearization function.
 	 */
 	public <U extends Category> List<U> bottomUpLabels() {
 		return (List<U>)linearizeLabels(getCategorization().getBottomUpLinearizationFunction());

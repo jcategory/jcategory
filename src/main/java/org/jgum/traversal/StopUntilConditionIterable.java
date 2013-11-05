@@ -20,7 +20,7 @@ public class StopUntilConditionIterable<U> implements Iterable<U> {
 		return new StopUntilConditionIterator<U>(wrappedIterable.iterator(), stopCondition);
 	}
 	
-	public class StopUntilConditionIterator<T> extends AbstractIterator<T> {
+	public static class StopUntilConditionIterator<T> extends AbstractIterator<T> {
 		
 		private final Iterator<T> wrappedIterator;
 		private final Predicate<T> stopCondition;

@@ -7,7 +7,7 @@ import java.util.List;
 import org.jgum.category.type.TypeCategoryRoot.Any;
 
 /**
- * The root node in a hierarchy of classes and interfaces.
+ * The root category in a categorization of classes and interfaces.
  * @author sergioc
  *
  */
@@ -29,7 +29,7 @@ public class TypeCategoryRoot extends TypeCategory<Any> {
 	
 	public ClassCategory<Object> getRootClassNode() {
 		if(objectClassNode == null) {
-			objectClassNode = (ClassCategory<Object>)getTypeHierarchy().getOrCreateTypeCategory(Object.class);
+			objectClassNode = (ClassCategory<Object>)getTypeCategorization().getOrCreateTypeCategory(Object.class);
 		}
 		return objectClassNode;
 	}

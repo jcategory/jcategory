@@ -1,14 +1,16 @@
 package org.jgum.category;
 
 import java.util.Iterator;
+import java.util.List;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Iterators;
 
 /**
- * The property of a category. A category property value depends on the location of the category in a hierarchy.
+ * The property of a category. A category property value depends on the location of the category in a categorization.
  * If it does not explicitly set a property, its value will be looked up in its ancestor categories. 
  * @author sergioc
  *
@@ -24,12 +26,31 @@ public class CategoryProperty<T> {
 	private final Object property;
 	private final PropertyIterable<T> propertyIterable;
 	
+	/**
+	 * Resolves a given property according to the default bottom-up linearization function.
+	 * @param category the category where a property is queried.
+	 * @param property the property name to query.
+	 */
 	public CategoryProperty(Category category, Object property) {
-		this.category = category;
-		this.property = property;
-		propertyIterable = new PropertyIterable<T>(category.bottomUpLinearization(), property);
+		this(category, property, category.bottomUpLinearization());
 	}
 
+	/**
+	 * Resolves a given property according to a given bottom-up linearization function.
+	 * @param category the category where a property is queried.
+	 * @param property the property name to query.
+	 * @param linearizationFunction the bottom-up linearization function that will be used to find the property value.
+	 */
+	public CategoryProperty(Category category, Object property, Function<Category, List<Category>> linearizationFunction) {
+		this(category, property, linearizationFunction.apply(category));
+	}
+	
+	private CategoryProperty(Category category, Object property, List<? extends Category> linearization) {
+		this.category = category;
+		this.property = property;
+		this.propertyIterable = new PropertyIterable<T>(linearization, property);
+	}
+	
 	public Category getCategory() {
 		return category;
 	}

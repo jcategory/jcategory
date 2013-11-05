@@ -17,32 +17,33 @@ import org.jgum.traversal.TraversalPolicy;
 import com.google.common.base.Function;
 
 /**
- * Defines a register of categorizations that includes a named categorization and a type categorization.
+ * Defines a register of categorizations that pre-includes a named categorization and a type categorization.
+ * It also provides high-level methods to ease the manipulation of these categorizations.
  * @author sergioc
  *
  */
 public class JGum extends CategorizationContext {
 
 	/**
-	 * Default linearization function for bottom up traversing (given a descendant category) of a categorization denoting a type hierarchy.
+	 * Default linearization function for bottom-up traversing of a type categorization.
 	 */
 	public static final Function<TypeCategory<?>, List<TypeCategory<?>>> DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION = 
 			new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyCheck.KEEP_LAST);
 	
 	/**
-	 * Default linearization function for top down traversing (given an ancestor category) of a categorization denoting a type hierarchy.
+	 * Default linearization function for top-down traversing of a type categorization.
 	 */
 	public static final Function<TypeCategory<?>, List<TypeCategory<?>>> DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION = 
 			new TopDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.CLASSES_FIRST, RedundancyCheck.KEEP_FIRST);
 	
 	/**
-	 * Default linearization function for bottom up traversing (given a name) of a categorization denoting a named hierarchy.
+	 * Default linearization function for bottom-up traversing of a named categorization.
 	 */
 	public static final Function<NamedCategory, List<NamedCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
 			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.IGNORE);
 	
 	/**
-	 * Default linearization function for top down traversing (given an ancestor name) of a categorization denoting a named hierarchy.
+	 * Default linearization function for top-down traversing of a named categorization.
 	 */
 	public static final Function<NamedCategory, List<NamedCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
 			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.IGNORE);
@@ -51,8 +52,15 @@ public class JGum extends CategorizationContext {
 	private final TypeCategorization typeCategorization; //a type categorization.
 	private final NamedCategorization namedCategorization; //a named categorization.
 
+	/**
+	 * Id of the pre-defined type categorization.
+	 */
 	public static final Object JGUM_TYPE_HIERARCHY_ID = new Object(); //the id under which the type hierarchy is registered on the categorization register.
+	/**
+	 * Id of the pre-defined named categorization.
+	 */
 	public static final Object JGUM_NAME_HIERARCHY_ID = new Object(); //the id under which the named hierarchy is registered on the categorization register.
+	
 	
 	/**
 	 * Creates a new context with default linearization functions.
@@ -62,19 +70,19 @@ public class JGum extends CategorizationContext {
 	}
 	
 	/**
-	 * Creates a new context with the given bottom up class linearization function.
-	 * @param bottomUpTypeLinearizationFunction the bottom up class linearization function.
+	 * Creates a new context with the given bottom-up type linearization function.
+	 * @param bottomUpTypeLinearizationFunction the bottom-up type linearization function.
 	 */
 	public JGum(Function<TypeCategory<?>, List<TypeCategory<?>>> bottomUpTypeLinearizationFunction) {
 		this(bottomUpTypeLinearizationFunction, DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION, DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION, DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION);
 	}
 	
 	/**
-	 * Creates a new context with the given class and name linearization functions.
-	 * @param bottomUpTypeLinearizationFunction the bottom up class linearization function.
-	 * @param topDownTypeLinearizationFunction the top down class linearization function.
-	 * @param bottomUpNameLinearizationFunction the bottom up package linearization function.
-	 * @param topDownNameLinearizationFunction the top down package linearization function.
+	 * Creates a new context with the given type and name linearization functions.
+	 * @param bottomUpTypeLinearizationFunction the bottom-up type linearization function.
+	 * @param topDownTypeLinearizationFunction the top-down type linearization function.
+	 * @param bottomUpNameLinearizationFunction the bottom-up name linearization function.
+	 * @param topDownNameLinearizationFunction the top-down name linearization function.
 	 */
 	public JGum(Function<TypeCategory<?>, List<TypeCategory<?>>> bottomUpTypeLinearizationFunction, 
 			Function<TypeCategory<?>, List<TypeCategory<?>>> topDownTypeLinearizationFunction,
@@ -97,7 +105,7 @@ public class JGum extends CategorizationContext {
 	
 	/**
 	 * 
-	 * @return the category corresponding to the root in the name hierarchy (the empty name).
+	 * @return the category corresponding to the root in the name categorization (the empty name).
 	 */
 	public NamedCategory forNameRoot() {
 		return namedCategorization.getRoot();

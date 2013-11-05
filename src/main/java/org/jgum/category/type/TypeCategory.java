@@ -14,7 +14,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
 /**
- * A category wrapping a class or interface object.
+ * A category wrapping a class or interface.
  * @author sergioc
  *
  * @param <T> the type of the wrapped class.
@@ -38,7 +38,7 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 		setSuperInterfaceNodes(superInterfaceNodes);
 	}
 
-	public TypeCategorization getTypeHierarchy() {
+	public TypeCategorization getTypeCategorization() {
 		return (TypeCategorization)super.getCategorization();
 	}
 	
@@ -50,6 +50,10 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 		this.superInterfaceNodes = superInterfaceNodes;
 	}
 	
+	/**
+	 * 
+	 * @return the ancestor classes according to the default bottom-up linearization function.
+	 */
 	public List<ClassCategory<? super T>> getAncestorClasses() {
 		List<TypeCategory<?>> ancestors = linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION);
 		ancestors = ancestors.subList(1, ancestors.size());
@@ -61,6 +65,10 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 		}));
 	}
 	
+	/**
+	 * 
+	 * @return the ancestor interfaces according to the default bottom-up linearization function.
+	 */
 	public List<InterfaceCategory<? super T>> getAncestorInterfaces() {
 		List<TypeCategory<?>> ancestors = linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION);
 		ancestors = ancestors.subList(1, ancestors.size());
@@ -72,18 +80,38 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 		}));
 	}
 	
+	/**
+	 * 
+	 * @see Category#getParents()
+	 * @return the parents of this type category (super class and super interfaces) . A specific ordering should not be assumed.
+	 */
 	@Override
 	public <U extends Category> List<U> getParents() {
 		return (List)getParents(DEFAULT_BOTTOM_UP_PRIORITY, DEFAULT_INTERFACE_ORDER);
 	}
 
+	/**
+	 * @see Category#getChildren()
+	 * @return the children of this type category (implementing/extending classes and interfaces) . A specific ordering should not be assumed.
+	 */
 	@Override
 	public <U extends Category> List<U> getChildren() {
 		return (List)getChildren(DEFAULT_TOP_DOWN_PRIORITY);
 	}
 	
+	/**
+	 * 
+	 * @param priority if classes should be visited before interfaces or vice versa.
+	 * @param interfaceOrder if the interfaces should be traversed following their declaration order or reversing such order.
+	 * @return the parents of this category according to a given priority and desired interface order.
+	 */
 	protected abstract <U extends TypeCategory<? super T>> List<U> getParents(Priority priority, InterfaceOrder interfaceOrder);
 
+	/**
+	 * 
+	 * @param priority if classes should be visited before interfaces or vice versa.
+	 * @return the children of this category according to a given priority.
+	 */
 	protected abstract <U extends TypeCategory<? extends T>> List<U> getChildren(Priority priority);
 
 }

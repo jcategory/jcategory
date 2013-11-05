@@ -1,10 +1,17 @@
 package org.jgum.category.type;
 
 /**
- * Determines if classes should be visited before interfaces.
+ * Determines if classes should be visited before interfaces or vice versa.
  * @author sergioc
  *
  */
 public enum Priority {
-	CLASSES_FIRST, INTERFACES_FIRST;
+	/**
+	 * Classes should be visited before interfaces.
+	 */
+	CLASSES_FIRST, 
+	/**
+	 * Interfaces should be visited before classes.
+	 */
+	INTERFACES_FIRST;
 }

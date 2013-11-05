@@ -21,7 +21,7 @@ public class Category {
 	private final List<? extends Category> children; //default placeholder for the children of this category. Subclasses may choose to store children in a different structure.
 	
 	/**
-	 * @param categorization the hierarchy where this category exists.
+	 * @param categorization the categorization where this category exists.
 	 */
 	public Category(Categorization<?> categorization) {
 		this(new ArrayList());
@@ -45,8 +45,8 @@ public class Category {
 	}
 
 	/**
-	 * the hierarchy where this category exists.
-	 * @return
+	 * 
+	 * @return the categorization where this category exists.
 	 */
 	public Categorization<?> getCategorization() {
 		if(categorization == null) //implies that this is not the root category
@@ -56,7 +56,7 @@ public class Category {
 
 	/**
 	 * @param property a property name.
-	 * @return an optional with the property value of the category. It attempts to find it in ancestor categories if the property is not locally present.
+	 * @return a category property.
 	 */
 	public CategoryProperty<?> getProperty(Object property) {
 		return new CategoryProperty<>(this, property);
@@ -64,8 +64,8 @@ public class Category {
 	
 	/**
 	 * 
-	 * @param property a property.
-	 * @return true if the property exists in the category. false otherwise. It attempts to find it in ancestor categories if the property is not locally present.
+	 * @param property a property name.
+	 * @return true if the property is defined in the category. false otherwise. It attempts to find it in ancestor categories if the property is not locally present.
 	 */
 	public boolean containsProperty(Object property) {
 		return getProperty(property).isPresent();
@@ -81,7 +81,7 @@ public class Category {
 	
 	/**
 	 * 
-	 * @param property a property.
+	 * @param property a property name.
 	 * @return true if the property exists in the current category. false otherwise. It does not query ancestor categories if the property is not locally present.
 	 */
 	public boolean containsLocalProperty(Object property) {
@@ -90,8 +90,8 @@ public class Category {
 	
 	/**
 	 * Set a property to a given value.
-	 * @param property the property to set.
-	 * @param value the label of the property.
+	 * @param property the property name to set.
+	 * @param value the value of the property.
 	 */
 	public void setProperty(Object property, Object value) {
 		properties.put(property, value);
@@ -116,7 +116,7 @@ public class Category {
 	/**
 	 * 
 	 * @param linearizationFunction is a linearization function.
-	 * @return An iterable of nodes, according to the given linearization function.
+	 * @return A list of categories, according to the given linearization function.
 	 */
 	public <U extends Category> List<U> linearize(Function<U,List<U>> linearizationFunction) {
 		return linearizationFunction.apply((U)this);
@@ -124,7 +124,7 @@ public class Category {
 	
 	/**
 	 * 
-	 * @return a linearization using the default bottom up linearization function.
+	 * @return a linearization using the default bottom-up linearization function.
 	 */
 	public <U extends Category> List<U> bottomUpLinearization() {
 		return (List<U>)linearize(getCategorization().getBottomUpLinearizationFunction());
@@ -132,7 +132,7 @@ public class Category {
 
 	/**
 	 * 
-	 * @return a linearization using the default top down linearization function.
+	 * @return a linearization using the default top-down linearization function.
 	 */
 	public <U extends Category> List<U> topDownLinearization() {
 		return (List<U>)linearize(getCategorization().getTopDownLinearizationFunction());
@@ -160,7 +160,7 @@ public class Category {
 	
 	/**
 	 * 
-	 * @return if the current category corresponds to the root category.
+	 * @return true if the current category corresponds to the root category. false otherwise.
 	 */
 	public boolean isRoot() {
 		return getParents().isEmpty();
