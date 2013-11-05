@@ -16,7 +16,7 @@ public class NamedCategorizationTutorialTest {
 		NamedCategory child = jgum.forName(JGum.class.getName()); //named category for "org.jum.JGum"
 		parent.setProperty(LEVEL, "WARN"); //"level" property set to "WARN" for "org.jum"
 		assertEquals("WARN", parent.getProperty(LEVEL).get()); //"level" property is "WARN" for "org.jum"
-		assertEquals("WARN", child.getProperty(LEVEL).get()); //"level" property is also "WARN" for "org.jum"
+		assertEquals("WARN", child.getProperty(LEVEL).get()); //"level" property is also "WARN" for "org.jum.jGum"
 		assertFalse(jgum.forName("org").getProperty(LEVEL).isPresent()); //"level" property has not been set for "org"
 	}
 	

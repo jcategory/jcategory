@@ -9,7 +9,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 
 /**
- * A hierarchical category associated with some arbitrary named properties.
+ * A hierarchical category associated with named properties.
  * @author sergioc
  *
  */
@@ -29,9 +29,7 @@ public class Category {
 	}
 	
 	/**
-	 * @param categorization the hierarchy where this category exists.
 	 * @parem parents the parents of this category.
-	 * @param children the children of this category.
 	 */
 	public Category(List<? extends Category> parents) {
 		this.parents = parents;
@@ -41,11 +39,15 @@ public class Category {
 	
 	
 	
-	public void setCategorization(Categorization categorization) {
+	private void setCategorization(Categorization categorization) {
 		this.categorization = categorization;
 		categorization.setRoot(this);
 	}
 
+	/**
+	 * the hierarchy where this category exists.
+	 * @return
+	 */
 	public Categorization<?> getCategorization() {
 		if(categorization == null) //implies that this is not the root category
 			categorization = getParents().get(0).getCategorization(); //there is at least one parent 
