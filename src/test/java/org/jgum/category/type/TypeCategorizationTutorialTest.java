@@ -31,8 +31,8 @@ public class TypeCategorizationTutorialTest {
 	@Test
 	public void testTypeCategoryInheritance() {
 		JGum jgum = new JGum();
-		TypeCategory<?> fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit
-		TypeCategory<?> orangeCategory = jgum.forClass(Orange.class); //type category for Orange
+		TypeCategory<Fruit> fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit
+		TypeCategory<Orange> orangeCategory = jgum.forClass(Orange.class); //type category for Orange
 		fruitCategory.setProperty(ObjectRenderer.class, FruitRenderer.class); //ObjectRenderer property set to FruitRenderer for Fruit
 		assertEquals(FruitRenderer.class, fruitCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is FruitRenderer for Fruit
 		assertEquals(FruitRenderer.class, orangeCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is also FruitRenderer for Orange
@@ -91,10 +91,10 @@ public class TypeCategorizationTutorialTest {
 		//JGum jgum = new JGum();
 		
 		//instantiating categories
-		TypeCategory<?> animalCategory = jgum.forClass(Animal.class); //type category for Animal
-		TypeCategory<?> hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs
-		TypeCategory<?> catCategory = jgum.forClass(Cat.class); //type category for Cat
-		TypeCategory<?> fishCategory = jgum.forClass(Fish.class); //type category for Fish
+		TypeCategory<Animal> animalCategory = jgum.forClass(Animal.class); //type category for Animal
+		TypeCategory<HasLegs> hasLegsCategory = jgum.forClass(HasLegs.class); //type category for HasLegs
+		TypeCategory<Cat> catCategory = jgum.forClass(Cat.class); //type category for Cat
+		TypeCategory<Fish> fishCategory = jgum.forClass(Fish.class); //type category for Fish
 		
 		//setting properties
 		animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //ObjectRenderer property is AnimalRenderer for Animal
@@ -117,9 +117,9 @@ public class TypeCategorizationTutorialTest {
 		JGum jgum = new JGum(linearizationFunction);
 		
 		//instantiating categories
-		TypeCategory<?> animalCategory = jgum.forClass(Animal.class);
-		TypeCategory<?> hasLegsCategory = jgum.forClass(HasLegs.class);
-		TypeCategory<?> catCategory = jgum.forClass(Cat.class);
+		TypeCategory<Animal> animalCategory = jgum.forClass(Animal.class);
+		TypeCategory<HasLegs> hasLegsCategory = jgum.forClass(HasLegs.class);
+		TypeCategory<Cat> catCategory = jgum.forClass(Cat.class);
 		
 		//setting properties
 		animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class);
