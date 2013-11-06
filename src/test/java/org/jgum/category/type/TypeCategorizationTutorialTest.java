@@ -67,7 +67,7 @@ public class TypeCategorizationTutorialTest {
 	@Test
 	public void testLabelsInterfacesFirst() {
 		JGum jgum = new JGum();
-		assertEquals(asList(Cat.class, FourLegged.class, HasLegs.class, Furry.class, Animal.class, Object.class, Any.class), jgum.forClass(Cat.class).bottomUpLabels());
+		assertEquals(asList(Cat.class, Animal.class, Object.class, Furry.class, FourLegged.class, HasLegs.class, Any.class), jgum.forClass(Cat.class).bottomUpLabels());
 	}
 	
 	@Test
@@ -88,7 +88,6 @@ public class TypeCategorizationTutorialTest {
 						InterfaceOrder.REVERSE, //traverse the interfaces from right to left (reverse declaration order)
 						RedundancyCheck.KEEP_LAST); //if a category appears more than once in the linearization, keep the last found and discard the previous ones.
 		JGum jgum = new JGum(linearizationFunction);
-		//JGum jgum = new JGum();
 		
 		//instantiating categories
 		TypeCategory<Animal> animalCategory = jgum.forClass(Animal.class); //type category for Animal
@@ -138,7 +137,7 @@ public class TypeCategorizationTutorialTest {
 	@Test
 	public void testDiamondInheritance() {
 		JGum jgum = new JGum();
-		assertEquals(asList(D.class, C.class, B.class, A.class, Any.class), jgum.forClass(D.class).bottomUpLabels());
+		assertEquals(asList(D.class, B.class, C.class, A.class, Any.class), jgum.forClass(D.class).bottomUpLabels());
 	}
 	
 }
