@@ -19,6 +19,7 @@ public class Category {
 	private Categorization categorization; //the categorization where this category exists.
 	private final List<? extends Category> parents; //default placeholder for the parents of this category. Subclasses may choose to store parents in a different structure.
 	private final List<? extends Category> children; //default placeholder for the children of this category. Subclasses may choose to store children in a different structure.
+	private List<? extends Category> bottomUpLinearization; //lazily initialized bottom-up linearization
 	
 	/**
 	 * @param categorization the categorization where this category exists.
@@ -138,7 +139,10 @@ public class Category {
 	 * @return a linearization using the default bottom-up linearization function.
 	 */
 	public <U extends Category> List<U> bottomUpLinearization() {
-		return (List<U>)linearize(getCategorization().getBottomUpLinearizationFunction());
+		if(bottomUpLinearization == null) {
+			bottomUpLinearization = linearize(getCategorization().getBottomUpLinearizationFunction());
+		}
+		return (List<U>)bottomUpLinearization;
 	}
 
 	/**
