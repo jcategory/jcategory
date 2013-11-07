@@ -38,7 +38,6 @@ public class Category {
 	}
 	
 	
-	
 	private void setCategorization(Categorization categorization) {
 		this.categorization = categorization;
 		categorization.setRoot(this);
@@ -120,6 +119,18 @@ public class Category {
 	 */
 	public <U extends Category> List<U> linearize(Function<U,List<U>> linearizationFunction) {
 		return linearizationFunction.apply((U)this);
+	}
+	
+	/**
+	 * 
+	 * @return an optional with the super category.
+	 */
+	public <U extends Category> Optional<U> getSuper() {
+		List bottomUpLinearization = bottomUpLinearization();
+		if(bottomUpLinearization.size() == 1) //there are no super categories (according to the default linearization function)
+			return Optional.absent();
+		else
+			return Optional.of((U)bottomUpLinearization.get(1));
 	}
 	
 	/**

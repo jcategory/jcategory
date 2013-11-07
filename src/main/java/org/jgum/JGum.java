@@ -10,6 +10,7 @@ import org.jgum.category.type.Priority;
 import org.jgum.category.type.TopDownTypeTraversalPolicy;
 import org.jgum.category.type.TypeCategorization;
 import org.jgum.category.type.TypeCategory;
+import org.jgum.category.type.TypeCategoryRoot;
 import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
@@ -106,7 +107,7 @@ public class JGum extends CategorizationContext {
 	
 	/**
 	 * 
-	 * @return the category corresponding to the root in the name categorization (the empty name).
+	 * @return the category corresponding to the root in the named categorization (the empty name).
 	 */
 	public NamedCategory forNameRoot() {
 		return namedCategorization.getRoot();
@@ -138,6 +139,14 @@ public class JGum extends CategorizationContext {
 		return typeCategorization;
 	}
 
+	/**
+	 * 
+	 * @return the category corresponding to the root in the type categorization (the Any class).
+	 */
+	public TypeCategoryRoot forTypeRoot() {
+		return getTypeCategorization().getRoot();
+	}
+	
 	/**
 	 * 
 	 * @param clazz the class (or interface) for which a category is requested.

@@ -24,6 +24,8 @@ import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.junit.Test;
 
+import com.google.common.base.Optional;
+
 public class TypeCategorizationTest {
 
 	@Test
@@ -38,6 +40,13 @@ public class TypeCategorizationTest {
 		assertEquals(0, hierarchy.getTypeCategory(Object.class).getAncestorClasses().size());
 		assertEquals(0, hierarchy.getTypeCategory(Object.class).getAncestorInterfaces().size());
 		assertEquals(0, hierarchyRoot.getAncestorInterfaces().size());
+	}
+	
+	@Test
+	public void superMethodTest() {
+		JGum jgum = new JGum();
+		assertEquals(Any.class, jgum.forClass(Object.class).<TypeCategory<Object>>getSuper().get().getLabel());
+		assertEquals(Optional.absent(), jgum.forTypeRoot().getSuper());
 	}
 	
 	@Test

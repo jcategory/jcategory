@@ -13,7 +13,7 @@ import org.jgum.category.type.TypeCategoryRoot.Any;
  */
 public class TypeCategoryRoot extends TypeCategory<Any> {
 
-	public static class Any {}
+	static class Any {}
 	
 	private ClassCategory<Object> objectClassNode;
 	private final List<InterfaceCategory<?>> rootInterfaceNodes;
