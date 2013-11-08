@@ -94,7 +94,7 @@ public class CategoryProperty<T> {
 		private final Iterator<? extends Category> propertyNodes;
 		private final Object key;
 		
-		public PropertyIterator(Category category, final Object key) {
+		public PropertyIterator(Category category, Object key) {
 			this((Iterator)category.bottomUpLinearization(), key);
 		}
 		
@@ -125,7 +125,7 @@ public class CategoryProperty<T> {
 		private final Iterable<? extends Category> propertyNodes;
 		private final Object key;
 		
-		public PropertyIterable(Category category, final Object key) {
+		public PropertyIterable(Category category, Object key) {
 			this((Iterable)category.bottomUpLinearization(), key);
 		}
 		
