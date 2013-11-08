@@ -1,5 +1,6 @@
 package org.jgum.category;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.jgum.traversal.RedundancyCheck;
@@ -17,8 +18,10 @@ import com.google.common.base.Function;
  *
  * @param <T>
  */
-public class Categorization<T extends Category> {
+public class Categorization<T extends Category> implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private final Function<T, List<T>> bottomUpLinearizationFunction; //bottom-up type linearization function.
 	private final Function<T, List<T>> topDownLinearizationFunction; //top-down type linearization function.
 	private T root;

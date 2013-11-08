@@ -1,5 +1,6 @@
 package org.jgum.category;
 
+import java.io.Serializable;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +17,10 @@ import com.google.common.base.Optional;
  * @author sergioc
  *
  */
-public class Category {
+public class Category implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+	
 	private final Map<Object, Object> properties; //properties associated with this category are backed up in this map.
 	private Categorization categorization; //the categorization where this category exists.
 	private final List<? extends Category> parents; //default placeholder for the parents of this category. Subclasses may choose to store parents in a different structure.
