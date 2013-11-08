@@ -9,6 +9,12 @@ import java.util.List;
 import org.apache.log4j.or.ObjectRenderer;
 import org.jgum.JGum;
 import org.jgum.category.type.TypeCategoryRoot.Any;
+import org.jgum.testutil.AnimalHierarchy.Animal;
+import org.jgum.testutil.AnimalHierarchy.Cat;
+import org.jgum.testutil.AnimalHierarchy.Fish;
+import org.jgum.testutil.AnimalHierarchy.FourLegged;
+import org.jgum.testutil.AnimalHierarchy.Furry;
+import org.jgum.testutil.AnimalHierarchy.HasLegs;
 import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.junit.Test;
@@ -41,12 +47,7 @@ public class TypeCategorizationTutorialTest {
 	
 	
 	
-	public class Animal {}
-	public interface HasLegs {}
-	public interface FourLegged extends HasLegs {}
-	public interface Furry {}
-	public class Cat extends Animal implements Furry, FourLegged {}
-	public class Fish extends Animal {}
+
 	
 	public class AnimalRenderer implements ObjectRenderer {
 		@Override
