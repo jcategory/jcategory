@@ -3,6 +3,16 @@ package org.jgum.strategy;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+/**
+ * Utility class implementing the chain of responsibility pattern.
+ * The class is initialized by an iterable of objects implementing a particular method.
+ * The eval method invokes a given method on each member of the list until finds one that does not throw a NoMyResponsibilityException.
+ * In that case, it return the result of the method invocation.
+ * Any other exception (different to NoMyResponsibilityException) is propagated to the caller.
+ * @author sergioc
+ *
+ * @param <T>
+ */
 public class ChainOfResponsibility<T> {
 
 	private Iterable<T> responsibilityChain;

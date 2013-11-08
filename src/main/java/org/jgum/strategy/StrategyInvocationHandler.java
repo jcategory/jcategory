@@ -6,6 +6,12 @@ import java.lang.reflect.Method;
 import org.jgum.category.Category;
 import org.jgum.category.CategoryProperty.PropertyIterable;
 
+/**
+ * An invocation handler that delegates the proxied method to an object implementing the chain of responsibility pattern.
+ * The objects in such chain are all the objects found in a category hierarchy (in the order specified by the default linearization function) identified by a given property (passed by in the constructor).
+ * @author sergioc
+ *
+ */
 public class StrategyInvocationHandler implements InvocationHandler {
 
 	private Category category;
