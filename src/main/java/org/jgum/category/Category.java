@@ -135,7 +135,7 @@ public class Category implements Serializable {
 	 * @return a strategy object implementing the given interfaces.
 	 */
 	public Object getStrategy(Object property, Class<?>[] strategyInterfaces) {
-		return Proxy.newProxyInstance(this.getProperty(property).getClass().getClassLoader(), strategyInterfaces, new StrategyInvocationHandler(this, property));
+		return Proxy.newProxyInstance(getClass().getClassLoader(), strategyInterfaces, new StrategyInvocationHandler(this, property));
 	}
 	
 	/**
