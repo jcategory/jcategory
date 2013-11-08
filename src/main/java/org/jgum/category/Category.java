@@ -1,9 +1,12 @@
 package org.jgum.category;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jgum.strategy.StrategyInvocationHandler;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
@@ -111,6 +114,25 @@ public class Category {
 				". Attempting to override this property with: " + value + ".");
 		else
 			setProperty(property, value);
+	}
+	
+	/**
+	 * 
+	 * @param strategyInterface the property that implements the strategy in the current category.
+	 * @return a strategy object implementing the given interface.
+	 */
+	public <T> T getStrategy(Class<T> strategyInterface) {
+		return (T)getStrategy(strategyInterface, new Class[]{strategyInterface});
+	}
+	
+	/**
+	 * 
+	 * @param property the property that implements the strategy in the current category.
+	 * @param strategyInterfaces the interfaces implemented by the strategy object.
+	 * @return a strategy object implementing the given interfaces.
+	 */
+	public Object getStrategy(Object property, Class<?>[] strategyInterfaces) {
+		return Proxy.newProxyInstance(this.getProperty(property).getClass().getClassLoader(), strategyInterfaces, new StrategyInvocationHandler(this, property));
 	}
 	
 	/**

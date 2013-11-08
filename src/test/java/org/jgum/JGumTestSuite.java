@@ -5,10 +5,11 @@ import org.jgum.category.named.NamedCategorizationTest;
 import org.jgum.category.named.NamedCategorizationTutorialTest;
 import org.jgum.category.type.TypeCategorizationTest;
 import org.jgum.category.type.TypeCategorizationTutorialTest;
+import org.jgum.strategy.StrategyTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AdHocCategorizationTutorialTest.class, NamedCategorizationTest.class, NamedCategorizationTutorialTest.class, TypeCategorizationTest.class, TypeCategorizationTutorialTest.class})
+@Suite.SuiteClasses({AdHocCategorizationTutorialTest.class, NamedCategorizationTest.class, NamedCategorizationTutorialTest.class, TypeCategorizationTest.class, TypeCategorizationTutorialTest.class, StrategyTest.class})
 public class JGumTestSuite {
 }
