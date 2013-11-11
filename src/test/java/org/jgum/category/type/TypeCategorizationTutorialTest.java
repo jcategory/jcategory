@@ -9,12 +9,14 @@ import java.util.List;
 import org.apache.log4j.or.ObjectRenderer;
 import org.jgum.JGum;
 import org.jgum.category.type.TypeCategoryRoot.Any;
-import org.jgum.testutil.AnimalHierarchy.Animal;
-import org.jgum.testutil.AnimalHierarchy.Cat;
-import org.jgum.testutil.AnimalHierarchy.Fish;
-import org.jgum.testutil.AnimalHierarchy.FourLegged;
-import org.jgum.testutil.AnimalHierarchy.Furry;
-import org.jgum.testutil.AnimalHierarchy.HasLegs;
+import org.jgum.testutil.animalhierarchy.Animal;
+import org.jgum.testutil.animalhierarchy.AnimalRenderer;
+import org.jgum.testutil.animalhierarchy.Cat;
+import org.jgum.testutil.animalhierarchy.Fish;
+import org.jgum.testutil.animalhierarchy.FourLegged;
+import org.jgum.testutil.animalhierarchy.Furry;
+import org.jgum.testutil.animalhierarchy.HasLegs;
+import org.jgum.testutil.animalhierarchy.HasLegsRenderer;
 import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.junit.Test;
@@ -45,25 +47,6 @@ public class TypeCategorizationTutorialTest {
 		assertFalse(jgum.forClass(Object.class).getProperty(ObjectRenderer.class).isPresent()); //ObjectRenderer property has not been set for Object
 	}
 	
-	
-	
-
-	
-	public class AnimalRenderer implements ObjectRenderer {
-		@Override
-		public String doRender(Object animal) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
-	
-	public class HasLegsRenderer implements ObjectRenderer {
-		@Override
-		public String doRender(Object somethingWithLegs) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
 	
 	@Test
 	public void testLabelsInterfacesFirst() {
