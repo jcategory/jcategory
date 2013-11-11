@@ -1,9 +1,7 @@
 package org.jgum.category.named;
 
-import static org.jgum.category.CategoryProperty.properties;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Iterator;
@@ -18,6 +16,7 @@ import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
 import org.junit.Test;
 
+import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
@@ -109,24 +108,29 @@ public class NamedCategorizationTest {
 		assertEquals(Optional.absent(), root.getCategory(packageP1).getLocalProperty("wrongProperty"));
 		assertEquals(Optional.absent(), root.getCategory(packageP2).getLocalProperty("wrongProperty"));
 
-		Iterator<String> propertiesIt = CategoryProperty.<String>properties(root.topDownLinearization(), p6Property).iterator();
-		assertTrue(propertiesIt.hasNext());
-		assertEquals(p6Property, propertiesIt.next());
-		assertFalse(propertiesIt.hasNext());
+		List<String> properties = root.<String>topDownProperties(p6Property);
+		assertEquals(1, properties.size());
+		assertEquals(p6Property, properties.get(0));
 
-		assertEquals(rootProperty, properties(root.bottomUpLinearization(), rootProperty).first().get());
-		assertEquals(p1Property, properties(root.getCategory(packageP1).bottomUpLinearization(), p1Property).first().get());
-		assertEquals(p2Property, properties(root.getCategory(packageP2).bottomUpLinearization(), p2Property).first().get());
-		assertEquals(p1Property, properties(root.getCategory(packageP2).bottomUpLinearization(), p1Property).first().get()); //the property is not defined in p2, so it should inherit from p1
-		assertEquals(p8Property, properties(root.getCategory(packageP8).bottomUpLinearization(), p8Property).first().get());
+		assertEquals(rootProperty, root.bottomUpProperties(rootProperty).get(0));
+		assertEquals(p1Property, root.getCategory(packageP1).bottomUpProperties(p1Property).get(0));
+		assertEquals(p2Property, root.getCategory(packageP2).bottomUpProperties(p2Property).get(0));
+		assertEquals(p1Property, root.getCategory(packageP2).bottomUpProperties(p1Property).get(0)); //the property is not defined in p2, so it should inherit from p1
+		assertEquals(p8Property, root.getCategory(packageP8).bottomUpProperties(p8Property).get(0));
 		
 
 		//now let's override one property in one subpackage
 		root.getCategory(packageP2).setProperty(p1Property, p2Property);
-		assertEquals(p2Property, properties(root.getCategory(packageP2).bottomUpLinearization(), p1Property).first().get());
+		assertEquals(p2Property, root.getCategory(packageP2).bottomUpProperties(p1Property).get(0));
 		
-		//overriding the same property
-		root.getCategory(packageP2).setProperty(p1Property, p2Property);
+		//querying all the properties in the categories obtained with a given linearization function
+		properties = root.getCategory(packageP2).<String>properties(p1Property, (Function)JGum.DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION);
+		assertEquals(2, properties.size());
+		assertEquals(p2Property, properties.get(0));
+		assertEquals(p1Property, properties.get(1));
+		
+		//overriding the same property with explicit allowing overrides
+		root.getCategory(packageP2).setProperty(p1Property, p2Property, true);
 		
 		try {
 			//attempting to override the same property without allowing overrides

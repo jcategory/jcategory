@@ -32,7 +32,7 @@ public class CategoryProperty<T> {
 	 * @param property the property name to query.
 	 */
 	public CategoryProperty(Category category, Object property) {
-		this(category, property, category.bottomUpLinearization());
+		this(category, property, category.bottomUpCategories());
 	}
 
 	/**
@@ -95,7 +95,7 @@ public class CategoryProperty<T> {
 		private final Object key;
 		
 		public PropertyIterator(Category category, Object key) {
-			this((Iterator)category.bottomUpLinearization(), key);
+			this((Iterator)category.bottomUpCategories(), key);
 		}
 		
 		public PropertyIterator(Iterator<? extends Category> propertyNodes, final Object key) {
@@ -126,7 +126,7 @@ public class CategoryProperty<T> {
 		private final Object key;
 		
 		public PropertyIterable(Category category, Object key) {
-			this((Iterable)category.bottomUpLinearization(), key);
+			this((Iterable)category.bottomUpCategories(), key);
 		}
 		
 		public PropertyIterable(Iterable<? extends Category> propertyNodes, Object key) {

@@ -7,10 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jgum.category.CategoryProperty.PropertyIterable;
 import org.jgum.strategy.StrategyInvocationHandler;
 
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 
 /**
  * A hierarchical category associated with named properties.
@@ -138,21 +140,13 @@ public class Category implements Serializable {
 		return Proxy.newProxyInstance(getClass().getClassLoader(), strategyInterfaces, new StrategyInvocationHandler(this, property));
 	}
 	
-	/**
-	 * 
-	 * @param linearizationFunction is a linearization function.
-	 * @return A list of categories, according to the given linearization function.
-	 */
-	public <U extends Category> List<U> linearize(Function<U,List<U>> linearizationFunction) {
-		return linearizationFunction.apply((U)this);
-	}
 	
 	/**
 	 * 
 	 * @return an optional with the super category.
 	 */
 	public <U extends Category> Optional<U> getSuper() {
-		List bottomUpLinearization = bottomUpLinearization();
+		List bottomUpLinearization = bottomUpCategories();
 		if(bottomUpLinearization.size() == 1) //there are no super categories (according to the default linearization function)
 			return Optional.absent();
 		else
@@ -161,9 +155,43 @@ public class Category implements Serializable {
 	
 	/**
 	 * 
+	 * @param linearizationFunction is a linearization function.
+	 * @return a list of categories, according to the given linearization function.
+	 */
+	public <U extends Category> List<U> linearize(Function<U,List<U>> linearizationFunction) {
+		return linearizationFunction.apply((U)this);
+	}
+
+	/**
+	 * @param property a property name.
+	 * @param linearizationFunction is a linearization function.
+	 * @return a list of properties in the categories obtained with the given linearization function.
+	 */
+	public <U> List<U> properties(Object property, Function<Category,List<Category>> linearizationFunction) {
+		return Lists.newArrayList(new PropertyIterable(linearize(linearizationFunction), property));
+	}
+	
+	/**
+	 * @param property a property name.
+	 * @return a list of properties in the bottom-up linearization.
+	 */
+	public <U> List<U> bottomUpProperties(Object property) {
+		return Lists.newArrayList(new PropertyIterable(bottomUpCategories(), property));
+	}
+
+	/**
+	 * @param property a property name.
+	 * @return a list of properties in the top-down linearization.
+	 */
+	public <U> List<U> topDownProperties(Object property) {
+		return Lists.newArrayList(new PropertyIterable(topDownCategories(), property));
+	}
+	
+	/**
+	 * 
 	 * @return a linearization using the default bottom-up linearization function.
 	 */
-	public <U extends Category> List<U> bottomUpLinearization() {
+	public <U extends Category> List<U> bottomUpCategories() {
 		if(bottomUpLinearization == null) {
 			bottomUpLinearization = linearize(getCategorization().getBottomUpLinearizationFunction());
 		}
@@ -174,7 +202,7 @@ public class Category implements Serializable {
 	 * 
 	 * @return a linearization using the default top-down linearization function.
 	 */
-	public <U extends Category> List<U> topDownLinearization() {
+	public <U extends Category> List<U> topDownCategories() {
 		return (List<U>)linearize(getCategorization().getTopDownLinearizationFunction());
 	}
 	

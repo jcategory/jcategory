@@ -10,7 +10,6 @@ import java.util.AbstractCollection;
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
 
@@ -106,7 +105,7 @@ public class TypeCategorizationTest {
 		TypeCategorization hierarchy = jgum.getTypeCategorization();
 		hierarchy.getOrCreateTypeCategory(ArrayList.class);
 		List<TypeCategory<?>> rootTopDownPath;
-		rootTopDownPath = hierarchy.getRoot().topDownLinearization();
+		rootTopDownPath = hierarchy.getRoot().topDownCategories();
 		//System.out.println(rootTopDownPath);
 		assertEquals(asList(Any.class, java.lang.Object.class, java.lang.Iterable.class, java.util.RandomAccess.class, java.lang.Cloneable.class, java.io.Serializable.class, 
 				java.util.AbstractCollection.class, java.util.Collection.class, java.util.ArrayList.class,
@@ -129,11 +128,11 @@ public class TypeCategorizationTest {
 		hierarchy.getTypeCategory(Object.class).setProperty(key, v3);
 		hierarchy.getTypeCategory(List.class).setProperty(key, v4);
 		//Verifying the properties
-		Iterator<?> propertiesIt = CategoryProperty.<String>properties(arrayListNode.bottomUpLinearization(), key).iterator();
-		assertEquals(v1, propertiesIt.next());
-		assertEquals(v2, propertiesIt.next());
-		assertEquals(v3, propertiesIt.next());
-		assertEquals(v4, propertiesIt.next());
+		List<?> properties = arrayListNode.bottomUpProperties(key);
+		assertEquals(v1, properties.get(0));
+		assertEquals(v2, properties.get(1));
+		assertEquals(v3, properties.get(2));
+		assertEquals(v4, properties.get(3));
 		
 		//Repeating the same example as above, but inserting the properties in a different order
 		jgum = new JGum();
@@ -145,11 +144,11 @@ public class TypeCategorizationTest {
 		arrayListNode.setProperty(key, v1);
 		hierarchy.getTypeCategory(AbstractCollection.class).setProperty(key, v2);
 		//but the result is the same:
-		propertiesIt = CategoryProperty.<String>properties(arrayListNode.bottomUpLinearization(), key).iterator();
-		assertEquals(v1, propertiesIt.next());
-		assertEquals(v2, propertiesIt.next());
-		assertEquals(v3, propertiesIt.next());
-		assertEquals(v4, propertiesIt.next());
+		properties = arrayListNode.bottomUpProperties(key);
+		assertEquals(v1, properties.get(0));
+		assertEquals(v2, properties.get(1));
+		assertEquals(v3, properties.get(2));
+		assertEquals(v4, properties.get(3));
 	}
 	
 	@Test
