@@ -1,8 +1,8 @@
 package org.jgum.strategy;
 
 /**
- * Exception thrown by a strategy to denote that it cannot manage a specific operation.
- * It indicates that the operation should be delegated to the next strategy in the hierarchy.
+ * Exception thrown by a processing object in a chain of responsibility to denote that it cannot manages a specific command.
+ * It indicates that the command should be delegated to the next object in the chain.
  * @author sergioc
  *
  */

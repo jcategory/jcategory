@@ -1,38 +1,53 @@
 package org.jgum.strategy;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 /**
- * Utility class implementing the chain of responsibility pattern.
- * The class is initialized by an iterable of objects implementing a particular method.
- * The eval method invokes a given method on each member of the list until finds one that does not throw a NoMyResponsibilityException.
- * In that case, it return the result of the method invocation.
- * Any other exception (different to NoMyResponsibilityException) is propagated to the caller.
+ * <p>
+ * Class implementing the chain of responsibility pattern.
+ * The class is initialized with an iterable of objects (the processing objects) in charge of managing a desired command.
+ * </p>
+ * 
  * @author sergioc
  *
- * @param <T>
+ * @param <T> the type of objects in the chain of responsibility.
  */
-public class ChainOfResponsibility<T> {
+public abstract class ChainOfResponsibility<T> {
 
-	private Iterable<T> responsibilityChain;
+	private final Iterable<T> responsibilityChain;
 	
+	/**
+	 * 
+	 * @param responsibilityChain the processing objects.
+	 */
 	public ChainOfResponsibility(Iterable<T> responsibilityChain) {
 		this.responsibilityChain = responsibilityChain;
 	}
-	
-	public Object eval(Method method, Object... args) throws Throwable {
+
+	/**
+	 * This method executes a command on each member of the responsibility chain until it finds one that can manage it.
+	 * How this command execution is accomplished is implementation dependent.
+	 * If a processing object throws a {@link NoMyResponsibilityException} when attempting to execute the command, the operation will be delegated to the next object in the responsibility chain.
+	 * Any other exception is propagated to the caller.
+	 * <p>
+	 * If no object is able to process the command after exhausting the responsibility chain, a {@link NoMyResponsibilityException} is thrown.
+	 * </p>
+	 * @return the result of executing the command on the first object in the responsibility chain that does not throw a {@link NoMyResponsibilityException} exception.
+	 */
+	public Object apply() {
 		for(T object : responsibilityChain) {
 			try {
-				return method.invoke(object, args);
-			} catch (IllegalAccessException | IllegalArgumentException e) {
-				throw new RuntimeException(e);
-			} catch(InvocationTargetException e) {
-				if( !(e.getTargetException() instanceof NoMyResponsibilityException))
-					throw e.getTargetException();
+				return delegate(object);
+			} catch (NoMyResponsibilityException e) {
 			}
 		}
 		throw new NoMyResponsibilityException();
 	}
-
+	
+	/**
+	 * Subclasses should override this method to specify how a object in the responsibility chain executes the desired command.
+	 * @param processingObject a processing object in the responsibility chain.
+	 * @return the result of executing the command.
+	 */
+	protected abstract Object delegate(T processingObject);
+	
 }
