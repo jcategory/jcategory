@@ -47,7 +47,7 @@ public class StrategyTutorialTest {
 		TypeCategory<Cat> catCategory = jgum.forClass(Cat.class); //type category for Cat
 		
 		//setting properties
-		animalCategory.setProperty(ObjectRenderer.class, new DelegationAnimalRenderer()); //ObjectRenderer property is an instance of AnimalRenderer for Animal
+		animalCategory.setProperty(ObjectRenderer.class, new DelegationAnimalRenderer()); //ObjectRenderer property is an instance of DelegationAnimalRenderer for Animal
 		hasLegsCategory.setProperty(ObjectRenderer.class, new HasLegsRenderer()); //ObjectRenderer property is an instance of HasLegsRenderer for HasLegs
 		
 		//testing
