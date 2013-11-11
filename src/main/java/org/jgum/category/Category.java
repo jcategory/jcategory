@@ -123,7 +123,7 @@ public class Category implements Serializable {
 	
 	/**
 	 * 
-	 * @param strategyInterface the property that implements the strategy in the current category.
+	 * @param strategyInterface the interface implemented by the desired strategy object. It is also the property name under which strategies are associated with categories in this and upper categories.
 	 * @return a strategy object implementing the given interface.
 	 */
 	public <T> T getStrategy(Class<T> strategyInterface) {
@@ -132,7 +132,7 @@ public class Category implements Serializable {
 	
 	/**
 	 * 
-	 * @param property the property that implements the strategy in the current category.
+	 * @param property a property associated with a strategy in the current and upper categories.
 	 * @param strategyInterfaces the interfaces implemented by the strategy object.
 	 * @return a strategy object implementing the given interfaces.
 	 */
