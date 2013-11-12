@@ -1,10 +1,13 @@
 package org.jgum.strategy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * <p>
  * Class implementing the chain of responsibility pattern.
- * The class is initialized with an iterable of objects (the processing objects) in charge of managing a desired command.
+ * The class encapsulates a list of objects (the processing objects) in charge of managing a desired command.
  * </p>
  * 
  * @author sergioc
@@ -13,16 +16,31 @@ package org.jgum.strategy;
  */
 public abstract class ChainOfResponsibility<T> {
 
-	private final Iterable<T> responsibilityChain;
+	private final List<T> responsibilityChain;
 	
 	/**
-	 * 
+	 * Creates an empty chain of responsibility.
+	 */
+	public ChainOfResponsibility() {
+		this(new ArrayList<T>());
+	}
+	
+	/**
+	 * Creates a chain of responsibility initialized with the given list of processing objects.
 	 * @param responsibilityChain the processing objects.
 	 */
-	public ChainOfResponsibility(Iterable<T> responsibilityChain) {
+	public ChainOfResponsibility(List<T> responsibilityChain) {
 		this.responsibilityChain = responsibilityChain;
 	}
 
+	/**
+	 * Adds a new processing object at the end of the chain of responsibility.
+	 * @param processingObject a processing object.
+	 */
+	public void add(T processingObject) {
+		responsibilityChain.add(processingObject);
+	}
+	
 	/**
 	 * This method executes a command on each member of the responsibility chain until it finds one that can manage it.
 	 * How this command execution is accomplished is implementation dependent.
@@ -49,5 +67,5 @@ public abstract class ChainOfResponsibility<T> {
 	 * @return the result of executing the command.
 	 */
 	protected abstract Object delegate(T processingObject);
-	
+
 }

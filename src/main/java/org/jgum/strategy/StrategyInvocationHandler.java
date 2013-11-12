@@ -2,9 +2,12 @@ package org.jgum.strategy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org.jgum.category.Category;
 import org.jgum.category.CategoryProperty.PropertyIterable;
+
+import com.google.common.collect.Lists;
 
 /**
  * An invocation handler that delegates a proxied method to an object implementing the chain of responsibility pattern.
@@ -24,7 +27,7 @@ public class StrategyInvocationHandler implements InvocationHandler {
 	
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		PropertyIterable<?> implementors = new PropertyIterable<>(category, property);
+		List<?> implementors = Lists.newArrayList(new PropertyIterable<>(category, property));
 		ChainOfResponsibility<?> chainOfResponsibility = new ReflectiveChainOfResponsibility<>(implementors, method, args);
 		return chainOfResponsibility.apply();
 	}

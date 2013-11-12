@@ -2,6 +2,7 @@ package org.jgum.strategy;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * An implementation of the chain of responsibility pattern, where each command is defined by a method and its arguments passed by in the constructor.
@@ -21,7 +22,7 @@ public class ReflectiveChainOfResponsibility<T> extends ChainOfResponsibility<T>
 	 * @param command the method to be invoked on each object until finding one that does not throw a {@link NoMyResponsibilityException}.
 	 * @param args the arguments of the method.
 	 */
-	public ReflectiveChainOfResponsibility(Iterable<T> responsibilityChain, Method command, Object args[]) {
+	public ReflectiveChainOfResponsibility(List<T> responsibilityChain, Method command, Object args[]) {
 		super(responsibilityChain);
 		this.method = command;
 		this.args = args;
