@@ -17,18 +17,25 @@ import com.google.common.collect.Lists;
  */
 public class StrategyInvocationHandler implements InvocationHandler {
 
-	private Category category;
+	private final Category category;
 	private final Object property;
+	private final Class<? extends RuntimeException> exceptionClass;
 	
-	public StrategyInvocationHandler(Category category, Object property) {
+	/**
+	 * @param category the category where the look-up of strategies start.
+	 * @param property the property name of strategies in the bottom-up hierarchy.
+	 * @param exceptionClass instances of this exception class denote that a processing object delegates to the next object in the responsibility chain.
+	 */
+	public StrategyInvocationHandler(Category category, Object property, Class<? extends RuntimeException> exceptionClass) {
 		this.category = category;
 		this.property = property;
+		this.exceptionClass = exceptionClass;
 	} 
 	
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		List<?> implementors = Lists.newArrayList(new PropertyIterable<>(category, property));
-		ChainOfResponsibility<?> chainOfResponsibility = new ReflectiveChainOfResponsibility<>(implementors, method, args);
+		ChainOfResponsibility<?> chainOfResponsibility = new ReflectiveChainOfResponsibility<>(implementors, exceptionClass, method, args);
 		return chainOfResponsibility.apply();
 	}
 

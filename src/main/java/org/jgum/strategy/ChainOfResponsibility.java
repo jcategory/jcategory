@@ -9,6 +9,10 @@ import java.util.List;
  * Class implementing the chain of responsibility pattern.
  * The class encapsulates a list of objects (the processing objects) in charge of managing a desired command.
  * </p>
+ * <p>
+ * A processing object delegates to the next object in the chain by means of throwing an instance of the exception class passed by in the constructor. 
+ * If no exception is given at the constructor, a NoMyResponsibilityException exception is assumed as the indicator for delegation.
+ * </p>
  * 
  * @author sergioc
  *
@@ -16,7 +20,14 @@ import java.util.List;
  */
 public abstract class ChainOfResponsibility<T> {
 
+	/**
+	 * The default exception class used for signaling delegation.
+	 */
+	public static final Class<? extends RuntimeException> DEFAULT_DELEGATION_EXCEPTION = NoMyResponsibilityException.class;
+	
 	private final List<T> responsibilityChain;
+	private final Class<? extends RuntimeException> exceptionClass;
+	private final RuntimeException chainExhaustedException;
 	
 	/**
 	 * Creates an empty chain of responsibility.
@@ -26,13 +37,36 @@ public abstract class ChainOfResponsibility<T> {
 	}
 	
 	/**
+	 * Creates an empty chain of responsibility.
+	 * @param exceptionClass instances of this exception class denote that a processing object delegates to the next object in the responsibility chain.
+	 */
+	public ChainOfResponsibility(Class<? extends RuntimeException> exceptionClass) {
+		this(new ArrayList<T>(), exceptionClass);
+	}
+	
+	/**
 	 * Creates a chain of responsibility initialized with the given list of processing objects.
 	 * @param responsibilityChain the processing objects.
 	 */
 	public ChainOfResponsibility(List<T> responsibilityChain) {
-		this.responsibilityChain = responsibilityChain;
+		this(responsibilityChain, DEFAULT_DELEGATION_EXCEPTION);
 	}
 
+	/**
+	 * Creates a chain of responsibility initialized with the given list of processing objects.
+	 * @param responsibilityChain the processing objects.
+	 * @param exceptionClass instances of this exception class denote that a processing object delegates to the next object in the responsibility chain.
+	 */
+	public ChainOfResponsibility(List<T> responsibilityChain, Class<? extends RuntimeException> exceptionClass) {
+		this.responsibilityChain = responsibilityChain;
+		this.exceptionClass = exceptionClass;
+		try {
+			chainExhaustedException = exceptionClass.newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	/**
 	 * Adds a new processing object at the end of the chain of responsibility.
 	 * @param processingObject a processing object.
@@ -55,10 +89,12 @@ public abstract class ChainOfResponsibility<T> {
 		for(T object : responsibilityChain) {
 			try {
 				return delegate(object);
-			} catch (NoMyResponsibilityException e) {
+			} catch (RuntimeException e) {
+				if(!exceptionClass.isInstance(e))
+					throw e;
 			}
 		}
-		throw new NoMyResponsibilityException();
+		throw chainExhaustedException;
 	}
 	
 	/**

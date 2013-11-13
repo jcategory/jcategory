@@ -85,6 +85,13 @@ public class StrategyTest {
 	}
 	
 	@Test
+	public void testDelegationWithException() {
+		JGum jgum = context();
+		DoSomething doSomething = jgum.forClass(ArrayList.class).getStrategy(DoSomething.class, NoMyResponsibilityException.class);
+		assertEquals("DoSomethingChild1.doIt2()", doSomething.doIt2());
+	}
+	
+	@Test
 	public void testRuntimeException() {
 		JGum jgum = context();
 		DoSomething doSomething = jgum.forClass(ArrayList.class).getStrategy(DoSomething.class);

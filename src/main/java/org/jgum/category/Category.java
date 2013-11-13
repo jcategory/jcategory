@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jgum.category.CategoryProperty.PropertyIterable;
+import org.jgum.strategy.ChainOfResponsibility;
 import org.jgum.strategy.StrategyInvocationHandler;
 
 import com.google.common.base.Function;
@@ -122,22 +123,39 @@ public class Category implements Serializable {
 	}
 	
 	/**
-	 * 
 	 * @param strategyInterface the interface implemented by the desired strategy object. It is also the property name under which strategies are associated with categories in this and upper categories.
 	 * @return a strategy object implementing the given interface.
 	 */
 	public <T> T getStrategy(Class<T> strategyInterface) {
-		return (T)getStrategy(strategyInterface, new Class[]{strategyInterface});
+		return (T)getStrategy(strategyInterface, new Class[]{strategyInterface}, ChainOfResponsibility.DEFAULT_DELEGATION_EXCEPTION);
 	}
 	
 	/**
-	 * 
+	 * @param strategyInterface the interface implemented by the desired strategy object. It is also the property name under which strategies are associated with categories in this and upper categories.
+	 * @param exceptionClass instances of this exception class denote that a strategy delegates to the next one in the responsibility chain.
+	 * @return a strategy object implementing the given interface.
+	 */
+	public <T> T getStrategy(Class<T> strategyInterface, Class<? extends RuntimeException> exceptionClass) {
+		return (T)getStrategy(strategyInterface, new Class[]{strategyInterface}, exceptionClass);
+	}
+	
+	/**
 	 * @param property a property associated with a strategy in the current and upper categories.
 	 * @param strategyInterfaces the interfaces implemented by the strategy object.
 	 * @return a strategy object implementing the given interfaces.
 	 */
 	public Object getStrategy(Object property, Class<?>[] strategyInterfaces) {
-		return Proxy.newProxyInstance(getClass().getClassLoader(), strategyInterfaces, new StrategyInvocationHandler(this, property));
+		return getStrategy(property, strategyInterfaces, ChainOfResponsibility.DEFAULT_DELEGATION_EXCEPTION);
+	}
+	
+	/**
+	 * @param property a property associated with a strategy in the current and upper categories.
+	 * @param strategyInterfaces the interfaces implemented by the strategy object.
+	 * @param exceptionClass instances of this exception class denote that a strategy delegates to the next one in the responsibility chain.
+	 * @return a strategy object implementing the given interfaces.
+	 */
+	public Object getStrategy(Object property, Class<?>[] strategyInterfaces, Class<? extends RuntimeException> exceptionClass) {
+		return Proxy.newProxyInstance(getClass().getClassLoader(), strategyInterfaces, new StrategyInvocationHandler(this, property, exceptionClass));
 	}
 	
 	
