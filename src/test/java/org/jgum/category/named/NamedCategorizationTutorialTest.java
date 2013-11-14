@@ -4,13 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 import org.jgum.JGum;
+import org.jgum.category.Key;
 import org.junit.Test;
 
 public class NamedCategorizationTutorialTest {
 
 	@Test
 	public void testNamedCategoryInheritance() {
-		final String LEVEL = "level";
+		final Key LEVEL = new Key("level"); //the property identifier
 		JGum jgum = new JGum();
 		NamedCategory parent = jgum.forPackage(JGum.class.getPackage()); //named category for "org.jum"
 		NamedCategory child = jgum.forName(JGum.class.getName()); //named category for "org.jum.JGum"

@@ -24,7 +24,7 @@ public class Category implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private final Map<Object, Object> properties; //properties associated with this category are backed up in this map.
+	private final Map<Key, Object> properties; //properties associated with this category are backed up in this map.
 	private Categorization categorization; //the categorization where this category exists.
 	private final List<? extends Category> parents; //default placeholder for the parents of this category. Subclasses may choose to store parents in a different structure.
 	private final List<? extends Category> children; //default placeholder for the children of this category. Subclasses may choose to store children in a different structure.
@@ -64,98 +64,100 @@ public class Category implements Serializable {
 	}
 
 	/**
-	 * @param property a property name.
+	 * @param key the property identifier.
 	 * @return a category property.
 	 */
-	public CategoryProperty<?> getProperty(Object property) {
-		return new CategoryProperty<>(this, property);
+	public <T> CategoryProperty<T> getProperty(Key key) {
+		return new CategoryProperty<>(this, key);
 	}
 	
 	/**
 	 * 
-	 * @param property a property name.
+	 * @param key the property identifier.
 	 * @return true if the property is defined in the category. false otherwise. It attempts to find it in ancestor categories if the property is not locally present.
 	 */
-	public boolean containsProperty(Object property) {
-		return getProperty(property).isPresent();
+	public boolean containsProperty(Key key) {
+		return getProperty(key).isPresent();
 	}
 	
 	/**
-	 * @param property a property name.
+	 * @param key the property identifier.
 	 * @return an optional with the property value in the current category (if any). It does not query ancestor categories if the property is not locally present.
 	 */
-	public Optional<?> getLocalProperty(Object property) {
-		return Optional.fromNullable(properties.get(property));
+	public <T> Optional<T> getLocalProperty(Key key) {
+		return key.getForCategory(this);
+	}
+	
+	/**
+	 * @param key the property identifier.
+	 * @return an optional with the property value in the current category map (if any).
+	 */
+	<T> Optional<T> getFromLocalMap(Key key) {
+		return Optional.<T>fromNullable((T)properties.get(key));
 	}
 	
 	/**
 	 * 
-	 * @param property a property name.
+	 * @param key the property identifier.
 	 * @return true if the property exists in the current category. false otherwise. It does not query ancestor categories if the property is not locally present.
 	 */
-	public boolean containsLocalProperty(Object property) {
-		return properties.containsKey(property);
+	public boolean containsLocalProperty(Key key) {
+		return getLocalProperty(key).isPresent();
 	}
 	
 	/**
 	 * Set a property to a given value.
-	 * @param property the property name to set.
+	 * @param key the property identifier.
 	 * @param value the value of the property.
 	 */
-	public void setProperty(Object property, Object value) {
-		properties.put(property, value);
+	public void setProperty(Key key, Object value) {
+		key.setForCategory(this, value);
 	}
 	
 	/**
-	 * Set a property to a given value. Rises an exception if the property is already set and the canOverride parameter is false.
-	 * @param property the property to set.
-	 * @param value the label of the property.
-	 * @param canOverride a boolean indicating if the property can be overridden or not. 
-	 * @throws RuntimeException if the property exists and it cannot be overridden.
+	 * Set a property in the local category map to a given value.
+	 * @param key the property identifier.
+	 * @param value the value of the property.
 	 */
-	public void setProperty(Object property, Object value, boolean canOverride) {
-		Object currentPropertyValue = getLocalProperty(property);
-		if(currentPropertyValue!=null && !canOverride)
-			throw new RuntimeException("The node already has a label for the property \"" + property + "\":" + currentPropertyValue +
-				". Attempting to override this property with: " + value + ".");
-		else
-			setProperty(property, value);
+	void setAtLocalMap(Key key, Object value) {
+		properties.put(key, value);
 	}
 	
+	
 	/**
-	 * @param strategyInterface the interface implemented by the desired strategy object. It is also the property name under which strategies are associated with categories in this and upper categories.
+	 * @param strategyInterface the interface implemented by the desired strategy object. It is also the property identifier under which strategies are associated with categories in this and upper categories.
 	 * @return a strategy object implementing the given interface.
 	 */
 	public <T> T getStrategy(Class<T> strategyInterface) {
-		return (T)getStrategy(strategyInterface, new Class[]{strategyInterface}, ChainOfResponsibility.DEFAULT_DELEGATION_EXCEPTION);
+		return getStrategy(new Key(strategyInterface), new Class[]{strategyInterface}, ChainOfResponsibility.DEFAULT_DELEGATION_EXCEPTION);
 	}
 	
 	/**
-	 * @param strategyInterface the interface implemented by the desired strategy object. It is also the property name under which strategies are associated with categories in this and upper categories.
+	 * @param strategyInterface the interface implemented by the desired strategy object. It is also the property identifier under which strategies are associated with categories in this and upper categories.
 	 * @param exceptionClass instances of this exception class denote that a strategy delegates to the next one in the responsibility chain.
 	 * @return a strategy object implementing the given interface.
 	 */
 	public <T> T getStrategy(Class<T> strategyInterface, Class<? extends RuntimeException> exceptionClass) {
-		return (T)getStrategy(strategyInterface, new Class[]{strategyInterface}, exceptionClass);
+		return getStrategy(new Key(strategyInterface), new Class[]{strategyInterface}, exceptionClass);
 	}
 	
 	/**
-	 * @param property a property associated with a strategy in the current and upper categories.
+	 * @param key the property identifier.
 	 * @param strategyInterfaces the interfaces implemented by the strategy object.
 	 * @return a strategy object implementing the given interfaces.
 	 */
-	public Object getStrategy(Object property, Class<?>[] strategyInterfaces) {
-		return getStrategy(property, strategyInterfaces, ChainOfResponsibility.DEFAULT_DELEGATION_EXCEPTION);
+	public <T> T getStrategy(Key key, Class<?>[] strategyInterfaces) {
+		return getStrategy(key, strategyInterfaces, ChainOfResponsibility.DEFAULT_DELEGATION_EXCEPTION);
 	}
 	
 	/**
-	 * @param property a property associated with a strategy in the current and upper categories.
+	 * @param key the property identifier.
 	 * @param strategyInterfaces the interfaces implemented by the strategy object.
 	 * @param exceptionClass instances of this exception class denote that a strategy delegates to the next one in the responsibility chain.
 	 * @return a strategy object implementing the given interfaces.
 	 */
-	public Object getStrategy(Object property, Class<?>[] strategyInterfaces, Class<? extends RuntimeException> exceptionClass) {
-		return Proxy.newProxyInstance(getClass().getClassLoader(), strategyInterfaces, new StrategyInvocationHandler(this, property, exceptionClass));
+	public <T> T getStrategy(Key key, Class<?>[] strategyInterfaces, Class<? extends RuntimeException> exceptionClass) {
+		return (T)Proxy.newProxyInstance(getClass().getClassLoader(), strategyInterfaces, new StrategyInvocationHandler(this, key, exceptionClass));
 	}
 	
 	
@@ -181,28 +183,28 @@ public class Category implements Serializable {
 	}
 
 	/**
-	 * @param property a property name.
+	 * @param key the property identifier.
 	 * @param linearizationFunction is a linearization function.
 	 * @return a list of properties in the categories obtained with the given linearization function.
 	 */
-	public <U> List<U> properties(Object property, Function<Category,List<Category>> linearizationFunction) {
-		return Lists.newArrayList(new PropertyIterable(linearize(linearizationFunction), property));
+	public <U> List<U> properties(Key key, Function<Category,List<Category>> linearizationFunction) {
+		return Lists.newArrayList(new PropertyIterable(linearize(linearizationFunction), key));
 	}
 	
 	/**
-	 * @param property a property name.
+	 * @param key the property identifier.
 	 * @return a list of properties in the bottom-up linearization.
 	 */
-	public <U> List<U> bottomUpProperties(Object property) {
-		return Lists.newArrayList(new PropertyIterable(bottomUpCategories(), property));
+	public <U> List<U> bottomUpProperties(Key key) {
+		return Lists.newArrayList(new PropertyIterable(bottomUpCategories(), key));
 	}
 
 	/**
-	 * @param property a property name.
+	 * @param key the property identifier.
 	 * @return a list of properties in the top-down linearization.
 	 */
-	public <U> List<U> topDownProperties(Object property) {
-		return Lists.newArrayList(new PropertyIterable(topDownCategories(), property));
+	public <U> List<U> topDownProperties(Key key) {
+		return Lists.newArrayList(new PropertyIterable(topDownCategories(), key));
 	}
 	
 	/**

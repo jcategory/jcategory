@@ -16,6 +16,7 @@ import java.util.RandomAccess;
 import org.jgum.JGum;
 import org.jgum.category.CategorizationListener;
 import org.jgum.category.CategoryProperty;
+import org.jgum.category.Key;
 import org.jgum.category.named.NamedCategory;
 import org.jgum.category.type.TypeCategoryRoot.Any;
 import org.jgum.testutil.CounterCreationListener;
@@ -52,8 +53,8 @@ public class TypeCategorizationTest {
 	public void propertyInTypeRootTest() {
 		JGum jgum = new JGum();
 		TypeCategoryRoot hierarchyRoot = jgum.getTypeCategorization().getRoot();
-		hierarchyRoot.setProperty("x", "x");
-		CategoryProperty cp = new CategoryProperty(jgum.forClass(Object.class), "x");
+		hierarchyRoot.setProperty(new Key("x"), "x");
+		CategoryProperty cp = new CategoryProperty(jgum.forClass(Object.class), new Key("x"));
 		assertEquals("x", cp.get());
 	}
 	
@@ -116,7 +117,7 @@ public class TypeCategorizationTest {
 	public void attachProperties() {
 		JGum jgum = new JGum();
 		TypeCategorization hierarchy = jgum.getTypeCategorization();
-		String key = "key"; //the property name
+		Key key = new Key("key"); //the property identifier
 		String v1 = "v1";
 		String v2 = "v2";
 		String v3 = "v3";

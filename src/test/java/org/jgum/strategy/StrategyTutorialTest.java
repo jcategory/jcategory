@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.or.ObjectRenderer;
 import org.jgum.JGum;
+import org.jgum.category.Key;
 import org.jgum.category.type.TypeCategory;
 import org.jgum.testutil.animalhierarchy.Animal;
 import org.jgum.testutil.animalhierarchy.AnimalRenderer;
@@ -20,6 +21,8 @@ public class StrategyTutorialTest {
 			throw new NoMyResponsibilityException();
 		}
 	}
+
+	public static final Key OBJECT_RENDERER_KEY = new Key(ObjectRenderer.class);
 	
 	@Test
 	public void noDelegationTest() {
@@ -30,8 +33,8 @@ public class StrategyTutorialTest {
 		TypeCategory<Cat> catCategory = jgum.forClass(Cat.class); //type category for Cat
 		
 		//setting properties
-		animalCategory.setProperty(ObjectRenderer.class, new AnimalRenderer()); //ObjectRenderer property is an instance of AnimalRenderer for Animal
-		hasLegsCategory.setProperty(ObjectRenderer.class, new HasLegsRenderer()); //ObjectRenderer property is an instance of HasLegsRenderer for HasLegs
+		animalCategory.setProperty(OBJECT_RENDERER_KEY, new AnimalRenderer()); //ObjectRenderer property is an instance of AnimalRenderer for Animal
+		hasLegsCategory.setProperty(OBJECT_RENDERER_KEY, new HasLegsRenderer()); //ObjectRenderer property is an instance of HasLegsRenderer for HasLegs
 		
 		//testing
 		ObjectRenderer renderer = catCategory.getStrategy(ObjectRenderer.class);
@@ -47,8 +50,8 @@ public class StrategyTutorialTest {
 		TypeCategory<Cat> catCategory = jgum.forClass(Cat.class); //type category for Cat
 		
 		//setting properties
-		animalCategory.setProperty(ObjectRenderer.class, new DelegationAnimalRenderer()); //ObjectRenderer property is an instance of DelegationAnimalRenderer for Animal
-		hasLegsCategory.setProperty(ObjectRenderer.class, new HasLegsRenderer()); //ObjectRenderer property is an instance of HasLegsRenderer for HasLegs
+		animalCategory.setProperty(OBJECT_RENDERER_KEY, new DelegationAnimalRenderer()); //ObjectRenderer property is an instance of DelegationAnimalRenderer for Animal
+		hasLegsCategory.setProperty(OBJECT_RENDERER_KEY, new HasLegsRenderer()); //ObjectRenderer property is an instance of HasLegsRenderer for HasLegs
 		
 		//testing
 		ObjectRenderer renderer = catCategory.getStrategy(ObjectRenderer.class);

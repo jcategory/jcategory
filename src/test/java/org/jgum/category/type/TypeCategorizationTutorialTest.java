@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.log4j.or.ObjectRenderer;
 import org.jgum.JGum;
+import org.jgum.category.Key;
 import org.jgum.category.type.TypeCategoryRoot.Any;
 import org.jgum.testutil.animalhierarchy.Animal;
 import org.jgum.testutil.animalhierarchy.AnimalRenderer;
@@ -36,15 +37,17 @@ public class TypeCategorizationTutorialTest {
 		}
 	}
 	
+	public static final Key OBJECT_RENDERER_KEY = new Key(ObjectRenderer.class);
+	
 	@Test
 	public void testTypeCategoryInheritance() {
 		JGum jgum = new JGum();
 		TypeCategory<Fruit> fruitCategory = jgum.forClass(Fruit.class); //type category for Fruit
 		TypeCategory<Orange> orangeCategory = jgum.forClass(Orange.class); //type category for Orange
-		fruitCategory.setProperty(ObjectRenderer.class, FruitRenderer.class); //ObjectRenderer property set to FruitRenderer for Fruit
-		assertEquals(FruitRenderer.class, fruitCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is FruitRenderer for Fruit
-		assertEquals(FruitRenderer.class, orangeCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is also FruitRenderer for Orange
-		assertFalse(jgum.forClass(Object.class).getProperty(ObjectRenderer.class).isPresent()); //ObjectRenderer property has not been set for Object
+		fruitCategory.setProperty(OBJECT_RENDERER_KEY, FruitRenderer.class); //ObjectRenderer property set to FruitRenderer for Fruit
+		assertEquals(FruitRenderer.class, fruitCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is FruitRenderer for Fruit
+		assertEquals(FruitRenderer.class, orangeCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is also FruitRenderer for Orange
+		assertFalse(jgum.forClass(Object.class).getProperty(OBJECT_RENDERER_KEY).isPresent()); //ObjectRenderer property has not been set for Object
 	}
 	
 	
@@ -80,12 +83,12 @@ public class TypeCategorizationTutorialTest {
 		TypeCategory<Fish> fishCategory = jgum.forClass(Fish.class); //type category for Fish
 		
 		//setting properties
-		animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class); //ObjectRenderer property is AnimalRenderer for Animal
-		hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class); //ObjectRenderer property is HasLegsRenderer for HasLegs
+		animalCategory.setProperty(OBJECT_RENDERER_KEY, AnimalRenderer.class); //ObjectRenderer property is AnimalRenderer for Animal
+		hasLegsCategory.setProperty(OBJECT_RENDERER_KEY, HasLegsRenderer.class); //ObjectRenderer property is HasLegsRenderer for HasLegs
 		
 		//testing
-		assertEquals(HasLegsRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is HasLegsRenderer for Cat
-		assertEquals(AnimalRenderer.class, fishCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is AnimalRenderer for Fish
+		assertEquals(HasLegsRenderer.class, catCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is HasLegsRenderer for Cat
+		assertEquals(AnimalRenderer.class, fishCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is AnimalRenderer for Fish
 	}
 	
 	@Test
@@ -105,11 +108,11 @@ public class TypeCategorizationTutorialTest {
 		TypeCategory<Cat> catCategory = jgum.forClass(Cat.class);
 		
 		//setting properties
-		animalCategory.setProperty(ObjectRenderer.class, AnimalRenderer.class);
-		hasLegsCategory.setProperty(ObjectRenderer.class, HasLegsRenderer.class);
+		animalCategory.setProperty(OBJECT_RENDERER_KEY, AnimalRenderer.class);
+		hasLegsCategory.setProperty(OBJECT_RENDERER_KEY, HasLegsRenderer.class);
 		
 		//testing
-		assertEquals(AnimalRenderer.class, catCategory.getProperty(ObjectRenderer.class).get()); //ObjectRenderer property is AnimalRenderer for Cat
+		assertEquals(AnimalRenderer.class, catCategory.getProperty(OBJECT_RENDERER_KEY).get()); //ObjectRenderer property is AnimalRenderer for Cat
 	}
 	
 	

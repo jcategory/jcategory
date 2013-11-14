@@ -2,7 +2,6 @@ package org.jgum.category.named;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.fail;
 
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +9,7 @@ import java.util.List;
 import org.jgum.JGum;
 import org.jgum.category.CategorizationListener;
 import org.jgum.category.CategoryProperty;
+import org.jgum.category.Key;
 import org.jgum.testutil.CounterCreationListener;
 import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
@@ -32,15 +32,15 @@ public class NamedCategorizationTest {
 	String packageP8 = "p7.p8";
 	
 	//The name of arbitrary properties associated with such packages.
-	//(in order to keep it simple, the values of the properties are the same than the property name)
-	String rootProperty = "rootProperty";
-	String p1Property = "p1Property";
-	String p2Property = "p2Property";
-	String p3Property = "p3Property";
-	String p4Property = "p4Property";
-	String p5Property = "p5Property";
-	String p6Property = "p6Property";
-	String p8Property = "p8Property";
+	//In order to keep it simple, the values of the properties are the same than the property keys.
+	Key rootProperty = new Key("rootProperty");
+	Key p1Property = new Key("p1Property");
+	Key p2Property = new Key("p2Property");
+	Key p3Property = new Key("p3Property");
+	Key p4Property = new Key("p4Property");
+	Key p5Property = new Key("p5Property");
+	Key p6Property = new Key("p6Property");
+	Key p8Property = new Key("p8Property");
 	
 	private NamedCategory newPackagePropertiesRoot() {
 		JGum jgum = new JGum();
@@ -104,9 +104,10 @@ public class NamedCategorizationTest {
 	@Test
 	public void testPropertiesInPath() {
 		NamedCategory root = newPackagePropertiesRoot();
-		assertEquals(Optional.absent(), root.getLocalProperty("wrongProperty"));
-		assertEquals(Optional.absent(), root.getCategory(packageP1).getLocalProperty("wrongProperty"));
-		assertEquals(Optional.absent(), root.getCategory(packageP2).getLocalProperty("wrongProperty"));
+		Key wrongKey = new Key("wrongProperty");
+		assertEquals(Optional.absent(), root.getLocalProperty(wrongKey));
+		assertEquals(Optional.absent(), root.getCategory(packageP1).getLocalProperty(wrongKey));
+		assertEquals(Optional.absent(), root.getCategory(packageP2).getLocalProperty(wrongKey));
 
 		List<String> properties = root.<String>topDownProperties(p6Property);
 		assertEquals(1, properties.size());
@@ -128,17 +129,6 @@ public class NamedCategorizationTest {
 		assertEquals(2, properties.size());
 		assertEquals(p2Property, properties.get(0));
 		assertEquals(p1Property, properties.get(1));
-		
-		//overriding the same property with explicit allowing overrides
-		root.getCategory(packageP2).setProperty(p1Property, p2Property, true);
-		
-		try {
-			//attempting to override the same property without allowing overrides
-			root.getCategory(packageP2).setProperty(p1Property, p2Property, false);
-			fail("Expected exception not thrown when overridding package property");
-		} catch(Exception e) {
-			//expected
-		}
 	}
 
 	@Test
