@@ -2,6 +2,7 @@ package org.jgum.category.named;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +43,7 @@ public class NamedCategorizationTest {
 	Key p6Property = new Key("p6Property");
 	Key p8Property = new Key("p8Property");
 	
-	private NamedCategory newPackagePropertiesRoot() {
+	private NamedCategory newCustomRoot() {
 		JGum jgum = new JGum();
 		NamedCategory root = jgum.forNameRoot();
 		root.setProperty(rootProperty, rootProperty);
@@ -65,7 +66,7 @@ public class NamedCategorizationTest {
 	}
 	
 	@Test
-	public void testPackageName() {
+	public void testCategoryLabel() {
 		JGum jGum = new JGum();
 		assertEquals("", jGum.forNameRoot().getLabel());
 		assertEquals("p1", jGum.forName("p1").getLabel());
@@ -73,8 +74,16 @@ public class NamedCategorizationTest {
 	}
 	
 	@Test
+	public void testRemoveProperty() {
+		NamedCategory root = newCustomRoot();
+		assertTrue(root.getCategory(packageP5).containsProperty(p2Property)); 
+		root.getCategory(packageP2).removeLocalProperty(p2Property);
+		assertFalse(root.getCategory(packageP5).containsProperty(p2Property));
+	}
+	
+	@Test
 	public void testPathToDescendant() {
-		NamedCategory root = newPackagePropertiesRoot();
+		NamedCategory root = newCustomRoot();
 		
 		assertEquals("", root.topDownPath("").get(0).getLabel());
 		assertEquals(packageP3, root.getCategory(packageP3).topDownPath("").get(0).getLabel());
@@ -92,7 +101,7 @@ public class NamedCategorizationTest {
 	
 	@Test
 	public void testCategoryProperty() {
-		NamedCategory root = newPackagePropertiesRoot();
+		NamedCategory root = newCustomRoot();
 		assertEquals(rootProperty, new CategoryProperty(root.getCategory(packageP1), rootProperty).get());
 		assertEquals(p1Property, new CategoryProperty(root.getCategory(packageP1), p1Property).get());
 		
@@ -103,7 +112,7 @@ public class NamedCategorizationTest {
 	
 	@Test
 	public void testPropertiesInPath() {
-		NamedCategory root = newPackagePropertiesRoot();
+		NamedCategory root = newCustomRoot();
 		Key wrongKey = new Key("wrongProperty");
 		assertEquals(Optional.absent(), root.getLocalProperty(wrongKey));
 		assertEquals(Optional.absent(), root.getCategory(packageP1).getLocalProperty(wrongKey));
@@ -133,7 +142,7 @@ public class NamedCategorizationTest {
 
 	@Test
 	public void testAllDescendantsPreOrder() {
-		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
+		NamedCategory root = newCustomRoot().getCategory(packageP1);
 		List<NamedCategory> preOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.IGNORE)));
 		assertEquals(p1Property, preOrderList.get(0).getLocalProperty(p1Property).get());
 		assertEquals(p2Property, preOrderList.get(1).getLocalProperty(p2Property).get());
@@ -145,7 +154,7 @@ public class NamedCategorizationTest {
 	
 	@Test
 	public void testAllDescendantsPostOrder() {
-		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
+		NamedCategory root = newCustomRoot().getCategory(packageP1);
 		List<NamedCategory> postOrderList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.POST_ORDER, RedundancyCheck.IGNORE)));
 		assertEquals(p3Property, postOrderList.get(0).getLocalProperty(p3Property).get());
 		assertEquals(p5Property, postOrderList.get(1).getLocalProperty(p5Property).get());
@@ -157,7 +166,7 @@ public class NamedCategorizationTest {
 	
 	@Test
 	public void testAllDescendantsBreadthFirst() {
-		NamedCategory root = newPackagePropertiesRoot().getCategory(packageP1);
+		NamedCategory root = newCustomRoot().getCategory(packageP1);
 		List<NamedCategory> breadthFirstList = Lists.newArrayList(root.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST, RedundancyCheck.IGNORE)));
 		assertEquals(p1Property, breadthFirstList.get(0).getLocalProperty(p1Property).get());
 		assertEquals(p2Property, breadthFirstList.get(1).getLocalProperty(p2Property).get());
