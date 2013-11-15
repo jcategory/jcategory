@@ -72,7 +72,6 @@ public class Category implements Serializable {
 	}
 	
 	/**
-	 * 
 	 * @param key the property identifier.
 	 * @return true if the property is defined in the category. false otherwise. It attempts to find it in ancestor categories if the property is not locally present.
 	 */
@@ -97,12 +96,25 @@ public class Category implements Serializable {
 	}
 	
 	/**
-	 * 
 	 * @param key the property identifier.
 	 * @return true if the property exists in the current category. false otherwise. It does not query ancestor categories if the property is not locally present.
 	 */
 	public boolean containsLocalProperty(Key key) {
 		return getLocalProperty(key).isPresent();
+	}
+	
+	/**
+	 * @param key the property identifier.
+	 */
+	public void removeLocalProperty(Key key) {
+		key.removeFromCategory(this);
+	}
+	
+	/**
+	 * @param key the property identifier.
+	 */
+	void removeFromLocalMap(Key key) {
+		properties.remove(key);
 	}
 	
 	/**
@@ -119,7 +131,7 @@ public class Category implements Serializable {
 	 * @param key the property identifier.
 	 * @param value the value of the property.
 	 */
-	void setAtLocalMap(Key key, Object value) {
+	void putAtLocalMap(Key key, Object value) {
 		properties.put(key, value);
 	}
 	

@@ -14,7 +14,6 @@ import com.google.common.base.Optional;
 public class PseudoKey<T extends Category, U> extends Key {
 
 	/**
-	 * 
 	 * @param function function defining the value of this pseudo-key for a given category.
 	 */
 	public PseudoKey(Function<T, Optional<U>> function) {
@@ -38,5 +37,12 @@ public class PseudoKey<T extends Category, U> extends Key {
 	protected void setForCategory(Category category, Object value) {
 		throw new UnsupportedOperationException();
 	}
-
+	
+	/**
+	 * @throws UnsupportedOperationException
+	 */
+	protected void removeFromCategory(Category category) {
+		throw new UnsupportedOperationException();
+	}
+	
 }

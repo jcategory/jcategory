@@ -28,12 +28,18 @@ public class Key {
 	}
 
 	/**
-	 * 
 	 * @param category the modified category.
 	 * @param value the value to set for the property represented by this object in the given category.
 	 */
 	protected void setForCategory(Category category, Object value) {
-		category.setAtLocalMap(this, value);
+		category.putAtLocalMap(this, value);
+	}
+	
+	/**
+	 * @param category the modified category.
+	 */
+	protected void removeFromCategory(Category category) {
+		category.removeFromLocalMap(this);
 	}
 	
 	@Override
