@@ -59,6 +59,14 @@ public class NamedCategorizationTest {
 	}
 	
 	@Test
+	public void levelTest() {
+		JGum jgum = new JGum();
+		assertEquals(0, jgum.forNameRoot().getLevel());
+		assertEquals(1, jgum.forName("org").getLevel());
+		assertEquals(2, jgum.forName("org.jgum").getLevel());
+	}
+	
+	@Test
 	public void superMethodTest() {
 		JGum jgum = new JGum();
 		assertEquals("", jgum.forName("org").<NamedCategory>getSuper().get().getLabel());
