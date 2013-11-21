@@ -35,8 +35,8 @@ public class StrategyInvocationHandler implements InvocationHandler {
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		List implementors = Lists.newArrayList(new PropertyIterable<>(category, key));
-		ChainOfResponsibility chainOfResponsibility = new ChainOfResponsibility(implementors, new ReflectiveEvaluator(method, args), exceptionClass);
-		return chainOfResponsibility.apply();
+		ChainOfResponsibility chainOfResponsibility = new ChainOfResponsibility(implementors, exceptionClass);
+		return chainOfResponsibility.apply(new ReflectiveEvaluator(method, args));
 	}
 
 }

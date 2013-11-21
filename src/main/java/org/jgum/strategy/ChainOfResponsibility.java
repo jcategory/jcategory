@@ -30,29 +30,28 @@ public class ChainOfResponsibility<T, V> {
 	private final List<T> responsibilityChain;
 	private final Class<? extends RuntimeException> exceptionClass;
 	private final RuntimeException chainExhaustedException;
-	private final Function<T, V> evaluator;
 	
 	/**
 	 * Creates an empty chain of responsibility.
 	 */
-	public ChainOfResponsibility(Function<T, V> evaluator) {
-		this(new ArrayList(), evaluator);
+	public ChainOfResponsibility() {
+		this(new ArrayList());
 	}
 	
 	/**
 	 * Creates an empty chain of responsibility.
 	 * @param exceptionClass instances of this exception class denote that a processing object delegates to the next object in the responsibility chain.
 	 */
-	public ChainOfResponsibility(Function<T, V> evaluator, Class<? extends RuntimeException> exceptionClass) {
-		this(new ArrayList(), evaluator, exceptionClass);
+	public ChainOfResponsibility(Class<? extends RuntimeException> exceptionClass) {
+		this(new ArrayList(), exceptionClass);
 	}
 	
 	/**
 	 * Creates a chain of responsibility initialized with the given list of processing objects.
 	 * @param responsibilityChain the processing objects.
 	 */
-	public ChainOfResponsibility(List<T> responsibilityChain, Function<T, V> evaluator) {
-		this(responsibilityChain, evaluator, DEFAULT_DELEGATION_EXCEPTION);
+	public ChainOfResponsibility(List<T> responsibilityChain) {
+		this(responsibilityChain, DEFAULT_DELEGATION_EXCEPTION);
 	}
 
 	/**
@@ -60,9 +59,8 @@ public class ChainOfResponsibility<T, V> {
 	 * @param responsibilityChain the processing objects.
 	 * @param exceptionClass instances of this exception class denote that a processing object delegates to the next object in the responsibility chain.
 	 */
-	public ChainOfResponsibility(List<T> responsibilityChain, Function<T, V> evaluator, Class<? extends RuntimeException> exceptionClass) {
+	public ChainOfResponsibility(List<T> responsibilityChain, Class<? extends RuntimeException> exceptionClass) {
 		this.responsibilityChain = responsibilityChain;
-		this.evaluator = evaluator;
 		this.exceptionClass = exceptionClass;
 		try {
 			chainExhaustedException = exceptionClass.newInstance();
@@ -101,11 +99,12 @@ public class ChainOfResponsibility<T, V> {
 	 * If a processing object throws an exception signaling delegation (the exception class is passed by in the constructor), the operation will be delegated to the next object in the responsibility chain.
 	 * Any other exception is propagated to the caller.
 	 * <p>
-	 * If no object is able to process the command after exhausting the responsibility chain, a {@link NoMyResponsibilityException} is thrown.
+	 * If no object is able to process the command after exhausting the responsibility chain, a delegation exception is thrown.
 	 * </p>
-	 * @return the result of executing the command on the first object in the responsibility chain that does not throw a {@link NoMyResponsibilityException} exception.
+	 * @param evaluator the evaluator of each object in the chain of responsibility.
+	 * @return the result of executing the command on the first object in the responsibility chain that does not throw a delegation exception.
 	 */
-	public Object apply() {
+	public Object apply(Function<T, V> evaluator) {
 		for(T processingObject : responsibilityChain) {
 			try {
 				return evaluator.apply(processingObject);
