@@ -34,7 +34,7 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	}
 	
 	protected TypeCategory(Class<T> wrappedClazz, List<InterfaceCategory<? super T>> superInterfaceNodes) {
-		super(wrappedClazz, null);
+		super(wrappedClazz, Collections.<Category>emptyList());
 		setSuperInterfaceNodes(superInterfaceNodes);
 	}
 
