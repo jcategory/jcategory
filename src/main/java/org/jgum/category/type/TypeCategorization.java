@@ -153,7 +153,11 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 	}
 
 	public void addCategorizationListener(CategorizationListener<TypeCategory<?>> creationListener) {
-		listenersManager.addCategorizationListener(creationListener);
+		listenersManager.add(creationListener);
+	}
+	
+	public void removeCategorizationListener(CategorizationListener<TypeCategory<?>> creationListener) {
+		listenersManager.remove(creationListener);
 	}
 	
 }

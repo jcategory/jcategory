@@ -21,8 +21,12 @@ public class CategorizationListenersManager {
 		this.categorizationListeners = new ArrayList<>(categorizationListeners);
 	}
 	
-	public void addCategorizationListener(CategorizationListener<?> creationListener) {
+	public void add(CategorizationListener<?> creationListener) {
 		categorizationListeners.add(creationListener);
+	}
+	
+	public void remove(CategorizationListener<?> creationListener) {
+		categorizationListeners.remove(creationListener);
 	}
 	
 	public void notifyCategorizationListeners(Category category) {

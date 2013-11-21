@@ -63,7 +63,7 @@ public class NamedCategorization extends Categorization<NamedCategory> {
 	 * @param creationListener the listener to be notified.
 	 */
 	public void addCategorizationListener(CategorizationListener<NamedCategory> creationListener) {
-		listenersManager.addCategorizationListener(creationListener);
+		listenersManager.add(creationListener);
 	}
 	
 }
