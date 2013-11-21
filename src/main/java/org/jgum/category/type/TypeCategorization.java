@@ -9,6 +9,10 @@ import java.util.Map;
 import org.jgum.category.Categorization;
 import org.jgum.category.CategorizationListener;
 import org.jgum.category.CategorizationListenersManager;
+import org.jgum.category.Key;
+import org.jgum.traversal.RedundancyCheck;
+import org.jgum.traversal.SearchStrategy;
+import org.jgum.traversal.TraversalPolicy;
 
 import com.google.common.base.Function;
 
@@ -93,6 +97,57 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 		return interfaceCategory;
 	}
 
+	private boolean isClassInBoundaries(Class clazz, List<Class<?>> upperBounds) {
+		for(Class upperBoundClass : upperBounds) {
+			if(!upperBoundClass.isAssignableFrom(clazz))
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * @param upperBounds a list of upper bounds.
+	 * @return a list with type categories that are descendant of all the upper bounds (at the same time) passed by as arguments.
+	 */
+	public <T extends TypeCategory> List<T> findBoundedTypes(List<Class<?>> upperBounds) {
+		if(upperBounds.isEmpty())
+			throw new RuntimeException("Empty bounds for quantified property.");
+		List<T> boundedTypes = new ArrayList<>();
+		TypeCategory typeCategory = getOrCreateTypeCategory(upperBounds.get(0));
+		List<TypeCategory<Class<?>>> topDownCategories = typeCategory.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST, RedundancyCheck.KEEP_FIRST));
+		List<Class<?>> allButFirstBound = upperBounds.subList(1, upperBounds.size());
+		for(TypeCategory<Class<?>> candidateCategory : topDownCategories) {
+			Class labelClass = candidateCategory.getLabel();
+			if(isClassInBoundaries(labelClass, allButFirstBound)) {
+				boundedTypes.add((T) candidateCategory);
+			}
+		}
+		return boundedTypes;
+	}
+	
+	/**
+	 * Sets a property to all the type categories quantified by the given upper bounds.
+	 * @param upperBounds a list of upper bounds.
+	 * @param key the key of the property.
+	 * @param value the value of the property.
+	 */
+	public void setQuantified(List<Class<?>> upperBounds, Key key, Object value) {
+		for(TypeCategory<Class<?>> boundedCategory : findBoundedTypes(upperBounds)) {
+			boundedCategory.setProperty(key, value);
+		}
+	}
+	
+	/**
+	 * Removes a property from all the type categories quantified by the given upper bounds.
+	 * @param upperBounds a list of upper bounds.
+	 * @param key the key of the property.
+	 */
+	public void removeQuantified(List<Class<?>> upperBounds, Key key) {
+		for(TypeCategory<Class<?>> boundedCategory : findBoundedTypes(upperBounds)) {
+			boundedCategory.removeLocalProperty(key);
+		}
+	}
+	
 	protected void notifyCategorizationListeners(TypeCategory<?> newCategory) {
 		listenersManager.notifyCategorizationListeners(newCategory);
 	}
