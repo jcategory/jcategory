@@ -66,10 +66,18 @@ public class ChainOfResponsibility implements ProcessingObject {
 	}
 	
 	/**
+	 * Adds a new processing object at the beginning of the chain of responsibility.
+	 * @param processingObject a processing object.
+	 */
+	public void addFirst(ProcessingObject processingObject) {
+		responsibilityChain.add(0, processingObject);
+	}
+	
+	/**
 	 * Adds a new processing object at the end of the chain of responsibility.
 	 * @param processingObject a processing object.
 	 */
-	public void add(ProcessingObject processingObject) {
+	public void addLast(ProcessingObject processingObject) {
 		responsibilityChain.add(processingObject);
 	}
 	
