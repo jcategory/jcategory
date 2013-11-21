@@ -104,7 +104,7 @@ public class ChainOfResponsibility<T, V> {
 	 * @param evaluator the evaluator of each object in the chain of responsibility.
 	 * @return the result of executing the command on the first object in the responsibility chain that does not throw a delegation exception.
 	 */
-	public Object apply(Function<T, V> evaluator) {
+	public V apply(Function<T, V> evaluator) {
 		for(T processingObject : responsibilityChain) {
 			try {
 				return evaluator.apply(processingObject);
