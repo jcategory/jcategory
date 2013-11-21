@@ -12,8 +12,7 @@ import com.google.common.collect.Lists;
 
 /**
  * An invocation handler that delegates a proxied method to an object implementing the chain of responsibility pattern.
- * The objects in such chain are all the objects found in a category hierarchy (in the order specified by the default linearization function) identified by a given property (passed by in the constructor).
- * @see ReflectiveChainOfResponsibility
+ * The objects in such chain are all the objects found in a category hierarchy (in the order specified by the default linearization function) identified by a given property, which is passed by in the constructor.
  * @author sergioc
  */
 public class StrategyInvocationHandler implements InvocationHandler {
@@ -35,8 +34,8 @@ public class StrategyInvocationHandler implements InvocationHandler {
 	
 	@Override
 	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-		List<?> implementors = Lists.newArrayList(new PropertyIterable<>(category, key));
-		ChainOfResponsibility chainOfResponsibility = new ChainOfResponsibility(ReflectiveProcessingObject.asProcessingObjects(implementors, method, args), exceptionClass);
+		List implementors = Lists.newArrayList(new PropertyIterable<>(category, key));
+		ChainOfResponsibility chainOfResponsibility = new ChainOfResponsibility(implementors, new ReflectiveEvaluator(method, args), exceptionClass);
 		return chainOfResponsibility.apply();
 	}
 

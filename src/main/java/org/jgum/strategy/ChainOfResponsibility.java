@@ -3,6 +3,8 @@ package org.jgum.strategy;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.Function;
+
 
 /**
  * <p>
@@ -11,43 +13,46 @@ import java.util.List;
  * </p>
  * <p>
  * A processing object delegates to the next object in the chain by means of throwing an instance of the exception class passed by in the constructor. 
- * If no exception is given at the constructor, a NoMyResponsibilityException exception is assumed as the indicator for delegation.
+ * If no exception is passed by at the constructor, a NoMyResponsibilityException exception is assumed as the indicator for delegation.
  * </p>
  * 
+ *  @param <T> the type of the processing objects in the chain of responsibility.
+ *  @param <V> the return type of the operation in the chain of responsibility applied to the distinct processing objects.
  * @author sergioc
  */
-public class ChainOfResponsibility implements ProcessingObject {
+public class ChainOfResponsibility<T, V> {
 
 	/**
 	 * The default exception class used for signaling delegation.
 	 */
 	public static final Class<? extends RuntimeException> DEFAULT_DELEGATION_EXCEPTION = NoMyResponsibilityException.class;
 	
-	private final List<ProcessingObject> responsibilityChain;
+	private final List<T> responsibilityChain;
 	private final Class<? extends RuntimeException> exceptionClass;
 	private final RuntimeException chainExhaustedException;
+	private final Function<T, V> evaluator;
 	
 	/**
 	 * Creates an empty chain of responsibility.
 	 */
-	public ChainOfResponsibility() {
-		this(new ArrayList<ProcessingObject>());
+	public ChainOfResponsibility(Function<T, V> evaluator) {
+		this(new ArrayList(), evaluator);
 	}
 	
 	/**
 	 * Creates an empty chain of responsibility.
 	 * @param exceptionClass instances of this exception class denote that a processing object delegates to the next object in the responsibility chain.
 	 */
-	public ChainOfResponsibility(Class<? extends RuntimeException> exceptionClass) {
-		this(new ArrayList<ProcessingObject>(), exceptionClass);
+	public ChainOfResponsibility(Function<T, V> evaluator, Class<? extends RuntimeException> exceptionClass) {
+		this(new ArrayList(), evaluator, exceptionClass);
 	}
 	
 	/**
 	 * Creates a chain of responsibility initialized with the given list of processing objects.
 	 * @param responsibilityChain the processing objects.
 	 */
-	public ChainOfResponsibility(List<ProcessingObject> responsibilityChain) {
-		this(responsibilityChain, DEFAULT_DELEGATION_EXCEPTION);
+	public ChainOfResponsibility(List<T> responsibilityChain, Function<T, V> evaluator) {
+		this(responsibilityChain, evaluator, DEFAULT_DELEGATION_EXCEPTION);
 	}
 
 	/**
@@ -55,8 +60,9 @@ public class ChainOfResponsibility implements ProcessingObject {
 	 * @param responsibilityChain the processing objects.
 	 * @param exceptionClass instances of this exception class denote that a processing object delegates to the next object in the responsibility chain.
 	 */
-	public ChainOfResponsibility(List<ProcessingObject> responsibilityChain, Class<? extends RuntimeException> exceptionClass) {
+	public ChainOfResponsibility(List<T> responsibilityChain, Function<T, V> evaluator, Class<? extends RuntimeException> exceptionClass) {
 		this.responsibilityChain = responsibilityChain;
+		this.evaluator = evaluator;
 		this.exceptionClass = exceptionClass;
 		try {
 			chainExhaustedException = exceptionClass.newInstance();
@@ -69,7 +75,7 @@ public class ChainOfResponsibility implements ProcessingObject {
 	 * Adds a new processing object at the beginning of the chain of responsibility.
 	 * @param processingObject a processing object.
 	 */
-	public void addFirst(ProcessingObject processingObject) {
+	public void addFirst(T processingObject) {
 		responsibilityChain.add(0, processingObject);
 	}
 	
@@ -77,8 +83,17 @@ public class ChainOfResponsibility implements ProcessingObject {
 	 * Adds a new processing object at the end of the chain of responsibility.
 	 * @param processingObject a processing object.
 	 */
-	public void addLast(ProcessingObject processingObject) {
+	public void addLast(T processingObject) {
 		responsibilityChain.add(processingObject);
+	}
+	
+	/**
+	 * Removes the first occurrence of the specified processing object from the chain of responsibility, if it is present. 
+	 * @param processingObject a processing object.
+	 * @return true if this list contained the specified element
+	 */
+	public boolean remove(Object processingObject) {
+		return responsibilityChain.remove(processingObject);
 	}
 	
 	/**
@@ -90,11 +105,10 @@ public class ChainOfResponsibility implements ProcessingObject {
 	 * </p>
 	 * @return the result of executing the command on the first object in the responsibility chain that does not throw a {@link NoMyResponsibilityException} exception.
 	 */
-	@Override
 	public Object apply() {
-		for(ProcessingObject processingObject : responsibilityChain) {
+		for(T processingObject : responsibilityChain) {
 			try {
-				return processingObject.apply();
+				return evaluator.apply(processingObject);
 			} catch (RuntimeException e) {
 				if(!exceptionClass.isInstance(e))
 					throw e;
