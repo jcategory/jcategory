@@ -97,13 +97,6 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 		return interfaceCategory;
 	}
 
-	private boolean isClassInBoundaries(Class clazz, List<Class<?>> upperBounds) {
-		for(Class upperBoundClass : upperBounds) {
-			if(!upperBoundClass.isAssignableFrom(clazz))
-				return false;
-		}
-		return true;
-	}
 	
 	/**
 	 * @param upperBounds a list of upper bounds.
@@ -117,8 +110,7 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 		List<TypeCategory<Class<?>>> topDownCategories = typeCategory.linearize(TraversalPolicy.topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST, RedundancyCheck.KEEP_FIRST));
 		List<Class<?>> allButFirstBound = upperBounds.subList(1, upperBounds.size());
 		for(TypeCategory<Class<?>> candidateCategory : topDownCategories) {
-			Class labelClass = candidateCategory.getLabel();
-			if(isClassInBoundaries(labelClass, allButFirstBound)) {
+			if(candidateCategory.isInBoundaries(allButFirstBound)) {
 				boundedTypes.add((T) candidateCategory);
 			}
 		}

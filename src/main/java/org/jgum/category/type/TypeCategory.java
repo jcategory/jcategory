@@ -101,6 +101,20 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	
 	/**
 	 * 
+	 * @param upperBounds a list of upper bounds.
+	 * @return true if the wrapped class is a descendant of all the upper bounds (at the same time) passed by as arguments. false otherwise.
+	 */
+	public boolean isInBoundaries(List<Class<?>> upperBounds) {
+		Class labelClass = getLabel();
+		for(Class upperBoundClass : upperBounds) {
+			if(!upperBoundClass.isAssignableFrom(labelClass))
+				return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * 
 	 * @param priority if classes should be visited before interfaces or vice versa.
 	 * @param interfaceOrder if the interfaces should be traversed following their declaration order or reversing such order.
 	 * @return the parents of this category according to a given priority and desired interface order.
