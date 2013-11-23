@@ -1,7 +1,6 @@
 package org.jgum.category.type;
 
-import static org.jgum.JGum.DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION;
-
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +8,6 @@ import java.util.List;
 import org.jgum.category.Category;
 import org.jgum.category.LabeledCategory;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -52,11 +50,24 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	
 	/**
 	 * 
+	 * @return the abstract ancestors (both classes and interfaces).
+	 */
+	public <U extends TypeCategory<? super T>> List<U> getAbstractAncestors() {
+		List<TypeCategory<?>> ancestors = getAncestors();
+		return new ArrayList(Collections2.filter(ancestors, new Predicate<TypeCategory<?>>() {
+			@Override
+			public boolean apply(TypeCategory<?> typeCategory) {
+				return Modifier.isAbstract(typeCategory.getLabel().getModifiers());
+			}
+		}));
+	}
+	
+	/**
+	 * 
 	 * @return the ancestor classes according to the default bottom-up linearization function.
 	 */
 	public List<ClassCategory<? super T>> getAncestorClasses() {
-		List<TypeCategory<?>> ancestors = linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION);
-		ancestors = ancestors.subList(1, ancestors.size());
+		List<TypeCategory<?>> ancestors = getAncestors();
 		return new ArrayList(Collections2.filter(ancestors, new Predicate<TypeCategory<?>>() {
 			@Override
 			public boolean apply(TypeCategory<?> typeCategory) {
@@ -70,8 +81,7 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	 * @return the ancestor interfaces according to the default bottom-up linearization function.
 	 */
 	public List<InterfaceCategory<? super T>> getAncestorInterfaces() {
-		List<TypeCategory<?>> ancestors = linearize((Function)DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION);
-		ancestors = ancestors.subList(1, ancestors.size());
+		List<TypeCategory<?>> ancestors = getAncestors();
 		return new ArrayList(Collections2.filter(ancestors, new Predicate<TypeCategory<?>>() {
 			@Override
 			public boolean apply(TypeCategory<?> typeCategory) {
