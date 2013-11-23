@@ -11,6 +11,10 @@ public class Key {
 
 	protected final Object name;
 	
+	public Key() {
+		this(new Object());
+	}
+	
 	/**
 	 * 
 	 * @param name the name of a category property.
