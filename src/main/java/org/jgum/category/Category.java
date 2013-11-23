@@ -222,6 +222,16 @@ public class Category implements Serializable {
 	}
 	
 	/**
+	 * 
+	 * @return the ancestors of this category.
+	 */
+	public <T extends Category> List<T> getAncestors() {
+		List<T> ancestors = bottomUpCategories();
+		ancestors = ancestors.subList(1, ancestors.size());
+		return ancestors;
+	}
+	
+	/**
 	 * @param key the property identifier.
 	 * @return a list of properties in the bottom-up linearization.
 	 */
