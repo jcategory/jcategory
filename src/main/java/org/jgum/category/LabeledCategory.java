@@ -24,7 +24,6 @@ public class LabeledCategory<T> extends Category {
 		});
 	} 
 	
-	
 	private final T label; //the identifier of this category.
 	
 	/**
@@ -52,6 +51,36 @@ public class LabeledCategory<T> extends Category {
 	 */
 	public T getLabel() {
 		return label;
+	}
+	
+	/**
+	 * 
+	 * @param label a category label.
+	 * @return true if the category label is equals to the one sent as argument.
+	 */
+	public boolean hasLabel(Object label) {
+		return this.label.equals(label);
+	}
+	
+	/**
+	 * 
+	 * @param label a category label.
+	 * @return the minimum number of levels from this category to an ancestor category with a given label, or -1 if no ancestor has the current label.
+	 */
+	public int distance(Object label) {
+		if(hasLabel(label))
+			return 0;
+		else {
+			int minParentDistance = -1;
+			for(Category parent : getParents()) {
+				if(parent instanceof LabeledCategory) {
+					int parentDistance = ((LabeledCategory) parent).distance(label);
+					if( (parentDistance != 1) && (minParentDistance == -1 || parentDistance < minParentDistance) )
+						minParentDistance = parentDistance + 1;
+				}
+			}
+			return minParentDistance;
+		}
 	}
 	
 	@Override
