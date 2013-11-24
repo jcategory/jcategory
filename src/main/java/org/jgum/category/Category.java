@@ -29,7 +29,7 @@ public class Category implements Serializable {
 	private final List<? extends Category> parents; //default placeholder for the parents of this category. Subclasses may choose to store parents in a different structure.
 	private final List<? extends Category> children; //default placeholder for the children of this category. Subclasses may choose to store children in a different structure.
 	private List<? extends Category> bottomUpLinearization; //lazily initialized bottom-up linearization
-	private final int level; //the level of this category in the category hierarchy.
+	private final int level; //the (max) level of this category in the category hierarchy.
 	
 	/**
 	 * @param categorization the categorization where this category exists.
@@ -50,15 +50,15 @@ public class Category implements Serializable {
 	}
 	
 	private int findLevel(List<? extends Category> parents) {
-		int minParentLevel = -1;
+		int maxParentLevel = -1;
 		for(Category parent : parents) {
 			int parentLevel = parent.getLevel();
-			if(minParentLevel == -1)
-				minParentLevel = parentLevel;
-			else if(parentLevel < minParentLevel)
-				minParentLevel = parentLevel;
+			if(maxParentLevel == -1)
+				maxParentLevel = parentLevel;
+			else if(parentLevel > maxParentLevel)
+				maxParentLevel = parentLevel;
 		}
-		return minParentLevel + 1;
+		return maxParentLevel + 1;
 	}
 	
 	public int getLevel() {
