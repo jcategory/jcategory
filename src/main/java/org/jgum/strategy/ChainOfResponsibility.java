@@ -17,10 +17,10 @@ import com.google.common.base.Function;
  * </p>
  * 
  *  @param <T> the type of the processing objects in the chain of responsibility.
- *  @param <V> the return type of the operation in the chain of responsibility applied to the distinct processing objects.
+ *  @param <U> the return type of the operation in the chain of responsibility applied to the distinct processing objects.
  * @author sergioc
  */
-public class ChainOfResponsibility<T, V> {
+public class ChainOfResponsibility<T, U> {
 
 	/**
 	 * The default exception class used for signaling delegation.
@@ -104,7 +104,7 @@ public class ChainOfResponsibility<T, V> {
 	 * @param evaluator the evaluator of each object in the chain of responsibility.
 	 * @return the result of executing the command on the first object in the responsibility chain that does not throw a delegation exception.
 	 */
-	public V apply(Function<T, V> evaluator) {
+	public U apply(Function<T, U> evaluator) {
 		for(T processingObject : responsibilityChain) {
 			try {
 				return evaluator.apply(processingObject);
