@@ -66,8 +66,8 @@ public class StrategyTest {
 	
 	private JGum context() {
 		JGum jgum = new JGum();
-		jgum.forClass(ArrayList.class).setProperty(new Key(DoSomething.class), new DoSomethingChild2());
-		jgum.forClass(Collection.class).setProperty(new Key(DoSomething.class), new DoSomethingChild1());
+		jgum.forClass(ArrayList.class).setProperty(DoSomething.class, new DoSomethingChild2());
+		jgum.forClass(Collection.class).setProperty(DoSomething.class, new DoSomethingChild1());
 		return jgum;
 	}
 	

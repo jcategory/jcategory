@@ -28,7 +28,7 @@ public class Key {
 	 * @return the value of the property represented by this object in the given category.
 	 */
 	protected <T> Optional<T> getForCategory(Category category) {
-		return category.<T>getFromLocalMap(id);
+		return category.<T>getFromLocalMap(this);
 	}
 
 	/**
@@ -36,14 +36,14 @@ public class Key {
 	 * @param value the value to set for the property represented by this object in the given category.
 	 */
 	protected void setForCategory(Category category, Object value) {
-		category.putAtLocalMap(id, value);
+		category.putAtLocalMap(this, value);
 	}
 	
 	/**
 	 * @param category the modified category.
 	 */
 	protected void removeFromCategory(Category category) {
-		category.removeFromLocalMap(id);
+		category.removeFromLocalMap(this);
 	}
 	
 	@Override
