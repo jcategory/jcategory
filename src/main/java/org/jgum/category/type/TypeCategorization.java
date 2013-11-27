@@ -123,7 +123,7 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 	 * @param key the key of the property.
 	 * @param value the value of the property.
 	 */
-	public void setQuantified(List<Class<?>> upperBounds, Key key, Object value) {
+	public void setQuantified(List<Class<?>> upperBounds, Object key, Object value) {
 		for(TypeCategory<Class<?>> boundedCategory : findBoundedTypes(upperBounds)) {
 			boundedCategory.setProperty(key, value);
 		}
@@ -134,7 +134,7 @@ public class TypeCategorization extends Categorization<TypeCategory<?>> {
 	 * @param upperBounds a list of upper bounds.
 	 * @param key the key of the property.
 	 */
-	public void removeQuantified(List<Class<?>> upperBounds, Key key) {
+	public void removeQuantified(List<Class<?>> upperBounds, Object key) {
 		for(TypeCategory<Class<?>> boundedCategory : findBoundedTypes(upperBounds)) {
 			boundedCategory.removeLocalProperty(key);
 		}

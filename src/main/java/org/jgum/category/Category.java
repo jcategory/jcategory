@@ -24,7 +24,7 @@ public class Category implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private final Map<Key, Object> properties; //properties associated with this category are backed up in this map.
+	private final Map<Object, Object> properties; //properties associated with this category are backed up in this map.
 	private Categorization categorization; //the categorization where this category exists.
 	private final List<? extends Category> parents; //default placeholder for the parents of this category. Subclasses may choose to store parents in a different structure.
 	private final List<? extends Category> children; //default placeholder for the children of this category. Subclasses may choose to store children in a different structure.
@@ -85,7 +85,7 @@ public class Category implements Serializable {
 	 * @param key the property identifier.
 	 * @return a category property.
 	 */
-	public <T> CategoryProperty<T> getProperty(Key key) {
+	public <T> CategoryProperty<T> getProperty(Object key) {
 		return new CategoryProperty<>(this, key);
 	}
 	
@@ -93,7 +93,7 @@ public class Category implements Serializable {
 	 * @param key the property identifier.
 	 * @return true if the property is defined in the category. false otherwise. It attempts to find it in ancestor categories if the property is not locally present.
 	 */
-	public boolean containsProperty(Key key) {
+	public boolean containsProperty(Object key) {
 		return getProperty(key).isPresent();
 	}
 	
@@ -101,15 +101,18 @@ public class Category implements Serializable {
 	 * @param key the property identifier.
 	 * @return an optional with the property value in the current category (if any). It does not query ancestor categories if the property is not locally present.
 	 */
-	public <T> Optional<T> getLocalProperty(Key key) {
-		return key.getForCategory(this);
+	public <T> Optional<T> getLocalProperty(Object key) {
+		if(key instanceof Key)
+			return ((Key)key).getForCategory(this);
+		else
+			return getFromLocalMap(key);
 	}
 	
 	/**
 	 * @param key the property identifier.
 	 * @return an optional with the property value in the current category map (if any).
 	 */
-	<T> Optional<T> getFromLocalMap(Key key) {
+	<T> Optional<T> getFromLocalMap(Object key) {
 		return Optional.<T>fromNullable((T)properties.get(key));
 	}
 	
@@ -117,21 +120,24 @@ public class Category implements Serializable {
 	 * @param key the property identifier.
 	 * @return true if the property exists in the current category. false otherwise. It does not query ancestor categories if the property is not locally present.
 	 */
-	public boolean containsLocalProperty(Key key) {
+	public boolean containsLocalProperty(Object key) {
 		return getLocalProperty(key).isPresent();
 	}
 	
 	/**
 	 * @param key the property identifier.
 	 */
-	public void removeLocalProperty(Key key) {
-		key.removeFromCategory(this);
+	public void removeLocalProperty(Object key) {
+		if(key instanceof Key)
+			((Key)key).removeFromCategory(this);
+		else
+			removeFromLocalMap(key);
 	}
 	
 	/**
 	 * @param key the property identifier.
 	 */
-	void removeFromLocalMap(Key key) {
+	void removeFromLocalMap(Object key) {
 		properties.remove(key);
 	}
 	
@@ -140,8 +146,11 @@ public class Category implements Serializable {
 	 * @param key the property identifier.
 	 * @param value the value of the property.
 	 */
-	public void setProperty(Key key, Object value) {
-		key.setForCategory(this, value);
+	public void setProperty(Object key, Object value) {
+		if(key instanceof Key)
+			((Key)key).setForCategory(this, value);
+		else
+			putAtLocalMap(key, value);
 	}
 	
 	/**
@@ -149,7 +158,7 @@ public class Category implements Serializable {
 	 * @param key the property identifier.
 	 * @param value the value of the property.
 	 */
-	void putAtLocalMap(Key key, Object value) {
+	void putAtLocalMap(Object key, Object value) {
 		properties.put(key, value);
 	}
 	
@@ -159,7 +168,7 @@ public class Category implements Serializable {
 	 * @return a strategy object implementing the given interface.
 	 */
 	public <T> T getStrategy(Class<T> strategyInterface) {
-		return getStrategy(new Key(strategyInterface), new Class[]{strategyInterface}, ChainOfResponsibility.DEFAULT_DELEGATION_EXCEPTION);
+		return getStrategy(strategyInterface, new Class[]{strategyInterface}, ChainOfResponsibility.DEFAULT_DELEGATION_EXCEPTION);
 	}
 	
 	/**
@@ -168,7 +177,7 @@ public class Category implements Serializable {
 	 * @return a strategy object implementing the given interface.
 	 */
 	public <T> T getStrategy(Class<T> strategyInterface, Class<? extends RuntimeException> exceptionClass) {
-		return getStrategy(new Key(strategyInterface), new Class[]{strategyInterface}, exceptionClass);
+		return getStrategy(strategyInterface, new Class[]{strategyInterface}, exceptionClass);
 	}
 	
 	/**
@@ -176,7 +185,7 @@ public class Category implements Serializable {
 	 * @param strategyInterfaces the interfaces implemented by the strategy object.
 	 * @return a strategy object implementing the given interfaces.
 	 */
-	public <T> T getStrategy(Key key, Class<?>[] strategyInterfaces) {
+	public <T> T getStrategy(Object key, Class<?>[] strategyInterfaces) {
 		return getStrategy(key, strategyInterfaces, ChainOfResponsibility.DEFAULT_DELEGATION_EXCEPTION);
 	}
 	
@@ -186,7 +195,7 @@ public class Category implements Serializable {
 	 * @param exceptionClass instances of this exception class denote that a strategy delegates to the next one in the responsibility chain.
 	 * @return a strategy object implementing the given interfaces.
 	 */
-	public <T> T getStrategy(Key key, Class<?>[] strategyInterfaces, Class<? extends RuntimeException> exceptionClass) {
+	public <T> T getStrategy(Object key, Class<?>[] strategyInterfaces, Class<? extends RuntimeException> exceptionClass) {
 		return (T)Proxy.newProxyInstance(getClass().getClassLoader(), strategyInterfaces, new StrategyInvocationHandler(this, key, exceptionClass));
 	}
 	
@@ -217,7 +226,7 @@ public class Category implements Serializable {
 	 * @param linearizationFunction is a linearization function.
 	 * @return a list of properties in the categories obtained with the given linearization function.
 	 */
-	public <U> List<U> properties(Key key, Function<Category,List<Category>> linearizationFunction) {
+	public <U> List<U> properties(Object key, Function<Category,List<Category>> linearizationFunction) {
 		return Lists.newArrayList(new PropertyIterable(linearize(linearizationFunction), key));
 	}
 	
@@ -235,7 +244,7 @@ public class Category implements Serializable {
 	 * @param key the property identifier.
 	 * @return a list of properties in the bottom-up linearization.
 	 */
-	public <U> List<U> bottomUpProperties(Key key) {
+	public <U> List<U> bottomUpProperties(Object key) {
 		return Lists.newArrayList(new PropertyIterable(bottomUpCategories(), key));
 	}
 
@@ -243,7 +252,7 @@ public class Category implements Serializable {
 	 * @param key the property identifier.
 	 * @return a list of properties in the top-down linearization.
 	 */
-	public <U> List<U> topDownProperties(Key key) {
+	public <U> List<U> topDownProperties(Object key) {
 		return Lists.newArrayList(new PropertyIterable(topDownCategories(), key));
 	}
 	

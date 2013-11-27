@@ -8,7 +8,6 @@ import java.util.List;
 
 import org.apache.log4j.or.ObjectRenderer;
 import org.jgum.JGum;
-import org.jgum.category.Key;
 import org.jgum.category.type.TypeCategoryRoot.Any;
 import org.jgum.testutil.animalhierarchy.Animal;
 import org.jgum.testutil.animalhierarchy.AnimalRenderer;
@@ -37,7 +36,7 @@ public class TypeCategorizationTutorialTest {
 		}
 	}
 	
-	public static final Key OBJECT_RENDERER_KEY = new Key(ObjectRenderer.class);
+	public static final Object OBJECT_RENDERER_KEY = ObjectRenderer.class;
 	
 	@Test
 	public void testTypeCategoryInheritance() {

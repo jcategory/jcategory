@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.jgum.category.Category;
 import org.jgum.category.CategoryProperty.PropertyIterable;
-import org.jgum.category.Key;
 
 import com.google.common.collect.Lists;
 
@@ -18,7 +17,7 @@ import com.google.common.collect.Lists;
 public class StrategyInvocationHandler implements InvocationHandler {
 
 	private final Category category;
-	private final Key key;
+	private final Object key;
 	private final Class<? extends RuntimeException> exceptionClass;
 	
 	/**
@@ -26,7 +25,7 @@ public class StrategyInvocationHandler implements InvocationHandler {
 	 * @param key the property identifier.
 	 * @param exceptionClass instances of this exception class denote that a processing object delegates to the next object in the responsibility chain.
 	 */
-	public StrategyInvocationHandler(Category category, Key key, Class<? extends RuntimeException> exceptionClass) {
+	public StrategyInvocationHandler(Category category, Object key, Class<? extends RuntimeException> exceptionClass) {
 		this.category = category;
 		this.key = key;
 		this.exceptionClass = exceptionClass;

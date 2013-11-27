@@ -26,7 +26,7 @@ public class PseudoKey<T extends Category, U> extends Key {
 	 */
 	@Override
 	protected Optional<U> getForCategory(Category category) {
-		Function<T, Optional<U>> function = (Function<T, Optional<U>>) name;
+		Function<T, Optional<U>> function = (Function<T, Optional<U>>) id;
 		return function.apply((T)category);
 	}
 	

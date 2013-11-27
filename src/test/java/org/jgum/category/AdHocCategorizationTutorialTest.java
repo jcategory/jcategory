@@ -18,8 +18,8 @@ public class AdHocCategorizationTutorialTest {
 		Category child = new Category(asList(parent1, parent2)); //child inherits from both parent1 and parent2
 		
 		//setting properties
-		Key p1 = new Key("p1");
-		Key p2 = new Key("p2");
+		Object p1 = new Object();
+		Object p2 = new Object();
 		grandFather.setProperty(p1, "x"); //setting property "p1" to "x" in grandFather
 		parent1.setProperty(p1, "y"); //overridden property "p1" as "y" in parent1
 		parent2.setProperty(p1, "z"); //overridden property "p1" as "z" in parent2

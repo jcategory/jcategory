@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.or.ObjectRenderer;
 import org.jgum.JGum;
-import org.jgum.category.Key;
 import org.jgum.category.type.TypeCategory;
 import org.jgum.testutil.animalhierarchy.Animal;
 import org.jgum.testutil.animalhierarchy.AnimalRenderer;
@@ -22,7 +21,7 @@ public class StrategyTutorialTest {
 		}
 	}
 
-	public static final Key OBJECT_RENDERER_KEY = new Key(ObjectRenderer.class);
+	public static final Object OBJECT_RENDERER_KEY = ObjectRenderer.class;
 	
 	@Test
 	public void noDelegationTest() {

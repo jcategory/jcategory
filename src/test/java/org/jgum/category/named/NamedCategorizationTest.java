@@ -32,7 +32,7 @@ public class NamedCategorizationTest {
 	String packageP6 = "p1.p2.p6";
 	String packageP8 = "p7.p8";
 	
-	//The name of arbitrary properties associated with such packages.
+	//The id of arbitrary properties associated with such packages.
 	//In order to keep it simple, the values of the properties are the same than the property keys.
 	Key rootProperty = new Key("rootProperty");
 	Key p1Property = new Key("p1Property");

@@ -80,11 +80,11 @@ public class JGum extends CategorizationContext {
 	}
 	
 	/**
-	 * Creates a new context with the given type and name linearization functions.
+	 * Creates a new context with the given type and id linearization functions.
 	 * @param bottomUpTypeLinearizationFunction the bottom-up type linearization function.
 	 * @param topDownTypeLinearizationFunction the top-down type linearization function.
-	 * @param bottomUpNameLinearizationFunction the bottom-up name linearization function.
-	 * @param topDownNameLinearizationFunction the top-down name linearization function.
+	 * @param bottomUpNameLinearizationFunction the bottom-up id linearization function.
+	 * @param topDownNameLinearizationFunction the top-down id linearization function.
 	 */
 	public JGum(Function<TypeCategory<?>, List<TypeCategory<?>>> bottomUpTypeLinearizationFunction, 
 			Function<TypeCategory<?>, List<TypeCategory<?>>> topDownTypeLinearizationFunction,
@@ -107,7 +107,7 @@ public class JGum extends CategorizationContext {
 	
 	/**
 	 * 
-	 * @return the category corresponding to the root in the named categorization (the empty name).
+	 * @return the category corresponding to the root in the named categorization (the empty id).
 	 */
 	public NamedCategory forNameRoot() {
 		return namedCategorization.getRoot();
@@ -115,8 +115,8 @@ public class JGum extends CategorizationContext {
 
 	/**
 	 * 
-	 * @param name the full name (e.g., "a.b.c") of a category.
-	 * @return a category corresponding to the given name.
+	 * @param id the full id (e.g., "a.b.c") of a category.
+	 * @return a category corresponding to the given id.
 	 */
 	public NamedCategory forName(String name) {
 		return forNameRoot().getOrCreateCategory(name);
@@ -125,7 +125,7 @@ public class JGum extends CategorizationContext {
 	/**
 	 * 
 	 * @param pakkage the package object for which a category is requested.
-	 * @return a name category corresponding to the name of the given Package object.
+	 * @return a id category corresponding to the id of the given Package object.
 	 */
 	public NamedCategory forPackage(Package pakkage) {
 		return forNameRoot().getOrCreateCategory(pakkage);

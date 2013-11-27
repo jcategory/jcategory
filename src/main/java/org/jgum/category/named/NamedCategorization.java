@@ -43,7 +43,7 @@ public class NamedCategorization extends Categorization<NamedCategory> {
 	}
 	
 	/**
-	 * The root name category (with an empty name)
+	 * The root id category (with an empty id)
 	 */
 	public NamedCategory getRoot() {
 		if(nameCategoryRoot == null) {

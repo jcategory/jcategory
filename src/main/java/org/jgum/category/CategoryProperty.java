@@ -18,12 +18,12 @@ import com.google.common.collect.Iterators;
  */
 public class CategoryProperty<T> {
 
-	public static <U> FluentIterable<U> properties(Iterable<? extends Category> categories, Key key) {
+	public static <U> FluentIterable<U> properties(Iterable<? extends Category> categories, Object key) {
 		return FluentIterable.<U>from(new PropertyIterable<U>(categories, key));
 	}
 	
 	private final Category category;
-	private final Key key;
+	private final Object key;
 	private final PropertyIterable<T> propertyIterable;
 	
 	/**
@@ -31,7 +31,7 @@ public class CategoryProperty<T> {
 	 * @param category the category where a key is queried.
 	 * @param key the property identifier.
 	 */
-	public CategoryProperty(Category category, Key key) {
+	public CategoryProperty(Category category, Object key) {
 		this(category, key, category.bottomUpCategories());
 	}
 
@@ -41,11 +41,11 @@ public class CategoryProperty<T> {
 	 * @param key the property identifier.
 	 * @param linearizationFunction the bottom-up linearization function that will be used to find the key value.
 	 */
-	public CategoryProperty(Category category, Key key, Function<Category, List<Category>> linearizationFunction) {
+	public CategoryProperty(Category category, Object key, Function<Category, List<Category>> linearizationFunction) {
 		this(category, key, linearizationFunction.apply(category));
 	}
 	
-	private CategoryProperty(Category category, Key key, List<? extends Category> linearization) {
+	private CategoryProperty(Category category, Object key, List<? extends Category> linearization) {
 		this.category = category;
 		this.key = key;
 		this.propertyIterable = new PropertyIterable<T>(linearization, key);
@@ -59,7 +59,7 @@ public class CategoryProperty<T> {
 	 * 
 	 * @return the property identifier.
 	 */
-	public Key getKey() {
+	public Object getKey() {
 		return key;
 	}
 	
@@ -92,13 +92,13 @@ public class CategoryProperty<T> {
 	public static class PropertyIterator<T> extends AbstractIterator<T> {
 		
 		private final Iterator<? extends Category> propertyNodes;
-		private final Key key;
+		private final Object key;
 		
-		public PropertyIterator(Category category, Key key) {
+		public PropertyIterator(Category category, Object key) {
 			this((Iterator)category.bottomUpCategories(), key);
 		}
 		
-		public PropertyIterator(Iterator<? extends Category> propertyNodes, final Key key) {
+		public PropertyIterator(Iterator<? extends Category> propertyNodes, final Object key) {
 			this.key = key;
 			this.propertyNodes = Iterators.filter(propertyNodes, new Predicate<Category>() {
 				@Override
@@ -123,13 +123,13 @@ public class CategoryProperty<T> {
 	public static class PropertyIterable<T> implements Iterable<T> {
 
 		private final Iterable<? extends Category> propertyNodes;
-		private final Key key;
+		private final Object key;
 		
-		public PropertyIterable(Category category, Key key) {
+		public PropertyIterable(Category category, Object key) {
 			this((Iterable)category.bottomUpCategories(), key);
 		}
 		
-		public PropertyIterable(Iterable<? extends Category> propertyNodes, Key key) {
+		public PropertyIterable(Iterable<? extends Category> propertyNodes, Object key) {
 			this.propertyNodes = propertyNodes;
 			this.key = key;
 		}

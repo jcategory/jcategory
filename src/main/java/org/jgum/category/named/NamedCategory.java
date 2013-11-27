@@ -25,7 +25,7 @@ public class NamedCategory extends LabeledCategory<String> {
 
 	private Map<String, NamedCategory> children; //the children categories
 	private List<NamedCategory> parents; //the parent category
-	private final String simpleName; //the simple name of the category
+	private final String simpleName; //the simple id of the category
 	
 	static List<String> asPackageFragmentsList(String simpleName) {
 		List<String> packageFragmentsList;
@@ -48,7 +48,7 @@ public class NamedCategory extends LabeledCategory<String> {
 	}
 	
 	/**
-	 * @param simpleName the simple name of this category.
+	 * @param simpleName the simple id of this category.
 	 * @param parent the parent category 
 	 */
 	NamedCategory(String simpleName, NamedCategory parent) {
