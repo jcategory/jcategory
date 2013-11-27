@@ -9,7 +9,6 @@ import java.util.Map;
 import org.jgum.category.Categorization;
 import org.jgum.category.CategorizationListener;
 import org.jgum.category.CategorizationListenersManager;
-import org.jgum.category.Key;
 import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;

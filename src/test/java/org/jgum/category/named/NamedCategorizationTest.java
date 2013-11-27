@@ -10,7 +10,6 @@ import java.util.List;
 import org.jgum.JGum;
 import org.jgum.category.CategorizationListener;
 import org.jgum.category.CategoryProperty;
-import org.jgum.category.Key;
 import org.jgum.testutil.CounterCreationListener;
 import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
@@ -33,15 +32,14 @@ public class NamedCategorizationTest {
 	String packageP8 = "p7.p8";
 	
 	//The id of arbitrary properties associated with such packages.
-	//In order to keep it simple, the values of the properties are the same than the property keys.
-	Key rootProperty = new Key("rootProperty");
-	Key p1Property = new Key("p1Property");
-	Key p2Property = new Key("p2Property");
-	Key p3Property = new Key("p3Property");
-	Key p4Property = new Key("p4Property");
-	Key p5Property = new Key("p5Property");
-	Key p6Property = new Key("p6Property");
-	Key p8Property = new Key("p8Property");
+	Object rootProperty = new Object();
+	Object p1Property = new Object();
+	Object p2Property = new Object();
+	Object p3Property = new Object();
+	Object p4Property = new Object();
+	Object p5Property = new Object();
+	Object p6Property = new Object();
+	Object p8Property = new Object();
 	
 	private NamedCategory newCustomRoot() {
 		JGum jgum = new JGum();
@@ -121,7 +119,7 @@ public class NamedCategorizationTest {
 	@Test
 	public void testPropertiesInPath() {
 		NamedCategory root = newCustomRoot();
-		Key wrongKey = new Key("wrongProperty");
+		Object wrongKey = new Object();
 		assertEquals(Optional.absent(), root.getLocalProperty(wrongKey));
 		assertEquals(Optional.absent(), root.getCategory(packageP1).getLocalProperty(wrongKey));
 		assertEquals(Optional.absent(), root.getCategory(packageP2).getLocalProperty(wrongKey));

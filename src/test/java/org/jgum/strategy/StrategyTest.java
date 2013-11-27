@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.jgum.JGum;
-import org.jgum.category.Key;
 import org.junit.Test;
 
 public class StrategyTest {

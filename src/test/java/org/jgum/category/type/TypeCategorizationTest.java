@@ -18,7 +18,6 @@ import java.util.RandomAccess;
 import org.jgum.JGum;
 import org.jgum.category.CategorizationListener;
 import org.jgum.category.CategoryProperty;
-import org.jgum.category.Key;
 import org.jgum.category.named.NamedCategory;
 import org.jgum.category.type.TypeCategoryRoot.Any;
 import org.jgum.testutil.CounterCreationListener;
@@ -55,8 +54,9 @@ public class TypeCategorizationTest {
 	public void propertyInTypeRootTest() {
 		JGum jgum = new JGum();
 		TypeCategoryRoot hierarchyRoot = jgum.getTypeCategorization().getRoot();
-		hierarchyRoot.setProperty(new Key("x"), "x");
-		CategoryProperty cp = new CategoryProperty(jgum.forClass(Object.class), new Key("x"));
+		Object key = new Object();
+		hierarchyRoot.setProperty(key, "x");
+		CategoryProperty cp = new CategoryProperty(jgum.forClass(Object.class), key);
 		assertEquals("x", cp.get());
 	}
 	
@@ -119,7 +119,7 @@ public class TypeCategorizationTest {
 	public void attachProperties() {
 		JGum jgum = new JGum();
 		TypeCategorization hierarchy = jgum.getTypeCategorization();
-		Key key = new Key("key"); //the property identifier
+		Object key = new Object(); //the property identifier
 		String v1 = "v1";
 		String v2 = "v2";
 		String v3 = "v3";
@@ -166,7 +166,7 @@ public class TypeCategorizationTest {
 
 	@Test
 	public void testSetQuantifiedOneBound() {
-		Key key = new Key("x");
+		Object key = new Object();
 		Object value = "y";
 		
 		JGum jgum = new JGum();
@@ -204,7 +204,7 @@ public class TypeCategorizationTest {
 	
 	@Test
 	public void testSetQuantifiedMultipleBounds() {
-		Key key = new Key("x");
+		Object key = new Object();
 		Object value = "y";
 		
 		JGum jgum = new JGum();
