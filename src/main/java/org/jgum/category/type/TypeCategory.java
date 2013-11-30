@@ -91,6 +91,32 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	}
 	
 	/**
+	 * @return the known subclasses of this type category.
+	 */
+	public List<ClassCategory<? extends T>> getKnownSubClasses() {
+		List<TypeCategory<?>> descendants = getDescendants();
+		return new ArrayList(Collections2.filter(descendants, new Predicate<TypeCategory<?>>() {
+			@Override
+			public boolean apply(TypeCategory<?> typeCategory) {
+				return typeCategory instanceof ClassCategory;
+			}
+		}));
+	}
+	
+	/**
+	 * @return the known subinterfaces of this type category.
+	 */
+	public List<ClassCategory<? extends T>> getKnownSubInterfaces() {
+		List<TypeCategory<?>> descendants = getDescendants();
+		return new ArrayList(Collections2.filter(descendants, new Predicate<TypeCategory<?>>() {
+			@Override
+			public boolean apply(TypeCategory<?> typeCategory) {
+				return typeCategory instanceof InterfaceCategory;
+			}
+		}));
+	}
+	
+	/**
 	 * 
 	 * @see Category#getParents()
 	 * @return the parents of this type category (super class and super interfaces) . A specific ordering should not be assumed.

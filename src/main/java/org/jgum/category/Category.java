@@ -236,8 +236,18 @@ public class Category implements Serializable {
 	 */
 	public <T extends Category> List<T> getAncestors() {
 		List<T> ancestors = bottomUpCategories();
-		ancestors = ancestors.subList(1, ancestors.size());
+		ancestors.remove(this);
 		return ancestors;
+	}
+	
+	/**
+	 * 
+	 * @return the known descendants of this category.
+	 */
+	public <T extends Category> List<T> getDescendants() {
+		List<T> descendants = topDownCategories();
+		descendants.remove(this);
+		return descendants;
 	}
 	
 	/**

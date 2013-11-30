@@ -61,6 +61,32 @@ public class TypeCategorizationTest {
 	}
 	
 	@Test
+	public void knownSubClassesTest() {
+		JGum jgum = new JGum();
+		jgum.forClass(ArrayList.class);
+		List subclasses;
+		subclasses = jgum.forTypeRoot().getKnownSubClasses();
+		assertEquals(4, subclasses.size());
+		subclasses = jgum.forClass(Object.class).getKnownSubClasses();
+		assertEquals(3, subclasses.size());
+		subclasses = jgum.forClass(List.class).getKnownSubClasses();
+		assertEquals(2, subclasses.size());
+	}
+	
+	@Test
+	public void knownSubInterfacesTest() {
+		JGum jgum = new JGum();
+		jgum.forClass(ArrayList.class);
+		List subclasses;
+		subclasses = jgum.forTypeRoot().getKnownSubInterfaces();
+		assertEquals(6, subclasses.size());
+		subclasses = jgum.forClass(Collection.class).getKnownSubInterfaces();
+		assertEquals(1, subclasses.size());
+		subclasses = jgum.forClass(Object.class).getKnownSubInterfaces();
+		assertEquals(0, subclasses.size());
+	}
+	
+	@Test
 	public void bottomUpLinearizationTest() {
 		JGum jgum = new JGum();
 		TypeCategorization hierarchy = jgum.getTypeCategorization();
