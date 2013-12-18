@@ -6,7 +6,7 @@ It provides high-level support for creating and managing  complex taxonomies of 
 
 Its code was factored out from other projects of the author in the hope that it may help other people dealing with similar categorization problems.
 
-In case you would like to know more about it, you may find interesting this short [tutorial](http://jgum.github.com/tutorial/ "JGum Tutorial") 
+In case you would like to know more about it, you may find interesting this short [tutorial](http://jgum.github.com/tutorial/index.html "JGum Tutorial") 
 and the [API](http://jgum.github.com/apidocs/ "API documentation ") documentation.
 
 JGum is open source, distributed under the terms of this [license](LICENSE.txt).
