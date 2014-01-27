@@ -9,7 +9,15 @@ Its code was factored out from other projects of the author in the hope that it 
 In case you would like to know more about it, you may find interesting this short [tutorial](http://jgum.github.com/tutorial/index.html "JGum Tutorial") 
 and the [API](http://jgum.github.com/apidocs/ "API documentation ") documentation.
 
+
+License
+-------
+
 JGum is open source, distributed under the terms of this [license](LICENSE.txt).
 
 
+Contact
+-------
 
+Questions and constructive feedback can be sent to [uclouvain(dot)be (that symbol for emails) sergio(dot)castro]
+\(inversing the order\).
