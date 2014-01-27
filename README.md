@@ -19,5 +19,5 @@ JGum is open source, distributed under the terms of this [license](LICENSE.txt).
 Contact
 -------
 
-Questions and constructive feedback can be sent to [uclouvain(dot)be (that symbol for emails) sergio(dot)castro]
+Questions, wish lists, and constructive feedback can be sent to [uclouvain(dot)be (that symbol for emails) sergio(dot)castro]
 \(inversing the order\).
