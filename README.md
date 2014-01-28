@@ -10,12 +10,6 @@ In case you would like to know more about it, you may find interesting this shor
 and the [API](http://jgum.github.com/apidocs/ "API documentation ") documentation.
 
 
-License
--------
-
-JGum is open source, distributed under the terms of this [license](LICENSE.txt).
-
-
 Contact
 -------
 
