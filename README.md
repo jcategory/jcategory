@@ -7,7 +7,7 @@ It provides high-level support for creating and managing  complex taxonomies of 
 Its code was factored out from other projects of the author in the hope that it may help other people dealing with similar categorization problems.
 
 In case you would like to know more about it, you may find interesting this short [tutorial](http://jgum.github.com/ "JGum Tutorial") 
-and the [API](http://jgum.github.com/apidocs/ "API documentation ") documentation.
+and the [API](http://jgum.github.com/javadocs/ "API documentation ") documentation.
 
 
 Contact
