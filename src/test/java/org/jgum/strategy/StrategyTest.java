@@ -6,6 +6,7 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.jgum.ChainOfResponsibilityExhaustedException;
 import org.jgum.JGum;
 import org.junit.Test;
 
@@ -110,7 +111,7 @@ public class StrategyTest {
 		try {
 			doSomething.doIt4();
 			fail();
-		} catch(NoMyResponsibilityException e) {}
+		} catch(ChainOfResponsibilityExhaustedException e) {}
 	}
 
 }

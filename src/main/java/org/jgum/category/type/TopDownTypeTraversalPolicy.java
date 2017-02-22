@@ -1,12 +1,11 @@
 package org.jgum.category.type;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
-
-import com.google.common.base.Function;
 
 /**
  * A class facilitating the definition of top-down linearization functions in a type categorization.
@@ -21,12 +20,7 @@ public class TopDownTypeTraversalPolicy<T extends TypeCategory<?>> extends Trave
 	 * @return a function mapping a TypeCategory to a top-down linearization.
 	 */
 	public static <U extends TypeCategory<?>> Function<U, List<U>> childrenFunction(final Priority priority) {
-		return new Function<U, List<U>>() {
-			@Override
-			public List<U> apply(U typeNode) {
-				return (List)typeNode.getChildren(priority);
-			}
-		};
+		return typeNode -> (List) typeNode.getChildren(priority);
 	}
 	
 	
@@ -39,5 +33,10 @@ public class TopDownTypeTraversalPolicy<T extends TypeCategory<?>> extends Trave
 	public TopDownTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, RedundancyCheck redundancyCheck) {
 		super(searchStrategy, TopDownTypeTraversalPolicy.<T>childrenFunction(priority), redundancyCheck);
 	}
-	
+
+	public static TopDownTypeTraversalPolicy topDownTypeTraversalPolicy(SearchStrategy searchStrategy,
+																		   Priority priority,
+																		   RedundancyCheck redundancyCheck) {
+		return new TopDownTypeTraversalPolicy(searchStrategy, priority, redundancyCheck);
+	}
 }

@@ -2,12 +2,11 @@ package org.jgum.category.named;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 import org.jgum.category.Categorization;
 import org.jgum.category.CategorizationListener;
 import org.jgum.category.CategorizationListenersManager;
-
-import com.google.common.base.Function;
 
 /**
  * The hierarchy of a named categorization is implicitly specified by the names of its categories. 

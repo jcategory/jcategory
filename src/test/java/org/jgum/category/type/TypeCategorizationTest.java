@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.RandomAccess;
 
 import org.jgum.JGum;
@@ -24,8 +25,6 @@ import org.jgum.testutil.CounterCreationListener;
 import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.junit.Test;
-
-import com.google.common.base.Optional;
 
 public class TypeCategorizationTest {
 
@@ -47,7 +46,7 @@ public class TypeCategorizationTest {
 	public void superMethodTest() {
 		JGum jgum = new JGum();
 		assertEquals(Any.class, jgum.forClass(Object.class).<TypeCategory<Object>>getSuper().get().getLabel());
-		assertEquals(Optional.absent(), jgum.forTypeRoot().getSuper());
+		assertEquals(Optional.empty(), jgum.forTypeRoot().getSuper());
 	}
 	
 	@Test
@@ -207,25 +206,25 @@ public class TypeCategorizationTest {
 		
 		jgum.getTypeCategorization().setQuantified(Arrays.<Class<?>>asList(List.class), key, value);
 		
-		assertEquals(Optional.absent(), iterableCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), collectionCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), iterableCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), collectionCategory.getLocalProperty(key));
 		assertEquals(value, listCategory.getLocalProperty(key).get());
-		assertEquals(Optional.absent(), objectCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), abstractCollectionCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), objectCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), abstractCollectionCategory.getLocalProperty(key));
 		assertEquals(value, abstractListCategory.getLocalProperty(key).get());
 		assertEquals(value, arrayListCategory.getLocalProperty(key).get());
-		assertEquals(Optional.absent(), hashSetCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), hashSetCategory.getLocalProperty(key));
 		
 		jgum.getTypeCategorization().removeQuantified(Arrays.<Class<?>>asList(List.class), key);
 		
-		assertEquals(Optional.absent(), iterableCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), collectionCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), listCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), objectCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), abstractCollectionCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), abstractListCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), arrayListCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), hashSetCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), iterableCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), collectionCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), listCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), objectCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), abstractCollectionCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), abstractListCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), arrayListCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), hashSetCategory.getLocalProperty(key));
 	}
 	
 	@Test
@@ -245,25 +244,25 @@ public class TypeCategorizationTest {
 		
 		jgum.getTypeCategorization().setQuantified(Arrays.<Class<?>>asList(AbstractCollection.class, List.class), key, value);
 		
-		assertEquals(Optional.absent(), iterableCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), collectionCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), listCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), objectCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), abstractCollectionCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), iterableCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), collectionCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), listCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), objectCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), abstractCollectionCategory.getLocalProperty(key));
 		assertEquals(value, abstractListCategory.getLocalProperty(key).get());
 		assertEquals(value, arrayListCategory.getLocalProperty(key).get());
-		assertEquals(Optional.absent(), hashSetCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), hashSetCategory.getLocalProperty(key));
 		
 		jgum.getTypeCategorization().removeQuantified(Arrays.<Class<?>>asList(AbstractCollection.class, List.class), key);
 		
-		assertEquals(Optional.absent(), iterableCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), collectionCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), listCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), objectCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), abstractCollectionCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), abstractListCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), arrayListCategory.getLocalProperty(key));
-		assertEquals(Optional.absent(), hashSetCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), iterableCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), collectionCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), listCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), objectCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), abstractCollectionCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), abstractListCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), arrayListCategory.getLocalProperty(key));
+		assertEquals(Optional.empty(), hashSetCategory.getLocalProperty(key));
 	}
 	
 }

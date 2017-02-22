@@ -1,5 +1,10 @@
 package org.jgum;
 
+import static org.jgum.category.type.BottomUpTypeTraversalPolicy.bottomUpTypeTraversalPolicy;
+import static org.jgum.category.type.TopDownTypeTraversalPolicy.topDownTypeTraversalPolicy;
+import static org.jgum.traversal.TraversalPolicy.bottomUpTraversalPolicy;
+import static org.jgum.traversal.TraversalPolicy.topDownTraversalPolicy;
+
 import java.util.List;
 
 import org.jgum.category.named.NamedCategorization;
@@ -15,7 +20,8 @@ import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
+
 
 /**
  * Defines a register of categorizations that pre-includes a named categorization and a type categorization.
@@ -28,27 +34,27 @@ public class JGum extends CategorizationContext {
 	/**
 	 * Default linearization function for bottom-up traversing of a type categorization.
 	 */
-	public static final Function<TypeCategory<?>, List<TypeCategory<?>>> DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION = 
-			new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, RedundancyCheck.KEEP_LAST);
-			//new BottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyCheck.KEEP_LAST);
+	public static final Function<TypeCategory<?>, List<TypeCategory<?>>> DEFAULT_BOTTOM_UP_TYPE_LINEARIZATION_FUNCTION =
+			bottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.CLASSES_FIRST, InterfaceOrder.DECLARATION, RedundancyCheck.KEEP_LAST);
+			//bottomUpTypeTraversalPolicy(SearchStrategy.PRE_ORDER, Priority.INTERFACES_FIRST, InterfaceOrder.REVERSE, RedundancyCheck.KEEP_LAST);
 	
 	/**
 	 * Default linearization function for top-down traversing of a type categorization.
 	 */
 	public static final Function<TypeCategory<?>, List<TypeCategory<?>>> DEFAULT_TOP_DOWN_TYPE_LINEARIZATION_FUNCTION = 
-			new TopDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.CLASSES_FIRST, RedundancyCheck.KEEP_FIRST);
+			topDownTypeTraversalPolicy(SearchStrategy.BREADTH_FIRST, Priority.CLASSES_FIRST, RedundancyCheck.KEEP_FIRST);
 	
 	/**
 	 * Default linearization function for bottom-up traversing of a named categorization.
 	 */
 	public static final Function<NamedCategory, List<NamedCategory>> DEFAULT_BOTTOM_UP_NAME_LINEARIZATION_FUNCTION = 
-			TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.IGNORE);
+			bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.IGNORE);
 	
 	/**
 	 * Default linearization function for top-down traversing of a named categorization.
 	 */
 	public static final Function<NamedCategory, List<NamedCategory>> DEFAULT_TOP_DOWN_NAME_LINEARIZATION_FUNCTION = 
-			TraversalPolicy.topDownTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.IGNORE);
+			topDownTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.IGNORE);
 	
 	
 	private final TypeCategorization typeCategorization; //a type categorization.
@@ -155,5 +161,5 @@ public class JGum extends CategorizationContext {
 	public <T> TypeCategory<T> forClass(Class<T> clazz) {
 		return typeCategorization.getOrCreateTypeCategory(clazz);
 	}
-	
+
 }

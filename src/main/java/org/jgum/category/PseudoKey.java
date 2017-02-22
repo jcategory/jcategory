@@ -1,7 +1,7 @@
 package org.jgum.category;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
+import java.util.function.Function;
+import java.util.Optional;
 
 /**
  * A pseudo-key is not stored in the local map of a category.

@@ -2,8 +2,9 @@ package org.jgum.strategy;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
-import com.google.common.base.Function;
+import org.jgum.ChainOfResponsibilityExhaustedException;
 
 
 /**
@@ -29,13 +30,12 @@ public class ChainOfResponsibility<T, U> {
 	
 	private final List<T> responsibilityChain;
 	private final Class<? extends RuntimeException> exceptionClass;
-	private final RuntimeException chainExhaustedException;
 	
 	/**
 	 * Creates an empty chain of responsibility.
 	 */
 	public ChainOfResponsibility() {
-		this(new ArrayList());
+		this(new ArrayList<>());
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class ChainOfResponsibility<T, U> {
 	 * @param exceptionClass instances of this exception class denote that a processing object delegates to the next object in the responsibility chain.
 	 */
 	public ChainOfResponsibility(Class<? extends RuntimeException> exceptionClass) {
-		this(new ArrayList(), exceptionClass);
+		this(new ArrayList<>(), exceptionClass);
 	}
 	
 	/**
@@ -62,13 +62,8 @@ public class ChainOfResponsibility<T, U> {
 	public ChainOfResponsibility(List<T> responsibilityChain, Class<? extends RuntimeException> exceptionClass) {
 		this.responsibilityChain = responsibilityChain;
 		this.exceptionClass = exceptionClass;
-		try {
-			chainExhaustedException = exceptionClass.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
 	}
-	
+
 	/**
 	 * Adds a new processing object at the beginning of the chain of responsibility.
 	 * @param processingObject a processing object.
@@ -109,11 +104,16 @@ public class ChainOfResponsibility<T, U> {
 			try {
 				return evaluator.apply(processingObject);
 			} catch (RuntimeException e) {
-				if(!exceptionClass.isInstance(e))
+				if (!isDelegationException(e)) {
 					throw e;
+				}
 			}
 		}
-		throw chainExhaustedException;
+		throw new ChainOfResponsibilityExhaustedException();
+	}
+
+	protected boolean isDelegationException(RuntimeException e) {
+		return exceptionClass.isInstance(e);
 	}
 
 }

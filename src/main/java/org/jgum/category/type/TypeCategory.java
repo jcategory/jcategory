@@ -1,5 +1,7 @@
 package org.jgum.category.type;
 
+import static java.util.stream.Collectors.toList;
+
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -7,9 +9,6 @@ import java.util.List;
 
 import org.jgum.category.Category;
 import org.jgum.category.LabeledCategory;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 
 /**
  * A category wrapping a class or interface.
@@ -53,13 +52,9 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	 * @return the abstract ancestors (both classes and interfaces).
 	 */
 	public <U extends TypeCategory<? super T>> List<U> getAbstractAncestors() {
-		List<TypeCategory<?>> ancestors = getAncestors();
-		return new ArrayList(Collections2.filter(ancestors, new Predicate<TypeCategory<?>>() {
-			@Override
-			public boolean apply(TypeCategory<?> typeCategory) {
-				return Modifier.isAbstract(typeCategory.getLabel().getModifiers());
-			}
-		}));
+		List<TypeCategory<? super T>> ancestors = getAncestors();
+		return (List) ancestors.stream().filter(typeCategory -> Modifier.isAbstract(typeCategory.getLabel().getModifiers()))
+				.collect(toList());
 	}
 	
 	/**
@@ -68,12 +63,7 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	 */
 	public List<ClassCategory<? super T>> getAncestorClasses() {
 		List<TypeCategory<?>> ancestors = getAncestors();
-		return new ArrayList(Collections2.filter(ancestors, new Predicate<TypeCategory<?>>() {
-			@Override
-			public boolean apply(TypeCategory<?> typeCategory) {
-				return typeCategory instanceof ClassCategory;
-			}
-		}));
+		return (List) ancestors.stream().filter(typeCategory -> typeCategory instanceof ClassCategory).collect(toList());
 	}
 	
 	/**
@@ -82,12 +72,7 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	 */
 	public List<InterfaceCategory<? super T>> getAncestorInterfaces() {
 		List<TypeCategory<?>> ancestors = getAncestors();
-		return new ArrayList(Collections2.filter(ancestors, new Predicate<TypeCategory<?>>() {
-			@Override
-			public boolean apply(TypeCategory<?> typeCategory) {
-				return typeCategory instanceof InterfaceCategory;
-			}
-		}));
+		return (List) ancestors.stream().filter(typeCategory -> typeCategory instanceof InterfaceCategory).collect(toList());
 	}
 	
 	/**
@@ -95,12 +80,7 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	 */
 	public List<ClassCategory<? extends T>> getKnownSubClasses() {
 		List<TypeCategory<?>> descendants = getDescendants();
-		return new ArrayList(Collections2.filter(descendants, new Predicate<TypeCategory<?>>() {
-			@Override
-			public boolean apply(TypeCategory<?> typeCategory) {
-				return typeCategory instanceof ClassCategory;
-			}
-		}));
+		return (List) descendants.stream().filter(typeCategory -> typeCategory instanceof ClassCategory).collect(toList());
 	}
 	
 	/**
@@ -108,12 +88,7 @@ public abstract class TypeCategory<T> extends LabeledCategory<Class<T>> {
 	 */
 	public List<ClassCategory<? extends T>> getKnownSubInterfaces() {
 		List<TypeCategory<?>> descendants = getDescendants();
-		return new ArrayList(Collections2.filter(descendants, new Predicate<TypeCategory<?>>() {
-			@Override
-			public boolean apply(TypeCategory<?> typeCategory) {
-				return typeCategory instanceof InterfaceCategory;
-			}
-		}));
+		return (List) descendants.stream().filter(typeCategory -> typeCategory instanceof InterfaceCategory).collect(toList());
 	}
 	
 	/**

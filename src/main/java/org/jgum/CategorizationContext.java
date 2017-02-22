@@ -13,7 +13,7 @@ import org.jgum.category.Category;
  */
 public class CategorizationContext {
 
-	private Map<Object, Categorization<?>> categorizationIndex; //categorizations are backed up in this map.
+	private final Map<Object, Categorization<?>> categorizationIndex; //categorizations are backed up in this map.
 	
 	public CategorizationContext () {
 		categorizationIndex = new HashMap<>();
@@ -24,7 +24,7 @@ public class CategorizationContext {
 	 * @return the categorization registered under the key sent as a parameter.
 	 */
 	public <T extends Category> Categorization<T> getCategorization(Object key) {
-		return (Categorization<T>)categorizationIndex.get(key);
+		return (Categorization<T>) categorizationIndex.get(key);
 	}
 	
 	/**

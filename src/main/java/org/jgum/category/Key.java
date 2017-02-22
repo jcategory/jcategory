@@ -1,6 +1,6 @@
 package org.jgum.category;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 /**
  * A property identifier.

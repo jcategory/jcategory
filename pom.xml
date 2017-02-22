@@ -10,7 +10,7 @@
   
 	<groupId>com.github.jgum</groupId>
 	<artifactId>jgum</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2</version>
 	<packaging>jar</packaging>
 	<name>jgum</name>
 	<description>A lightweight categorization framework for Java</description>

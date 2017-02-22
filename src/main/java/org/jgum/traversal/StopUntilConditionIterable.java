@@ -1,8 +1,8 @@
 package org.jgum.traversal;
 
 import java.util.Iterator;
+import java.util.function.Predicate;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
 
 public class StopUntilConditionIterable<U> implements Iterable<U> {
@@ -35,8 +35,9 @@ public class StopUntilConditionIterable<U> implements Iterable<U> {
 		protected T computeNext() {
 			if(!shouldStop && wrappedIterator.hasNext()) {
 				T next = wrappedIterator.next();
-				if(stopCondition.apply(next))
+				if (stopCondition.test(next)) {
 					shouldStop = true; //will stop in the next call to next
+				}
 				return next;
 			} 
 			return super.endOfData();

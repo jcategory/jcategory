@@ -2,12 +2,15 @@ package org.jgum.category;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.FluentIterable;
-import com.google.common.collect.Iterators;
 
 /**
  * The key of a category. A category key value depends on the location of the category in a categorization.
@@ -95,17 +98,17 @@ public class CategoryProperty<T> {
 		private final Object key;
 		
 		public PropertyIterator(Category category, Object key) {
-			this((Iterator)category.bottomUpCategories(), key);
+			this((Iterator) category.bottomUpCategories(), key);
 		}
-		
-		public PropertyIterator(Iterator<? extends Category> propertyNodes, final Object key) {
+
+		private <U> Stream<U> toStream(Iterator<U> it) {
+			return StreamSupport.stream(Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED), false);
+		}
+
+		public PropertyIterator(Iterator<? extends Category> propertyNodes, Object key) {
 			this.key = key;
-			this.propertyNodes = Iterators.filter(propertyNodes, new Predicate<Category>() {
-				@Override
-				public boolean apply(Category category) {
-					return category.containsLocalProperty(key);
-				}
-			});
+			this.propertyNodes =  toStream(propertyNodes).filter(category -> category.containsLocalProperty(key))
+					.collect(Collectors.toList()).iterator();
 		}
 		
 		@Override

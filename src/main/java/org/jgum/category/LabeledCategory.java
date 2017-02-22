@@ -2,9 +2,8 @@ package org.jgum.category;
 
 import java.util.List;
 import java.util.Objects;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 
 /**
@@ -16,12 +15,7 @@ import com.google.common.collect.Lists;
 public class LabeledCategory<T> extends Category {
 	
 	public static <U> List<U> labels(List<? extends LabeledCategory<?>> path) {
-		return Lists.transform(path, new Function<LabeledCategory<?>, U>() {
-			@Override
-			public U apply(LabeledCategory<?> category) {
-				return (U)category.getLabel();
-			}
-		});
+		return path.stream().map(category -> (U) category.getLabel()).collect(Collectors.toList());
 	} 
 	
 	private final T label; //the identifier of this category.

@@ -6,13 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 
 import org.jgum.category.CategoryProperty.PropertyIterable;
 import org.jgum.strategy.ChainOfResponsibility;
 import org.jgum.strategy.StrategyInvocationHandler;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 /**
@@ -113,7 +113,7 @@ public class Category implements Serializable {
 	 * @return an optional with the property value in the current category map (if any).
 	 */
 	<T> Optional<T> getFromLocalMap(Object key) {
-		return Optional.<T>fromNullable((T)properties.get(key));
+		return Optional.ofNullable((T) properties.get(key));
 	}
 	
 	/**
@@ -207,7 +207,7 @@ public class Category implements Serializable {
 	public <U extends Category> Optional<U> getSuper() {
 		List bottomUpLinearization = bottomUpCategories();
 		if(bottomUpLinearization.size() == 1) //there are no super categories (according to the default linearization function)
-			return Optional.absent();
+			return Optional.empty();
 		else
 			return Optional.of((U)bottomUpLinearization.get(1));
 	}

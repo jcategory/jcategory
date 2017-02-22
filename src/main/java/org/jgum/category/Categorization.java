@@ -1,13 +1,14 @@
 package org.jgum.category;
 
+import static org.jgum.traversal.TraversalPolicy.bottomUpTraversalPolicy;
+import static org.jgum.traversal.TraversalPolicy.topDownTraversalPolicy;
+
 import java.io.Serializable;
 import java.util.List;
+import java.util.function.Function;
 
 import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
-import org.jgum.traversal.TraversalPolicy;
-
-import com.google.common.base.Function;
 
 /**
  * A set of categories with a hierarchical organization.
@@ -31,7 +32,7 @@ public class Categorization<T extends Category> implements Serializable {
 	 * Creates a categorization with default linearization functions.
 	 */
 	public Categorization() {
-		this(TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.KEEP_LAST));
+		this(bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.KEEP_LAST));
 	}
 	
 	/**
@@ -39,7 +40,7 @@ public class Categorization<T extends Category> implements Serializable {
 	 * @param bottomUpLinearizationFunction the bottom-up linearization function.
 	 */
 	public Categorization(Function<T, List<T>> bottomUpLinearizationFunction) {
-		this(bottomUpLinearizationFunction, TraversalPolicy.topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST, RedundancyCheck.KEEP_FIRST));
+		this(bottomUpLinearizationFunction, topDownTraversalPolicy(SearchStrategy.BREADTH_FIRST, RedundancyCheck.KEEP_FIRST));
 	}
 
 	/**

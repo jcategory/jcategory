@@ -1,12 +1,11 @@
 package org.jgum.category.type;
 
 import java.util.List;
+import java.util.function.Function;
 
 import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
-
-import com.google.common.base.Function;
 
 /**
  * A class facilitating the definition of bottom-up linearization functions in a type categorization.
@@ -21,13 +20,9 @@ public class BottomUpTypeTraversalPolicy<T extends TypeCategory<?>> extends Trav
 	 * @param interfaceOrder if the interfaces should be traversed following their declaration order or reversing such order.
 	 * @return a function mapping a TypeCategory to a bottom-up linearization.
 	 */
-	public static <U extends TypeCategory<?>> Function<U, List<U>> parentsFunction(final Priority priority, final InterfaceOrder interfaceOrder) {
-		return new Function<U, List<U>>() {
-			@Override
-			public List<U> apply(U typeNode) {
-				return (List)typeNode.getParents(priority, interfaceOrder);
-			}
-		};
+	public static <U extends TypeCategory<?>> Function<U, List<U>> parentsFunction(Priority priority,
+																				   InterfaceOrder interfaceOrder) {
+		return typeNode -> (List) typeNode.getParents(priority, interfaceOrder);
 	}
 
 	
@@ -38,8 +33,16 @@ public class BottomUpTypeTraversalPolicy<T extends TypeCategory<?>> extends Trav
 	 * @param interfaceOrder if the interfaces should be traversed following their declaration order or reversing such order.
 	 * @param redundancyCheck determines how to deal with redundancy.
 	 */
-	public BottomUpTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, InterfaceOrder interfaceOrder, RedundancyCheck redundancyCheck) {
+	public BottomUpTypeTraversalPolicy(SearchStrategy searchStrategy, Priority priority, InterfaceOrder interfaceOrder,
+									   RedundancyCheck redundancyCheck) {
 		super(searchStrategy, BottomUpTypeTraversalPolicy.<T>parentsFunction(priority, interfaceOrder), redundancyCheck);
+	}
+
+	public static BottomUpTypeTraversalPolicy bottomUpTypeTraversalPolicy(SearchStrategy searchStrategy,
+																		  Priority priority,
+																		  InterfaceOrder interfaceOrder,
+																		  RedundancyCheck redundancyCheck) {
+		return new BottomUpTypeTraversalPolicy(searchStrategy, priority, interfaceOrder, redundancyCheck);
 	}
 	
 }

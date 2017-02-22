@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 
 import org.jgum.category.LabeledCategory;
 import org.jgum.traversal.RedundancyCheck;
@@ -13,7 +14,6 @@ import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.StopUntilConditionIterable;
 import org.jgum.traversal.TraversalPolicy;
 
-import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 /**
@@ -133,7 +133,7 @@ public class NamedCategory extends LabeledCategory<String> {
 				TraversalPolicy.bottomUpTraversalPolicy(SearchStrategy.PRE_ORDER, RedundancyCheck.IGNORE));
 		Iterable<NamedCategory> filteredBottomUpIterable = new StopUntilConditionIterable(bottomUpIterable, new Predicate<NamedCategory>() {
 			@Override
-			public boolean apply(NamedCategory node) {
+			public boolean test(NamedCategory node) {
 				return NamedCategory.this.equals(node);
 			}
 		});

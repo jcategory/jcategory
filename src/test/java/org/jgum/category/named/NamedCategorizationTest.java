@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
 import org.jgum.JGum;
 import org.jgum.category.CategorizationListener;
@@ -16,8 +18,6 @@ import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
 import org.junit.Test;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
 public class NamedCategorizationTest {
@@ -68,7 +68,7 @@ public class NamedCategorizationTest {
 	public void superMethodTest() {
 		JGum jgum = new JGum();
 		assertEquals("", jgum.forName("org").<NamedCategory>getSuper().get().getLabel());
-		assertEquals(Optional.absent(), jgum.forNameRoot().getSuper());
+		assertEquals(Optional.empty(), jgum.forNameRoot().getSuper());
 	}
 	
 	@Test
@@ -120,9 +120,9 @@ public class NamedCategorizationTest {
 	public void testPropertiesInPath() {
 		NamedCategory root = newCustomRoot();
 		Object wrongKey = new Object();
-		assertEquals(Optional.absent(), root.getLocalProperty(wrongKey));
-		assertEquals(Optional.absent(), root.getCategory(packageP1).getLocalProperty(wrongKey));
-		assertEquals(Optional.absent(), root.getCategory(packageP2).getLocalProperty(wrongKey));
+		assertEquals(Optional.empty(), root.getLocalProperty(wrongKey));
+		assertEquals(Optional.empty(), root.getCategory(packageP1).getLocalProperty(wrongKey));
+		assertEquals(Optional.empty(), root.getCategory(packageP2).getLocalProperty(wrongKey));
 
 		List<String> properties = root.<String>topDownProperties(p6Property);
 		assertEquals(1, properties.size());

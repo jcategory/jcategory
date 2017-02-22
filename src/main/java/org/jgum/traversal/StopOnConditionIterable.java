@@ -2,7 +2,7 @@ package org.jgum.traversal;
 
 import java.util.Iterator;
 
-import com.google.common.base.Predicate;
+import java.util.function.Predicate;
 import com.google.common.collect.AbstractIterator;
 
 public class StopOnConditionIterable<U> implements Iterable<U> {
@@ -34,7 +34,7 @@ public class StopOnConditionIterable<U> implements Iterable<U> {
 		protected T computeNext() {
 			if(wrappedIterator.hasNext()) {
 				T next = wrappedIterator.next();
-				if(!stopCondition.apply(next))
+				if(!stopCondition.test(next))
 					return next;
 			} 
 			return super.endOfData();

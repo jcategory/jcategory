@@ -21,7 +21,7 @@ import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.junit.Test;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 public class TypeCategorizationTutorialTest {
 

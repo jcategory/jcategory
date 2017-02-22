@@ -3,7 +3,7 @@ package org.jgum.strategy;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
 
 /**
  * A reflective evaluator that makes use of a given method and its arguments to delegate to a processing object in a responsibility chain.

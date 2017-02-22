@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.jgum.category.Categorization;
 import org.jgum.category.CategorizationListener;
@@ -12,8 +13,6 @@ import org.jgum.category.CategorizationListenersManager;
 import org.jgum.traversal.RedundancyCheck;
 import org.jgum.traversal.SearchStrategy;
 import org.jgum.traversal.TraversalPolicy;
-
-import com.google.common.base.Function;
 
 public class TypeCategorization extends Categorization<TypeCategory<?>> {
 

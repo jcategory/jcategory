@@ -1,14 +1,15 @@
 package org.jgum.traversal;
 
+import static java.util.Collections.sort;
+
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.function.Function;
 
 import org.jgum.category.Category;
 
-import com.google.common.base.Function;
 import com.google.common.collect.FluentIterable;
 import com.google.common.collect.Lists;
 import com.google.common.collect.TreeTraverser;
@@ -56,26 +57,18 @@ public class TraversalPolicy<T extends Category> implements Function<T, List<T>>
 	 * @return a function mapping a category to its parents.
 	 */
 	public static <U extends Category> Function<U, List<U>> parentsFunction() {
-		return new Function<U, List<U>>() {
-			@Override
-			public List<U> apply(U category) {
-				return category.getParents();
-			}
-		};
+		return category -> category.getParents();
 	}
 	
 	/**
 	 * comparator determines how parents should be ordered.
 	 * @return a function mapping a category to its parents, ordering the parents according to the given comparator.
 	 */
-	public static <U extends Category> Function<U, List<U>> parentsFunction(final Comparator<U> comparator) {
-		return new Function<U, List<U>>() {
-			@Override
-			public List<U> apply(U category) {
-				List<U> parents =  category.getParents();
-				Collections.sort(parents, comparator);
-				return parents;
-			}
+	public static <U extends Category> Function<U, List<U>> parentsFunction(Comparator<U> comparator) {
+		return category -> {
+			List<U> parents =  category.getParents();
+			sort(parents, comparator);
+			return parents;
 		};
 	}
 	
@@ -84,12 +77,7 @@ public class TraversalPolicy<T extends Category> implements Function<T, List<T>>
 	 * @return a function mapping a category to its children.
 	 */
 	public static <U extends Category> Function<U, List<U>> childrenFunction() {
-		return new Function<U, List<U>>() {
-			@Override
-			public List<U> apply(U category) {
-				return category.getChildren();
-			}
-		};
+		return category -> category.getChildren();
 	}
 	
 	/**
@@ -98,13 +86,10 @@ public class TraversalPolicy<T extends Category> implements Function<T, List<T>>
 	 * @return a function mapping a category to its children, ordering the children according to the given comparator.
 	 */
 	public static <U extends Category> Function<U, List<U>> childrenFunction(final Comparator<U> comparator) {
-		return new Function<U, List<U>>() {
-			@Override
-			public List<U> apply(U category) {
-				List<U> children = category.getChildren();
-				Collections.sort(children, comparator);
-				return children;
-			}
+		return category -> {
+			List<U> children = category.getChildren();
+			sort(children, comparator);
+			return children;
 		};
 	}
 	
