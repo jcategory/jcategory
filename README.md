@@ -1,13 +1,13 @@
-JGum
+JCategory
 ====
 
-JGum is a lightweight categorization framework for Java.
-It provides high-level support for creating and managing  complex taxonomies of categories (e.g., named, type and ad hoc categorizations).
+JCategory is a lightweight categorization framework for Java.
+It provides high-level support for creating and managing  complex taxonomies of categories (e.g., name, type and ad hoc categorizations).
 
 Its code was factored out from other projects of the author in the hope that it may help other people dealing with similar categorization problems.
 
-In case you would like to know more about it, you may find interesting this short [tutorial](http://jgum.github.com/ "JGum Tutorial") 
-and the [API](http://jgum.github.com/javadocs/ "API documentation ") documentation.
+In case you would like to know more about it, you may find interesting this short [tutorial](http://jcategory.github.com/ "JCategory Tutorial") 
+and the [API](http://jcategory.github.com/javadocs/ "API documentation ") documentation.
 
 
 Contact

@@ -8,13 +8,13 @@
       <version>7</version>
     </parent>
   
-	<groupId>com.github.jgum</groupId>
-	<artifactId>jgum</artifactId>
-	<version>0.0.2</version>
+	<groupId>com.github.jcategory</groupId>
+	<artifactId>jcategory</artifactId>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
-	<name>jgum</name>
+	<name>jcategory</name>
 	<description>A lightweight categorization framework for Java</description>
-	<url>https://github.com/jgum/jgum</url>
+	<url>https://github.com/jcategory/jcategory</url>
 
 	<licenses>
 		<license>
@@ -24,9 +24,9 @@
 	</licenses>
 
     <scm>
-      <connection>scm:git:git@github.com:jgum/jgum.git</connection>
-      <developerConnection>scm:git:git@github.com:jgum/jgum.git</developerConnection>
-      <url>git@github.com:jgum/jgum.git</url>
+      <connection>scm:git:git@github.com:jcategory/jcategory.git</connection>
+      <developerConnection>scm:git:git@github.com:jcategory/jcategory.git</developerConnection>
+      <url>git@github.com:jcategory/jcategory.git</url>
     </scm>
 
     <developers>
@@ -72,7 +72,7 @@
  		<dependency>
     		<groupId>com.google.guava</groupId>
     		<artifactId>guava</artifactId>
-    		<version>20.0</version>
+    		<version>21.0</version>
 		</dependency>
 		
 	</dependencies>
